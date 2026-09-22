@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\IAM\Entities;
 
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Laravel\Passkeys\Passkey as BasePasskey;

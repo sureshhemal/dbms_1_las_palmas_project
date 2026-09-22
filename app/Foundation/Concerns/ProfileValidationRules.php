@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Concerns;
+namespace App\Foundation\Concerns;
 
-use App\Models\User;
+use App\IAM\Entities\User;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 

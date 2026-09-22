@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Providers;
+namespace App\Foundation\IO;
 
-use App\Models\Passkey;
+use App\IAM\Entities\Passkey;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
