@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Staff\Entities\Models;
+
+use App\Hospital\Entities\Models\Department;
+use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
+
+/**
+ * @property string $id
+ * @property string $physician_id
+ * @property string $department_id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
+ */
+#[Table(name: 'AffiliatedWith')]
+class AffiliatedWith extends Pivot
+{
+    use HasUlids, SoftDeletes;
+
+    protected $guarded = [];
+
+    /**
+     * @return BelongsTo<Physician, $this>
+     */
+    public function physician(): BelongsTo
+    {
+        return $this->belongsTo(Physician::class, 'physician_id');
+    }
+
+    /**
+     * @return BelongsTo<Department, $this>
+     */
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(Department::class, 'department_id');
+    }
+}
