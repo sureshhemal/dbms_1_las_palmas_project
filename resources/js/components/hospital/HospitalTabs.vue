@@ -2,6 +2,7 @@
 import { defineComponent } from 'vue'
 import BaseTabs from '@/components/base/BaseTabs.vue'
 import DepartmentsTabPanel from '@/components/hospital/DepartmentsTabPanel.vue'
+import RoomsTabPanel from '@/components/hospital/RoomsTabPanel.vue'
 import type { TabDefinition } from '@/types'
 
 export default defineComponent({
@@ -10,6 +11,7 @@ export default defineComponent({
     components: {
         BaseTabs,
         DepartmentsTabPanel,
+        RoomsTabPanel,
     },
 
     data() {
@@ -19,6 +21,10 @@ export default defineComponent({
                 {
                     name: 'departments',
                     label: 'Departments',
+                },
+                {
+                    name: 'rooms',
+                    label: 'Rooms',
                 },
             ] as TabDefinition[],
         }
@@ -30,6 +36,10 @@ export default defineComponent({
     <BaseTabs v-model="selectedTabName" :tabs="hospitalTabs">
         <template #departments>
             <DepartmentsTabPanel />
+        </template>
+
+        <template #rooms>
+            <RoomsTabPanel />
         </template>
     </BaseTabs>
 </template>
