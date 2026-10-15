@@ -1,0 +1,353 @@
+[2026-09-22 12:54]
+➜  las_palmas mysql
+zsh: command not found: mysql
+
+[2026-09-22 12:56]
+I want to disable the confirmation email. When registering, user inputs details and that would be it.
+
+[2026-09-22 12:57]
+clear
+
+[2026-09-22 12:59]
+go ahead
+
+[2026-09-22 12:59]
+revert all
+
+[2026-09-22 13:02]
+initialize github repo. private one. dbms_1_las_palmas_project
+
+[2026-09-22 13:04]
+is Ulid are based on timestamp
+
+[2026-09-22 13:06]
+I want primary keys to be ulid, instead of incrementing integers.
+
+[2026-09-22 13:07]
+fix failing tests
+
+[2026-09-22 13:09]
+Now commit and push. Commit mesage, "use ulid as primary key in application domain". do not co-author.
+
+[2026-09-22 13:14]
+based on @architecture-guide.md lets move all technical things to app/Foundation directory. But User is a domain model. Move it to app/IAM/Entities likewise. Before move anything. Show me the list that you gonna move
+
+[2026-09-22 13:17]
+app/Foundation/IO/FoundationServiceProvider.php leave it as AppServiceProvider
+
+[2026-09-22 13:19]
+I think seeders should be moevd too
+
+[2026-09-22 13:20]
+move factories as needed
+
+[2026-09-22 13:21]
+guide says // database/factories/Booking/BookingFactory.php
+
+[2026-09-22 13:23]
+i thinks it is okay to keep seedes in database directory. end of the day, we are never gonna use seeders in production app
+
+[2026-09-22 13:24]
+now make las_palmas_test is test_database in database.php config.
+
+[2026-09-22 13:26]
+commit and push
+
+[2026-09-22 13:45]
+$table->string('ssn')->nullable()->unique();
+is this okay
+
+[2026-09-22 15:28]
+name            varchar(40) check (
+        name in ('General Medicine', 'Surgery', 'Psychiatry')
+        ) not null , can I do this in laravel migration file
+
+[2026-09-22 16:07]
+<pasted_content id="0156">
+2026_09_22_213412_create_departments_physicians_table ................................................................................ 7.71ms FAIL
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000]: General error: 3780 Referencing column 'department_id' and referenced column 'id' in foreign key constraint 'departments_physicians_department_id_foreign' are incompatible. (Connection: mysql, Host: 127.0.0.1, Port: 3306, Database: las_palmas, SQL: alter table `departments_physicians` add constraint `departments_physicians_department_id_foreign` foreign key (`department_id`) references `departments` (`id`))
+</pasted_content id="0156">
+
+[2026-09-22 21:22]
+I want to run @database/migrations/create_db.sql on /Users/sureshhemal/MSc/Sem-1/dbms/las_palmas/database/migrations/2026_09_23_032009_run_create_tables_schema.php
+
+[2026-09-22 21:23]
+instead of striping commnents on migration file, you are alowed to fix the create_db.sql file
+
+[2026-09-22 21:28]
+search everywhere for a conversation that related to make laravel model trait to work with composite keys
+
+[2026-09-22 21:28]
+search everywhere for a conversation that related to make laravel model trait to work with composite keys. Search in global memory, project wise memory etc. even on claude web session
+
+[2026-09-22 21:30]
+Now based on our @database/migrations/create_db.sql schema. Could you build this train on app/Foundation/<somewhere suitable according to @architecture-guide.md>
+
+[2026-09-22 21:32]
+Make models according to create_db.sql first. Fix the existing models. then I'll tell you what model should make next
+
+[2026-09-22 21:43]
+I am allowed to add 'id' column to each table. So, Lets do that. What I need is run make:migration <table> like command and generate migration file for each table, and make the exact table as it shows in create_db.sql file. Additional I want to add extra ulid('id) column, which should be the primary key. can you do it. as a test round make Physician table. and fix the Physician model with HasUlid trait
+
+[2026-09-22 21:47]
+for migrations, add timestamps() and softdeletes(), and add named check constrains, it will be easy to find later
+
+[2026-09-22 21:48]
+Now when creating physicianID, if nothing provided, it should be max(physicianID) + 1
+
+[2026-09-22 21:49]
+We need to do this lot more tables, so it is better to extract as a seperate trait
+
+[2026-09-22 21:50]
+I guess we no need hasPomposite keys trait, right?
+
+[2026-09-22 21:50]
+yes
+
+[2026-09-22 21:53]
+now Department table
+
+[2026-09-22 21:58]
+see, I added foreignUlid() for head.
+
+[2026-09-22 21:59]
+now fix the model
+
+[2026-09-22 22:00]
+I don't need filable. lets go with guarded = [];
+
+[2026-09-22 22:01]
+Now AffiliatedWith
+
+[2026-09-22 22:03]
+I'would like to make a demanding decision here, Lets drop columns like physicianID, deptID etc. Lets go with 'id' columns only. It is more convinient. and future proof.
+
+[2026-09-22 22:06]
+now what are failing tests?
+
+[2026-09-22 22:06]
+delete all
+
+[2026-09-22 22:07]
+now Procedure
+
+[2026-09-22 22:08]
+/Users/sureshhemal/MSc/Sem-1/dbms/las_palmas/app/Staff/Entities/Models/Department.php, I guess app/staff is not the correct place to put it
+
+[2026-09-22 22:09]
+fix composer.json
+
+[2026-09-22 22:10]
+now Patient
+
+[2026-09-22 22:12]
+insuranceNumber, I want snake_case
+
+[2026-09-22 22:12]
+what are other tables that missing snake_case
+
+[2026-09-22 22:13]
+now Nurse
+
+[2026-09-22 22:15]
+For check, 'Head Nurse', 'Nurse', I like to get array list from enum
+
+[2026-09-22 22:16]
+use App\Foundation\Entities\Concerns\HasValues;
+what?
+
+[2026-09-22 22:16]
+now Medication
+
+[2026-09-22 22:17]
+now Prescribes
+
+[2026-09-22 22:19]
+now Room
+
+[2026-09-22 22:20]
+now Stay
+
+[2026-09-22 22:20]
+Undergoes
+
+[2026-09-22 22:21]
+restrictOnDelete(), do i really need this
+
+[2026-09-22 22:23]
+so it is restrcted eventhough we didn't mention restrictOnDelete
+
+[2026-09-22 22:23]
+okay. then delete it
+
+[2026-09-22 22:23]
+OnCall
+
+[2026-09-22 22:24]
+Appointment
+
+[2026-09-22 22:25]
+okay, now, about snake_case columns, since this is an assignment, I'll keep camelCase column names
+
+[2026-09-22 22:26]
+run tests
+
+[2026-09-22 22:28]
+those tests are unit tests, not feature tests, move to unit directory
+
+[2026-09-22 22:30]
+commit and push. commit message "make database schema"
+
+[2026-10-15 00:00]
+<pasted_content id="1b77">
+Physician (physicianID: integer, name: varchar(40), position: varchar(40), ssn: integer)
+Department (deptID: integer, name: varchar(40), headID: integer)
+Foreign key: headID references Physician(physicianID)
+AffiliatedWith (physicianID: integer, departmentID: integer)
+Foreign key: physicianID references Physician(physicianID)
+Foreign key: departmentID references Department(deptID)
+Procedure (procID: integer, name: varchar(40), cost: real)
+Patient (patientID: integer, ssn: integer, name: varchar(40), address: varchar(100), dob: date, phone: varchar(16), insuranceNumber: integer, primaryPhysID: integer)
+Foreign key: primaryPhysID references Physician(physicianID)
+Nurse (nurseID: integer, name: varchar(40), position: varchar(40), ssn: integer)
+Medication (medID: integer, name: varchar(40))
+Prescribes (physicianID: integer, patientID: integer, medicationID: integer, prescribedDate: date, dose: varchar(40))
+Foreign key: physicianID references Physician(physicianID)
+Foreign key: patientID references Patient(patientID)
+Foreign key: medicationID references Medication(medID)
+Room (roomID: integer, roomType: varchar(40))
+Stay (stayID: integer, patientID: integer, roomID: integer, startDate: date, endDate: date)
+Foreign key: patientID references Patient(patientID)
+Foreign key: roomID references Room(roomID)
+Undergoes (patientID: integer, procedureID: integer, stayID: integer, procDate: date, physicianID: integer, nurseID: integer)
+Foreign key: patientID references Patient(patientID)
+Foreign key: procedureID references Procedure(procID)
+Foreign key: stayID references Stay(stayID)
+Foreign key: physicianID references Physician(physicianID)
+Foreign key: nurseID references Nurse(nurseID)
+OnCall (nurseID: integer, startDate: date, endDate: date)
+Foreign key: nurseID references Nurse(nurseID)
+Appointment (appID: integer, patientID: integer, nurseID: integer, physicianID: integer, startDateTime: datetime, endDateTime: datetime)
+Foreign key: patientID references Patient(patientID)
+Foreign key: nurseID references Nurse(nurseID)
+Foreign key: physicianID references Physician(physicianID)
+</pasted_content id="1b77">
+
+ see this. This is the original instructions to schema. But we managed to our laravel database conventions. I want to extract the primary keys that on given design. (physicianID, deptID etc). because user stil wants to enter those.
+
+[2026-10-15 00:06]
+run migration
+
+[2026-10-15 00:07]
+make those id fileds match to our naming conventions. appID is invalid, should be app_id
+
+[2026-10-15 00:08]
+nah. lets keep it that way. We should obey the namings from given database schema anyways
+
+[2026-10-15 00:09]
+open pr to main
+
+[2026-10-15 00:11]
+pr shows med_id, but assignment gives medID
+
+[2026-10-15 00:12]
+squash commits
+
+[2026-10-15 00:15]
+github tests fails. maybe it is using sqlite. check
+
+[2026-10-15 00:23]
+<pasted_content id="1b77">
+Phase 3: Access databases through the creation of an interactive application
+Objectives:
+
+Write SQL language to conduct database manipulation including insertion, deletion, search, and updating.
+Write an interactive application to manage a database by considering possible database operations.
+ 
+
+Tasks:
+
+Create an interactive application to manage the database that you created in Project: Phase 1. In all the later descriptions, the word interface is used to represent the way that users interact with the application. The interface does NOT need to be Graphical User Interface (GUI). You have flexibilities to design this interactive application. The goal is to make it work correctly and friendly to the user.
+
+For the interactive application, you have two options:
+
+If you are familiar with any web development language (e.g., PHP, JavaScript, Python, or any other language), you can create a small web application as this interactive application.
+If you do not know any web development language, use either Java or Python to develop this interactive application. In this case, your application will be command line based.
+ 
+
+Functionalities:
+
+(10 points) Retrieve all data: Given a table name, retrieve all data from the table and present it to the user.
+(10 points) Average: Given a table name and a column name, return the average of the column. Here the assumption is that the column type will be numeric (e.g., cost column).
+(20 points) Insert: Given a table name, your program should show the column names of that table and ask the users to input new data to the table. In case of errors, your program should directly show the MySQL errors to the users.
+Assumption 1: Users will enter data according to the database constraints.
+Assumption 2: Users will input one record at a time.
+(20 points) Delete: Given a table name, your program should show the column names of that table and ask the users to input data that they want to delete.
+Assumption 1: Users will enter data according to the database constraints.
+Assumption 2: Users will input one record at a time.
+ 
+
+(10 points) Create a README.txt file and explain how to run your code.
+
+(10 points) Your program should be correct in terms of compiling, taking parameters, connecting to the database, etc.
+
+(20 Points) Video Demonstration Submission
+
+Record a video showcasing the functionalities described above.
+As students are using various database systems this semester, it may not be feasible for the TA to execute everyone's code on their own systems. Therefore, a video demonstration is required.
+Use screen recording software (e.g., Zoom, OBS Studio, etc.) to create your video. Mobile phone recordings are not allowed and will result in a score of zero.
+You do not need to include narration in your video, but you must demonstrate every functionality at least once.
+Save your video as an MP4 file and include it in your ZIP file with the following naming format:
+"{YourLastName_YourFirstName} - Phase3 Video Recording.mp4".
+Bonus Opportunity: Creative or fun video solutions may earn bonus points!
+ 
+
+Notes:
+
+You can hardcode the database connection parameters (hostname, user id, database name, and password) in your program.
+ 
+
+Submission:
+
+You have to submit your project electronically (through Canvas). Printed copies are not accepted.
+See course syllabus for policies on late submission and plagiarism.
+Please create a zip file to contain both the source files and the readme file, and name the zip file "p3_(your last name).zip" (e.g., p3_Nagarkar.zip).
+ 
+
+Grading:
+
+Points will be deducted if file naming conventions (mentioned above) are not followed.
+If your program cannot be compiled correctly, or cannot be run correctly, this phase of your project will be graded as ZERO even though your SQL can be run correctly through the interactive interface of any DBMS (e.g., MySQL Workbench).
+Your code will be tested on a test data and graded accordingly.
+-----------------------------------------------------------------------
+For ChatGPT Users:
+
+  *  Submit a PDF file titled "GenAIQuestions.pdf" that includes the shared public link to your ChatGPT chat.
+
+For Users of Other Generative AI Models:
+
+ *   Submit a PDF file titled "GenAIQuestions.pdf" with:
+     *   A bulleted list of all questions you asked the generative AI.
+     *   The name of the generative AI model you used.
+</pasted_content id="1b77">
+
+ save this in file called assignment.md, this is our goal. and understand what should do
+
+[2026-10-15 00:27]
+1. Yes. I presented the ER diagram and he agreed. So we are good with point 1.
+2. Ok by 1st point.
+3. we will hide deleted records, it is global scope anyway. so we are good.
+4. ORM is fine too. Agreed by professor.
+5. ssn is not an integer. It is text. 
+6. we'll cover login by readme. Its not a big deal. 
+
+and also I want you to maintain a txt file holding my prompts. Whenever I told you, you must save it on that file.
+[2026-10-15 00:29]
+lets include prompts.txt to commit to
+
+[2026-10-15 00:30]
+I merged this branch pr. we need new branch with pr
+
