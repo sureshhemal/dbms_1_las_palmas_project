@@ -25,7 +25,7 @@ export default defineComponent({
         },
     },
 
-    emits: ['staff-saved'],
+    emits: ['staff-changed'],
 
     data() {
         return {
@@ -75,7 +75,7 @@ export default defineComponent({
         >
             <component
                 :is="staffTab.panelComponentName"
-                @staff-saved="$emit('staff-saved')"
+                @staff-changed="$emit('staff-changed')"
             />
         </TabsContent>
     </Tabs>

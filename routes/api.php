@@ -11,8 +11,10 @@ Route::middleware('auth')->group(function () {
     Route::get('physicians', [PhysiciansController::class, 'index'])->name('api.physicians.index');
     Route::post('physicians', [PhysiciansController::class, 'store'])->name('api.physicians.store');
     Route::put('physicians/{physician}', [PhysiciansController::class, 'update'])->name('api.physicians.update');
+    Route::delete('physicians/{physician}', [PhysiciansController::class, 'destroy'])->name('api.physicians.destroy');
 
     Route::get('nurses', [NursesController::class, 'index'])->name('api.nurses.index');
     Route::post('nurses', [NursesController::class, 'store'])->name('api.nurses.store');
     Route::put('nurses/{nurse}', [NursesController::class, 'update'])->name('api.nurses.update');
+    Route::delete('nurses/{nurse}', [NursesController::class, 'destroy'])->name('api.nurses.destroy');
 });

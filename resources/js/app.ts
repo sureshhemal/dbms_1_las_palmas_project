@@ -31,7 +31,7 @@ void createInertiaApp({
     },
     withApp: (app) => {
         app.use(createPinia())
-        app.use(createNotivue({ position: 'bottom-left' }))
+        app.use(createNotivue({ position: 'top-center' }))
         app.use(waitPlugin)
         app.mixin(notifications)
         app.config.globalProperties.$http = http

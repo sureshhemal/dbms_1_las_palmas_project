@@ -1235,3 +1235,24 @@ For multiselect, add apply button. otherwise, it will make api cal everytime use
 [2026-10-15 02:57]
 update pr
 
+[2026-10-15 09:34]
+Now we need to add delete functionality to physicians and nurses. In domain terms it is not "Delete", It is revoke or something. Make that feature. I merged the pr. so get new branch from main
+
+[2026-10-15 09:38]
+delete button is not visible on UI
+
+[2026-10-15 09:39]
+delete button should only apears on the table
+
+[2026-10-15 09:40]
+And same for update, we need update button too. In later, we might need open physicians or nurse by clicking
+
+[2026-10-15 09:41]
+notification place at top middle
+
+[2026-10-15 09:45]
+If the ntification content is long, can we adjust the width of the notification?
+
+[2026-10-15 09:48]
+open pr to main
+

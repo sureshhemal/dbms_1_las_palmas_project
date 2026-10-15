@@ -7,9 +7,11 @@ use App\Staff\Entities\PhysicianPosition;
 use App\Staff\IO\Http\Requests\PhysicianRequest;
 use App\Staff\UseCases\CreatePhysician;
 use App\Staff\UseCases\ListPhysicians;
+use App\Staff\UseCases\OffboardPhysician;
 use App\Staff\UseCases\UpdatePhysician;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class PhysiciansController
 {
@@ -33,5 +35,12 @@ class PhysiciansController
     public function update(Physician $physician, PhysicianRequest $request, UpdatePhysician $updatePhysician): JsonResponse
     {
         return response()->json($updatePhysician->execute($physician, $request->getData()));
+    }
+
+    public function destroy(Physician $physician, OffboardPhysician $offboardPhysician): Response
+    {
+        $offboardPhysician->execute($physician);
+
+        return response()->noContent();
     }
 }

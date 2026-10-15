@@ -221,3 +221,30 @@ it('shows the MySQL error when updating to a nurse id that is already taken', fu
     expect($response->json('message'))->toContain("Duplicate entry '12345'");
     expect($nurse->fresh()->nurseID)->toBe(54321);
 });
+
+it('returns 401 to guests offboarding a nurse', function () {
+    $nurse = Nurse::factory()->create();
+
+    $response = $this->deleteJson(route('api.nurses.destroy', $nurse));
+
+    $response->assertUnauthorized();
+    $this->assertNotSoftDeleted($nurse);
+});
+
+it('offboards a nurse by soft deleting them', function () {
+    $nurse = Nurse::factory()->create();
+
+    $response = $this->actingAsLoggedInUser()->deleteJson(route('api.nurses.destroy', $nurse));
+
+    $response->assertNoContent();
+    $this->assertSoftDeleted($nurse);
+});
+
+it('returns 404 when offboarding a nurse who is already offboarded', function () {
+    $nurse = Nurse::factory()->create();
+    $nurse->delete();
+
+    $response = $this->actingAsLoggedInUser()->deleteJson(route('api.nurses.destroy', $nurse));
+
+    $response->assertNotFound();
+});

@@ -4,6 +4,7 @@ import { projectColors } from '../../../tailwind.config.js'
 
 export const notificationTheme: NotivueTheme = {
     ...lightTheme,
+    '--nv-width': 'min(40rem, calc(100vw - 2rem))',
     '--nv-global-bg': 'var(--card)',
     '--nv-global-fg': 'var(--card-foreground)',
     '--nv-global-border': 'var(--border)',
