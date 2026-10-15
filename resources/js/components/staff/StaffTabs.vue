@@ -3,6 +3,7 @@ import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
 import BaseTabs from '@/components/base/BaseTabs.vue'
 import NursesTabPanel from '@/components/staff/NursesTabPanel.vue'
+import OnCallTabPanel from '@/components/staff/OnCallTabPanel.vue'
 import PhysiciansTabPanel from '@/components/staff/PhysiciansTabPanel.vue'
 import type { StaffCounts, TabDefinition } from '@/types'
 
@@ -12,6 +13,7 @@ export default defineComponent({
     components: {
         BaseTabs,
         NursesTabPanel,
+        OnCallTabPanel,
         PhysiciansTabPanel,
     },
 
@@ -43,6 +45,11 @@ export default defineComponent({
                     label: 'Nurses',
                     count: this.staffCounts?.nurse_count,
                 },
+                {
+                    name: 'on-call',
+                    label: 'On Call',
+                    count: this.staffCounts?.on_call_nurse_count,
+                },
             ]
         },
     },
@@ -57,6 +64,10 @@ export default defineComponent({
 
         <template #nurses>
             <NursesTabPanel @staff-changed="$emit('staff-changed')" />
+        </template>
+
+        <template #on-call>
+            <OnCallTabPanel @staff-changed="$emit('staff-changed')" />
         </template>
     </BaseTabs>
 </template>

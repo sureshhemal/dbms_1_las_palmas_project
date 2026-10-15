@@ -1,6 +1,7 @@
 <?php
 
 use App\Staff\Entities\Models\Nurse;
+use App\Staff\Entities\Models\OnCall;
 use App\Staff\Entities\NursePosition;
 
 it('returns 401 to guests', function () {
@@ -238,6 +239,40 @@ it('offboards a nurse by soft deleting them', function () {
 
     $response->assertNoContent();
     $this->assertSoftDeleted($nurse);
+});
+
+it('ends the current on-call period of an offboarded nurse today', function () {
+    $this->travelTo('2026-10-15');
+    $onCall = OnCall::factory()->between('2026-10-12', '2026-10-19')->create();
+
+    $this->actingAsLoggedInUser()->deleteJson(route('api.nurses.destroy', $onCall->nurse));
+
+    expect($onCall->fresh()->endDate->toDateString())->toBe('2026-10-15');
+});
+
+it('ends the current on-call period on the hospital day, not the server day', function () {
+    config(['app.hospital_timezone' => 'Asia/Colombo']);
+    $this->travelTo('2026-10-15 22:00:00');
+    $onCall = OnCall::factory()->between('2026-10-12', '2026-10-19')->create();
+
+    $this->actingAsLoggedInUser()->deleteJson(route('api.nurses.destroy', $onCall->nurse));
+
+    expect($onCall->fresh()->endDate->toDateString())->toBe('2026-10-16');
+});
+
+it('removes the upcoming on-call periods of an offboarded nurse and keeps the past ones', function () {
+    $this->travelTo('2026-10-15');
+    $nurse = Nurse::factory()->create();
+    $pastOnCall = OnCall::factory()->for($nurse)->between('2026-10-01', '2026-10-05')->create();
+    $onCallStartingToday = OnCall::factory()->for($nurse)->between('2026-10-15', '2026-10-17')->create();
+    $upcomingOnCall = OnCall::factory()->for($nurse)->between('2026-10-20', '2026-10-25')->create();
+
+    $this->actingAsLoggedInUser()->deleteJson(route('api.nurses.destroy', $nurse));
+
+    $this->assertModelExists($pastOnCall);
+    expect($pastOnCall->fresh()->endDate->toDateString())->toBe('2026-10-05');
+    $this->assertModelMissing($onCallStartingToday);
+    $this->assertModelMissing($upcomingOnCall);
 });
 
 it('returns 404 when offboarding a nurse who is already offboarded', function () {

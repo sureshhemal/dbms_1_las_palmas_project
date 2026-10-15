@@ -158,6 +158,10 @@ export default defineComponent({
                       )
         },
 
+        clearDraft(): void {
+            this.draftSelection = []
+        },
+
         applyDraft(): void {
             if (this.draftDiffersFromSelection) {
                 this.$emit('update:modelValue', [...this.draftSelection])
@@ -193,10 +197,10 @@ export default defineComponent({
 
         <DropdownMenuContent
             align="start"
-            class="w-56"
+            class="flex max-h-[min(20rem,var(--reka-dropdown-menu-content-available-height))] w-56 flex-col overflow-hidden"
             @open-auto-focus="focusOptionSearch"
         >
-            <div class="relative p-1">
+            <div class="relative shrink-0 p-1">
                 <SearchIcon
                     class="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-neutral-400"
                 />
@@ -211,26 +215,37 @@ export default defineComponent({
                 />
             </div>
 
-            <p
-                v-if="visibleOptions.length === 0"
-                class="px-2 py-1.5 text-sm text-neutral-500 dark:text-neutral-400"
-            >
-                No matches
-            </p>
+            <div class="min-h-0 flex-1 overflow-y-auto">
+                <p
+                    v-if="visibleOptions.length === 0"
+                    class="px-2 py-1.5 text-sm text-neutral-500 dark:text-neutral-400"
+                >
+                    No matches
+                </p>
 
-            <DropdownMenuCheckboxItem
-                v-for="option in visibleOptions"
-                :key="option.value"
-                :model-value="isInDraft(option.value)"
-                @select.prevent="toggleInDraft(option.value)"
-            >
-                {{ option.label }}
-            </DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem
+                    v-for="option in visibleOptions"
+                    :key="option.value"
+                    :model-value="isInDraft(option.value)"
+                    @select.prevent="toggleInDraft(option.value)"
+                >
+                    {{ option.label }}
+                </DropdownMenuCheckboxItem>
+            </div>
 
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator class="shrink-0" />
 
-            <div class="p-1">
-                <UiButton size="sm" class="w-full" @click="applyDraft">
+            <div class="flex shrink-0 gap-1 p-1">
+                <UiButton
+                    size="sm"
+                    variant="outline"
+                    class="flex-1"
+                    :disabled="draftSelection.length === 0"
+                    @click="clearDraft"
+                >
+                    Clear
+                </UiButton>
+                <UiButton size="sm" class="flex-1" @click="applyDraft">
                     Apply
                 </UiButton>
             </div>
