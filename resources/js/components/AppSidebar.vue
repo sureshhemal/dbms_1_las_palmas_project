@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3'
-import { BookOpen, Building2, FolderGit2, LayoutGrid, Users } from '@lucide/vue'
+import {
+    BookOpen,
+    Building2,
+    FolderGit2,
+    LayoutGrid,
+    Pill,
+    Users,
+} from '@lucide/vue'
 import AppLogo from '@/components/AppLogo.vue'
 import NavFooter from '@/components/NavFooter.vue'
 import NavMain from '@/components/NavMain.vue'
@@ -14,7 +21,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar'
-import { dashboard, hospital, staff } from '@/routes'
+import { clinical, dashboard, hospital, staff } from '@/routes'
 import type { NavItem } from '@/types'
 
 const mainNavItems: NavItem[] = [
@@ -32,6 +39,11 @@ const mainNavItems: NavItem[] = [
         title: 'Hospital',
         href: hospital(),
         icon: Building2,
+    },
+    {
+        title: 'Clinical',
+        href: clinical(),
+        icon: Pill,
     },
 ]
 

@@ -1490,3 +1490,33 @@ lets paginate rooms
 [2026-10-15 15:27]
 open pr to main
 
+[2026-10-15 15:29]
+Now we are going for medications. to that, we need medications for seeder. Is there a public free api or something that we can get huge list of medications.
+
+[2026-10-15 15:30]
+<task-notification>
+<task-id>bgnfw059i</task-id>
+<tool-use-id>toolu_013wTtXp17E1RvfZz8Di3cVc</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-sureshhemal-MSc-Sem-1-dbms-las-palmas/72f98d11-78da-49ca-a9fb-07041404af8c/tasks/bgnfw059i.output</output-file>
+<status>completed</status>
+<summary>Background command "Wait for PR #9 CI checks" completed (exit code 0)</summary>
+</task-notification>
+
+[2026-10-15 15:31]
+can we go for like 2000 medications?
+
+[2026-10-15 15:33]
+cool. what is better. csv of txt or json
+
+[2026-10-15 15:34]
+make it txt
+
+[2026-10-15 15:38]
+seed my database
+
+[2026-10-15 15:39]
+Now we need page. As per domain, it goes under page clinical, medications tab. isn't it? So, make tab and page. All crud for medications too
+
+[2026-10-15 15:53]
+open pr to main
+
