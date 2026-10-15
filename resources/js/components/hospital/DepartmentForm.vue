@@ -3,7 +3,7 @@ import type { PropType } from 'vue'
 import { Form } from 'vee-validate'
 import { defineComponent } from 'vue'
 import BaseInput from '@/components/base/BaseInput.vue'
-import BaseSelect from '@/components/base/BaseSelect.vue'
+import BaseSearchableSelect from '@/components/base/BaseSearchableSelect.vue'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -14,7 +14,7 @@ export default defineComponent({
 
     components: {
         BaseInput,
-        BaseSelect,
+        BaseSearchableSelect,
         UiButton: Button,
         UiInput: Input,
         UiLabel: Label,
@@ -74,7 +74,7 @@ export default defineComponent({
             rules="required|integer"
         />
 
-        <BaseSelect
+        <BaseSearchableSelect
             v-model="selectedHead"
             label="Head"
             name="head"

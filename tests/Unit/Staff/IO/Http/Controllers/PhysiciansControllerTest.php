@@ -1,6 +1,7 @@
 <?php
 
 use App\Hospital\Entities\DepartmentName;
+use App\Patient\Entities\Models\Patient;
 use App\Staff\Entities\Models\Physician;
 use App\Staff\Entities\PhysicianPosition;
 
@@ -310,6 +311,15 @@ it('removes an offboarded physician from the departments they work in', function
 
     $this->assertDatabaseMissing('AffiliatedWith', ['physician_id' => $physician->id]);
     $this->assertDatabaseHas('AffiliatedWith', ['physician_id' => $colleague->id]);
+});
+
+it('keeps an offboarded physician as the primary physician of their patients', function () {
+    $physician = Physician::factory()->create();
+    $patient = Patient::factory()->withPrimaryPhysician($physician)->create();
+
+    $this->actingAsLoggedInUser()->deleteJson(route('api.physicians.destroy', $physician))->assertNoContent();
+
+    expect($patient->fresh()->primary_physician_id)->toBe($physician->id);
 });
 
 it('returns 404 when offboarding a physician who is already offboarded', function () {

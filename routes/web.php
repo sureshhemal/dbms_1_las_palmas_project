@@ -14,6 +14,7 @@ Route::middleware('auth')->group(function () {
     Route::inertia('hospital', 'Hospital')->name('hospital');
     Route::get('hospital/departments/{department}', [DepartmentPageController::class, 'show'])->name('hospital.departments.show');
     Route::inertia('clinical', 'Clinical')->name('clinical');
+    Route::inertia('patients', 'Patients')->name('patients');
 });
 
 require __DIR__.'/settings.php';

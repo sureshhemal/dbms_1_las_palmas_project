@@ -4,7 +4,7 @@ import type { PropType } from 'vue'
 import { Form } from 'vee-validate'
 import { defineComponent } from 'vue'
 import BaseInput from '@/components/base/BaseInput.vue'
-import BaseSelect from '@/components/base/BaseSelect.vue'
+import BaseSearchableSelect from '@/components/base/BaseSearchableSelect.vue'
 import { Button } from '@/components/ui/button'
 import type { OnCallFormData, SelectOption } from '@/types'
 
@@ -13,7 +13,7 @@ export default defineComponent({
 
     components: {
         BaseInput,
-        BaseSelect,
+        BaseSearchableSelect,
         Trash2,
         UiButton: Button,
         VeeForm: Form,
@@ -60,7 +60,7 @@ export default defineComponent({
 
 <template>
     <VeeForm v-slot="{ meta }" as="div" class="space-y-4">
-        <BaseSelect
+        <BaseSearchableSelect
             v-model="form.nurse_id"
             label="Nurse"
             name="nurse_id"
