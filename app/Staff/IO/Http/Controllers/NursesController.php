@@ -7,9 +7,11 @@ use App\Staff\Entities\NursePosition;
 use App\Staff\IO\Http\Requests\NurseRequest;
 use App\Staff\UseCases\CreateNurse;
 use App\Staff\UseCases\ListNurses;
+use App\Staff\UseCases\OffboardNurse;
 use App\Staff\UseCases\UpdateNurse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class NursesController
 {
@@ -35,5 +37,12 @@ class NursesController
     public function update(Nurse $nurse, NurseRequest $request, UpdateNurse $updateNurse): JsonResponse
     {
         return response()->json($updateNurse->execute($nurse, $request->getData()));
+    }
+
+    public function destroy(Nurse $nurse, OffboardNurse $offboardNurse): Response
+    {
+        $offboardNurse->execute($nurse);
+
+        return response()->noContent();
     }
 }

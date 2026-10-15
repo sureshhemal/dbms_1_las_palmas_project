@@ -1,6 +1,7 @@
 <script lang="ts">
 import { Plus } from '@lucide/vue'
 import { defineComponent } from 'vue'
+import BaseConfirmDialog from '@/components/base/BaseConfirmDialog.vue'
 import BaseMultiSelect from '@/components/base/BaseMultiSelect.vue'
 import BasePaginationBar from '@/components/base/BasePaginationBar.vue'
 import BaseSearchInput from '@/components/base/BaseSearchInput.vue'
@@ -21,6 +22,7 @@ export default defineComponent({
     name: 'NursesTabPanel',
 
     components: {
+        BaseConfirmDialog,
         BaseMultiSelect,
         BasePaginationBar,
         BaseSearchInput,
@@ -31,7 +33,7 @@ export default defineComponent({
         UiButton: Button,
     },
 
-    emits: ['staff-saved'],
+    emits: ['staff-changed'],
 
     data() {
         return {
@@ -50,10 +52,17 @@ export default defineComponent({
             } as PaginationDetails,
             selectedNurse: null as NurseFormData | null,
             isShowingNurseForm: false,
+            isConfirmingOffboard: false,
         }
     },
 
     computed: {
+        offboardConfirmationDescription(): string {
+            const nurseName = this.selectedNurse?.name || 'This nurse'
+
+            return `${nurseName} will be removed from the staff list. Their record is kept.`
+        },
+
         nursesEmptyMessage(): string {
             return this.searchTerm ||
                 this.selectedPositions.length < nursePositions.length
@@ -132,16 +141,26 @@ export default defineComponent({
             this.openNurseForm()
         },
 
-        editNurse(nurse: Nurse): void {
-            this.selectedNurse = {
+        toNurseFormData(nurse: Nurse): NurseFormData {
+            return {
                 id: nurse.id,
                 nurseID: String(nurse.nurseID),
                 name: nurse.name,
                 position: nurse.position,
                 ssn: nurse.ssn ?? '',
             }
+        },
+
+        editNurse(nurse: Nurse): void {
+            this.selectedNurse = this.toNurseFormData(nurse)
 
             this.openNurseForm()
+        },
+
+        offboardNurse(nurse: Nurse): void {
+            this.selectedNurse = this.toNurseFormData(nurse)
+
+            this.askToConfirmOffboard()
         },
 
         openNurseForm(): void {
@@ -150,6 +169,33 @@ export default defineComponent({
 
         closeNurseForm(): void {
             this.isShowingNurseForm = false
+        },
+
+        askToConfirmOffboard(): void {
+            this.isConfirmingOffboard = true
+        },
+
+        cancelOffboard(): void {
+            this.isConfirmingOffboard = false
+        },
+
+        async offboardSelectedNurse(): Promise<void> {
+            if (!this.selectedNurse?.id) {
+                return
+            }
+
+            this.$wait.start('offboarding-nurse')
+
+            await this.$http
+                .delete(`nurses/${this.selectedNurse.id}`)
+                .finally(() => this.$wait.end('offboarding-nurse'))
+
+            this.notifySuccess('Nurse offboarded')
+            this.isConfirmingOffboard = false
+            this.closeNurseForm()
+            this.$emit('staff-changed')
+
+            await this.fetchNurses()
         },
 
         async saveNurse(nurse: NurseFormData): Promise<void> {
@@ -164,7 +210,7 @@ export default defineComponent({
 
             this.notifySuccess('Nurse saved')
             this.closeNurseForm()
-            this.$emit('staff-saved')
+            this.$emit('staff-changed')
 
             await this.fetchNurses()
         },
@@ -206,7 +252,8 @@ export default defineComponent({
             :nurses="nurses"
             :empty-message="nursesEmptyMessage"
             :is-loading="$wait.is('fetching-nurses')"
-            @select="editNurse"
+            @edit="editNurse"
+            @offboard="offboardNurse"
         />
 
         <BasePaginationBar
@@ -224,5 +271,14 @@ export default defineComponent({
         >
             <NurseForm :nurse="selectedNurse" @save="saveNurse" />
         </BaseSideDrawer>
+
+        <BaseConfirmDialog
+            :is-open="isConfirmingOffboard"
+            title="Offboard nurse?"
+            :description="offboardConfirmationDescription"
+            confirm-label="Offboard"
+            @confirm="offboardSelectedNurse"
+            @cancel="cancelOffboard"
+        />
     </div>
 </template>

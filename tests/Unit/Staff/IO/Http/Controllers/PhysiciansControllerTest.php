@@ -205,3 +205,30 @@ it('shows the MySQL error when updating to a physician id that is already taken'
     expect($response->json('message'))->toContain("Duplicate entry '12345'");
     expect($physician->fresh()->physicianID)->toBe(54321);
 });
+
+it('returns 401 to guests offboarding a physician', function () {
+    $physician = Physician::factory()->create();
+
+    $response = $this->deleteJson(route('api.physicians.destroy', $physician));
+
+    $response->assertUnauthorized();
+    $this->assertNotSoftDeleted($physician);
+});
+
+it('offboards a physician by soft deleting them', function () {
+    $physician = Physician::factory()->create();
+
+    $response = $this->actingAsLoggedInUser()->deleteJson(route('api.physicians.destroy', $physician));
+
+    $response->assertNoContent();
+    $this->assertSoftDeleted($physician);
+});
+
+it('returns 404 when offboarding a physician who is already offboarded', function () {
+    $physician = Physician::factory()->create();
+    $physician->delete();
+
+    $response = $this->actingAsLoggedInUser()->deleteJson(route('api.physicians.destroy', $physician));
+
+    $response->assertNotFound();
+});

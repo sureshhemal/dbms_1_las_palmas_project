@@ -59,7 +59,7 @@ export default defineComponent({
 
         <StaffTabs
             :staff-counts="staffCounts"
-            @staff-saved="fetchStaffCounts"
+            @staff-changed="fetchStaffCounts"
         />
     </div>
 </template>

@@ -1,6 +1,7 @@
 <script lang="ts">
 import { Plus } from '@lucide/vue'
 import { defineComponent } from 'vue'
+import BaseConfirmDialog from '@/components/base/BaseConfirmDialog.vue'
 import BaseMultiSelect from '@/components/base/BaseMultiSelect.vue'
 import BaseSearchInput from '@/components/base/BaseSearchInput.vue'
 import BaseSideDrawer from '@/components/base/BaseSideDrawer.vue'
@@ -14,6 +15,7 @@ export default defineComponent({
     name: 'PhysiciansTabPanel',
 
     components: {
+        BaseConfirmDialog,
         BaseMultiSelect,
         BaseSearchInput,
         BaseSideDrawer,
@@ -23,7 +25,7 @@ export default defineComponent({
         UiButton: Button,
     },
 
-    emits: ['staff-saved'],
+    emits: ['staff-changed'],
 
     data() {
         return {
@@ -33,10 +35,18 @@ export default defineComponent({
             physicianPositions,
             selectedPhysician: null as PhysicianFormData | null,
             isShowingPhysicianForm: false,
+            isConfirmingOffboard: false,
         }
     },
 
     computed: {
+        offboardConfirmationDescription(): string {
+            const physicianName =
+                this.selectedPhysician?.name || 'This physician'
+
+            return `${physicianName} will be removed from the staff list. Their record is kept.`
+        },
+
         physiciansEmptyMessage(): string {
             return this.searchTerm ||
                 this.selectedPositions.length < physicianPositions.length
@@ -99,16 +109,26 @@ export default defineComponent({
             this.openPhysicianForm()
         },
 
-        editPhysician(physician: Physician): void {
-            this.selectedPhysician = {
+        toPhysicianFormData(physician: Physician): PhysicianFormData {
+            return {
                 id: physician.id,
                 physicianID: String(physician.physicianID),
                 name: physician.name,
                 position: physician.position,
                 ssn: physician.ssn ?? '',
             }
+        },
+
+        editPhysician(physician: Physician): void {
+            this.selectedPhysician = this.toPhysicianFormData(physician)
 
             this.openPhysicianForm()
+        },
+
+        offboardPhysician(physician: Physician): void {
+            this.selectedPhysician = this.toPhysicianFormData(physician)
+
+            this.askToConfirmOffboard()
         },
 
         openPhysicianForm(): void {
@@ -117,6 +137,33 @@ export default defineComponent({
 
         closePhysicianForm(): void {
             this.isShowingPhysicianForm = false
+        },
+
+        askToConfirmOffboard(): void {
+            this.isConfirmingOffboard = true
+        },
+
+        cancelOffboard(): void {
+            this.isConfirmingOffboard = false
+        },
+
+        async offboardSelectedPhysician(): Promise<void> {
+            if (!this.selectedPhysician?.id) {
+                return
+            }
+
+            this.$wait.start('offboarding-physician')
+
+            await this.$http
+                .delete(`physicians/${this.selectedPhysician.id}`)
+                .finally(() => this.$wait.end('offboarding-physician'))
+
+            this.notifySuccess('Physician offboarded')
+            this.isConfirmingOffboard = false
+            this.closePhysicianForm()
+            this.$emit('staff-changed')
+
+            await this.fetchPhysicians()
         },
 
         async savePhysician(physician: PhysicianFormData): Promise<void> {
@@ -133,7 +180,7 @@ export default defineComponent({
 
             this.notifySuccess('Physician saved')
             this.closePhysicianForm()
-            this.$emit('staff-saved')
+            this.$emit('staff-changed')
 
             await this.fetchPhysicians()
         },
@@ -168,7 +215,8 @@ export default defineComponent({
             :physicians="physicians"
             :empty-message="physiciansEmptyMessage"
             :is-loading="$wait.is('fetching-physicians')"
-            @select="editPhysician"
+            @edit="editPhysician"
+            @offboard="offboardPhysician"
         />
 
         <BaseSideDrawer
@@ -182,5 +230,14 @@ export default defineComponent({
                 @save="savePhysician"
             />
         </BaseSideDrawer>
+
+        <BaseConfirmDialog
+            :is-open="isConfirmingOffboard"
+            title="Offboard physician?"
+            :description="offboardConfirmationDescription"
+            confirm-label="Offboard"
+            @confirm="offboardSelectedPhysician"
+            @cancel="cancelOffboard"
+        />
     </div>
 </template>

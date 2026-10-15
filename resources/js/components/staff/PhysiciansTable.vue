@@ -28,11 +28,11 @@ export default defineComponent({
         },
     },
 
-    emits: ['select'],
+    emits: ['edit', 'offboard'],
 
     data() {
         return {
-            columnHeadings: ['Physician ID', 'Name', 'Position', 'SSN'],
+            columnHeadings: ['Physician ID', 'Name', 'Position', 'SSN', ''],
         }
     },
 })
@@ -49,7 +49,8 @@ export default defineComponent({
             v-for="physician in physicians"
             :key="physician.id"
             :physician="physician"
-            @select="$emit('select', $event)"
+            @edit="$emit('edit', $event)"
+            @offboard="$emit('offboard', $event)"
         />
     </BaseTable>
 </template>
