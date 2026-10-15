@@ -29,3 +29,14 @@ defineRule(
         digits(value, { length: Number(length) }) ||
         `${context.field} must be exactly ${length} digits`,
 )
+
+defineRule(
+    'amount',
+    (value: unknown, _: unknown, context: RuleContext) =>
+        value === '' ||
+        value === null ||
+        value === undefined ||
+        ((typeof value === 'string' || typeof value === 'number') &&
+            /^\d+(\.\d{1,2})?$/.test(String(value))) ||
+        `${context.field} must be an amount like 1500 or 1500.50`,
+)

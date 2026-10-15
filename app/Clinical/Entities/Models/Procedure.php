@@ -3,8 +3,11 @@
 namespace App\Clinical\Entities\Models;
 
 use App\Foundation\Entities\Concerns\HasAutoIncrementingColumn;
+use Database\Factories\Clinical\ProcedureFactory;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
@@ -19,9 +22,10 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $deleted_at
  */
 #[Table(name: 'Procedure')]
+#[UseFactory(ProcedureFactory::class)]
 class Procedure extends Model
 {
-    use HasAutoIncrementingColumn, HasUlids, SoftDeletes;
+    use HasAutoIncrementingColumn, HasFactory, HasUlids, SoftDeletes;
 
     protected string $autoIncrementingColumn = 'procID';
 

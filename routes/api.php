@@ -1,6 +1,7 @@
 <?php
 
 use App\Clinical\IO\Http\Controllers\MedicationsController;
+use App\Clinical\IO\Http\Controllers\ProceduresController;
 use App\Hospital\IO\Http\Controllers\DepartmentHeadCandidatesController;
 use App\Hospital\IO\Http\Controllers\DepartmentPhysiciansController;
 use App\Hospital\IO\Http\Controllers\DepartmentsController;
@@ -35,6 +36,11 @@ Route::middleware('auth')->group(function () {
     Route::post('medications', [MedicationsController::class, 'store'])->name('api.medications.store');
     Route::put('medications/{medication}', [MedicationsController::class, 'update'])->name('api.medications.update');
     Route::delete('medications/{medication}', [MedicationsController::class, 'destroy'])->name('api.medications.destroy');
+
+    Route::get('procedures', [ProceduresController::class, 'index'])->name('api.procedures.index');
+    Route::post('procedures', [ProceduresController::class, 'store'])->name('api.procedures.store');
+    Route::put('procedures/{procedure}', [ProceduresController::class, 'update'])->name('api.procedures.update');
+    Route::delete('procedures/{procedure}', [ProceduresController::class, 'destroy'])->name('api.procedures.destroy');
 
     Route::get('nurses', [NursesController::class, 'index'])->name('api.nurses.index');
     Route::post('nurses', [NursesController::class, 'store'])->name('api.nurses.store');

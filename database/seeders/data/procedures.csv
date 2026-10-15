@@ -1,0 +1,301 @@
+name,cost
+Abdominal Hysterectomy,14800
+Abdominal Ultrasound,520
+Abdominal X-Ray,340
+Above Knee Amputation,26500
+Abscess Incision and Drainage,850
+Achilles Tendon Repair,11200
+Adenoidectomy,4800
+ADHD Assessment,900
+Alcohol Detoxification per Day,1500
+Allergy Skin Test,320
+Ambulatory Blood Pressure Monitoring,300
+Anal Fistula Repair,5200
+Ankle Fracture Fixation,13900
+Ankle X-Ray,210
+Annual Physical Examination,240
+Anterior Cruciate Ligament Repair,12300
+Anticoagulation Clinic Visit,140
+Appendectomy,15800
+Art Therapy Session,110
+Arterial Blood Gas,160
+Arterial Line Placement,900
+Arteriovenous Fistula Creation,9400
+Autism Spectrum Assessment,1900
+Axillary Lymph Node Dissection,9800
+B-Type Natriuretic Peptide Test,140
+Barium Swallow,650
+Basic Metabolic Panel,40
+Below Knee Amputation,24000
+Blood Culture,120
+Blood Transfusion,1350
+Blood Type and Crossmatch,160
+Bone Density Scan,250
+Bone Marrow Biopsy,2400
+Breast Core Needle Biopsy,1900
+Bronchoscopy,3300
+Bronchoscopy with Biopsy,4200
+Bunionectomy,6800
+C-Reactive Protein,40
+Cardiac Event Monitor Placement,800
+Cardiac Rehabilitation Session,140
+Cardiopulmonary Resuscitation,2100
+Cardioversion,3200
+Carotid Doppler Ultrasound,600
+Carpal Tunnel Release,4900
+Cataract Surgery,4100
+Central Line Placement,2300
+Cervical Conization,3300
+Cesarean Section,17000
+Chalazion Excision,700
+Chemotherapy Infusion,7500
+Chest Tube Insertion,2600
+Chest X-Ray,370
+Circumcision,2300
+Closed Fracture Reduction,2800
+Clozapine Level,95
+Clozapine Monitoring Visit,140
+Coagulation Panel,70
+Cognitive Behavioral Therapy Session,190
+Colectomy,38000
+Colonoscopy,2750
+Colonoscopy with Polypectomy,3400
+Colostomy Creation,19500
+Colposcopy,520
+Complete Blood Count,35
+Complex Laceration Repair,1250
+Comprehensive Metabolic Panel,60
+Corticosteroid Joint Injection,380
+COVID-19 PCR Test,100
+Crisis Intervention Session,330
+Critical Care First Hour,1600
+CT Abdomen and Pelvis,2300
+CT Angiography Chest,2600
+CT Cervical Spine,1500
+CT Chest,1700
+CT Head,1250
+CT Lumbar Spine,1600
+Cystoscopy,1650
+D-Dimer Test,95
+Dental Extraction,260
+Diabetes Education Session,130
+Diagnostic Laparoscopy,7400
+Dialectical Behavior Therapy Session,200
+Dialysis Catheter Placement,2600
+Dilation and Curettage,3900
+Discharge Planning Session,160
+Dupuytren Contracture Release,5600
+Ear Tube Insertion,2700
+Eating Disorder Assessment,480
+Echocardiogram,1200
+Ectopic Pregnancy Surgery,12600
+Electrocardiogram,250
+Electroconvulsive Therapy,2500
+Electroencephalogram,880
+Electromyography,950
+Emergency Visit High Complexity,1900
+Emergency Visit Low Complexity,350
+Emergency Visit Moderate Complexity,850
+Endometrial Ablation,5100
+Endometrial Biopsy,650
+Endoscopic Retrograde Cholangiography,6800
+Endoscopic Sinus Surgery,9800
+Endotracheal Intubation,1200
+Epidural Steroid Injection,1300
+Esketamine Treatment Session,
+Esophageal Dilation,2400
+Exercise Stress Test,900
+Exploratory Laparotomy,21000
+Family Therapy Session,220
+Fecal Occult Blood Test,30
+Flexible Sigmoidoscopy,1500
+Foreign Body Removal,650
+Forensic Psychiatric Evaluation,2800
+Fracture Casting,650
+Full Pulmonary Function Test,650
+Gait Training Session,140
+Gastric Bypass Surgery,25000
+Gastrostomy Tube Placement,3900
+General Anesthesia per Hour,1800
+Group Psychotherapy Session,90
+Hemodialysis Session,550
+Hemoglobin A1c,45
+Hemorrhoidectomy,5400
+Hepatitis Panel,140
+Hip Fracture Fixation,27500
+Hip X-Ray,260
+HIV Antibody Test,70
+Holter Monitoring 24 Hours,450
+Home Health Visit,210
+Hydrotherapy Session,150
+Hysteroscopy,3500
+Immunotherapy Infusion,11500
+Implanted Port Placement,4200
+Implanted Port Removal,1800
+Incisional Hernia Repair,9900
+Individual Psychotherapy 30 Minutes,120
+Individual Psychotherapy 60 Minutes,210
+Induction of Labor,2400
+Influenza Vaccination,45
+Ingrown Toenail Removal,420
+Inguinal Hernia Repair,6400
+Inpatient Consultation,380
+Intensive Outpatient Program Day,420
+Intrauterine Device Insertion,900
+Intravenous Antibiotic Therapy,450
+Intravenous Fluid Therapy,320
+Iron Infusion,1100
+Joint Aspiration,450
+Ketamine Infusion Therapy,
+Kidney Biopsy,3500
+Kidney Stone Lithotripsy,8900
+Knee Arthroscopy,6100
+Knee X-Ray,240
+Kyphoplasty,15400
+Labor Epidural Anesthesia,2100
+Laparoscopic Appendectomy,13400
+Laparoscopic Cholecystectomy,11500
+Laparoscopic Colectomy,34000
+Laparoscopic Fundoplication,16500
+Laparoscopic Hernia Repair,8300
+Laparoscopic Hysterectomy,16200
+Lipid Panel,45
+Lipoma Excision,1500
+Lithium Level,45
+Liver Biopsy,3100
+Liver Function Panel,50
+Long-Acting Antipsychotic Injection,1300
+Lower Limb Venous Doppler,560
+Lumbar Discectomy,22600
+Lumbar Laminectomy,24800
+Lumbar Puncture,1450
+Lumbar Spine X-Ray,320
+Lumpectomy,9600
+Lung Needle Biopsy,3800
+Lymph Node Biopsy,2900
+Mammogram,280
+Mastectomy,15000
+Mechanical Ventilation per Day,3800
+Medication Assisted Treatment Visit,210
+Medication Management Visit,160
+Meniscus Repair,8400
+Mental Capacity Assessment,450
+Mental Health Occupational Therapy,170
+MRI Abdomen,2700
+MRI Brain,2600
+MRI Cervical Spine,2300
+MRI Knee,1900
+MRI Lumbar Spine,2400
+MRI Shoulder,2000
+Myocardial Perfusion Scan,2200
+Myomectomy,13600
+Nasogastric Tube Insertion,350
+Nebulizer Treatment,120
+Nerve Conduction Study,900
+Neuropsychological Assessment,2300
+Non-Invasive Ventilation per Day,1400
+Nuclear Bone Scan,1400
+Nutrition Assessment,150
+Observation Stay per Day,2200
+Obstetric Ultrasound,450
+Occupational Therapy Session,160
+Opioid Detoxification per Day,1600
+Oral Glucose Tolerance Test,85
+Orthopaedic Hardware Removal,5300
+Outpatient Consultation,250
+Ovarian Cystectomy,9300
+Overnight Sleep Study,2500
+Pap Smear,120
+Paracentesis,1300
+Parathyroidectomy,13800
+Partial Hip Replacement,26000
+Partial Hospitalization Day,650
+Peer Support Session,
+Pelvic Ultrasound,480
+Peripheral Nerve Block,900
+Peritoneal Dialysis Training,1900
+Physical Therapy Session,160
+PICC Line Placement,1500
+Pilonidal Cyst Excision,3900
+Plasma Transfusion,1200
+Platelet Transfusion,1600
+Pneumococcal Vaccination,230
+Post-Anesthesia Care per Hour,600
+Pre-Operative Assessment,280
+Pressure Ulcer Care,260
+Procalcitonin Test,130
+Procedural Sedation,750
+Prostate Biopsy,2700
+Prostate Specific Antigen Test,65
+Prosthetic Fitting,1800
+Psychiatric Diagnostic Evaluation,420
+Psychiatric Emergency Assessment,650
+Psychiatric Follow-Up Visit,190
+Psychiatric Inpatient Day,1700
+Psychoeducation Group Session,80
+Psychological Testing,950
+Pterygium Excision,2600
+Pulmonary Rehabilitation Session,130
+Radical Prostatectomy,24300
+Renal Ultrasound,430
+Rotator Cuff Repair,10600
+Sentinel Lymph Node Biopsy,6200
+Septoplasty,7400
+Serum Pregnancy Test,40
+Shoulder Arthroscopy,7600
+Shoulder Dislocation Reduction,1600
+Shoulder X-Ray,240
+Simple Laceration Repair,480
+Skin Graft,10500
+Skin Lesion Excision,900
+Skin Punch Biopsy,280
+Sleeve Gastrectomy,19500
+Small Bowel Resection,32000
+Smoking Cessation Counseling,90
+Speech Therapy Session,170
+Spinal Anesthesia,1500
+Spirometry,180
+Splenectomy,18900
+Splint Fitting,220
+Substance Use Assessment,260
+Suicide Risk Assessment,280
+Supplemental Oxygen Therapy,180
+Suprapubic Catheter Placement,2100
+Swallow Evaluation,280
+Therapeutic Phlebotomy,260
+Thoracentesis,1400
+Thyroid Fine Needle Aspiration,950
+Thyroid Function Panel,90
+Thyroid Ultrasound,390
+Thyroidectomy,14500
+Tonsillectomy,6200
+Total Hip Replacement,32500
+Total Knee Replacement,30500
+Tracheostomy,26500
+Transcranial Magnetic Stimulation,
+Transesophageal Echocardiogram,2400
+Transurethral Resection of Prostate,11700
+Trigger Point Injection,260
+Troponin Test,110
+Tubal Ligation,4100
+Tuberculin Skin Test,45
+Umbilical Hernia Repair,5800
+Upper Endoscopy with Biopsy,2600
+Upper Gastrointestinal Endoscopy,2100
+Ureteral Stent Placement,4300
+Ureteroscopy,7800
+Urinalysis,25
+Urinary Catheterization,190
+Urine Culture,60
+Urine Drug Screen,90
+Vaginal Delivery,11200
+Valproate Level,55
+Variceal Band Ligation,3100
+Varicose Vein Ablation,3600
+Vasectomy,1100
+Ventilation Perfusion Lung Scan,1600
+Vitamin B12 Level,60
+Wound Debridement,1300
+Wound Dressing Change,120
+Wrist Fracture Fixation,9100
+Wrist X-Ray,210
