@@ -1,8 +1,10 @@
 <script lang="ts">
+import { router } from '@inertiajs/vue3'
 import { defineComponent } from 'vue'
 import BaseSideDrawer from '@/components/base/BaseSideDrawer.vue'
 import DepartmentForm from '@/components/hospital/DepartmentForm.vue'
 import DepartmentsTable from '@/components/hospital/DepartmentsTable.vue'
+import { show } from '@/routes/hospital/departments'
 import type {
     Department,
     DepartmentFormData,
@@ -47,7 +49,9 @@ export default defineComponent({
             this.$wait.start('fetching-departments')
 
             const { data } = await this.$http
-                .get<Department[]>('departments')
+                .get<Department[]>('departments', {
+                    params: { with_head: 1 },
+                })
                 .finally(() => this.$wait.end('fetching-departments'))
 
             this.departments = data
@@ -63,6 +67,10 @@ export default defineComponent({
                 )
 
             this.departmentHeadCandidates = data
+        },
+
+        openDepartment(department: Department): void {
+            router.visit(show(department.id))
         },
 
         editDepartment(department: Department): void {
@@ -105,6 +113,7 @@ export default defineComponent({
             :departments="departments"
             :is-loading="$wait.is('fetching-departments')"
             @edit="editDepartment"
+            @open="openDepartment"
         />
 
         <BaseSideDrawer

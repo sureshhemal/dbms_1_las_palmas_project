@@ -8,7 +8,13 @@ import BaseSideDrawer from '@/components/base/BaseSideDrawer.vue'
 import PhysicianForm from '@/components/staff/PhysicianForm.vue'
 import PhysiciansTable from '@/components/staff/PhysiciansTable.vue'
 import { Button } from '@/components/ui/button'
-import type { Physician, PhysicianFormData, PhysicianPosition } from '@/types'
+import type {
+    Department,
+    Physician,
+    PhysicianFormData,
+    PhysicianPosition,
+    SelectOption,
+} from '@/types'
 import { physicianPositions } from '@/types'
 
 export default defineComponent({
@@ -30,8 +36,10 @@ export default defineComponent({
     data() {
         return {
             physicians: [] as Physician[],
+            departments: [] as Department[],
             searchTerm: '',
             selectedPositions: [...physicianPositions] as PhysicianPosition[],
+            selectedDepartmentIds: [] as string[],
             physicianPositions,
             selectedPhysician: null as PhysicianFormData | null,
             isShowingPhysicianForm: false,
@@ -40,6 +48,17 @@ export default defineComponent({
     },
 
     computed: {
+        departmentOptions(): SelectOption[] {
+            return this.departments.map((department) => ({
+                value: department.id,
+                label: department.name,
+            }))
+        },
+
+        isFilteringByDepartments(): boolean {
+            return this.selectedDepartmentIds.length < this.departments.length
+        },
+
         offboardConfirmationDescription(): string {
             const physicianName =
                 this.selectedPhysician?.name || 'This physician'
@@ -49,7 +68,8 @@ export default defineComponent({
 
         physiciansEmptyMessage(): string {
             return this.searchTerm ||
-                this.selectedPositions.length < physicianPositions.length
+                this.selectedPositions.length < physicianPositions.length ||
+                this.isFilteringByDepartments
                 ? 'No physicians match your search or filter.'
                 : 'No physicians yet.'
         },
@@ -72,12 +92,16 @@ export default defineComponent({
     },
 
     created() {
-        this.fetchPhysicians()
+        Promise.all([this.fetchPhysicians(), this.fetchDepartments()])
     },
 
     methods: {
         async fetchPhysicians(): Promise<void> {
-            if (this.selectedPositions.length === 0) {
+            if (
+                this.selectedPositions.length === 0 ||
+                (this.departments.length > 0 &&
+                    this.selectedDepartmentIds.length === 0)
+            ) {
                 this.physicians = []
 
                 return
@@ -90,11 +114,31 @@ export default defineComponent({
                     params: {
                         search: this.searchTerm || undefined,
                         positions: this.selectedPositions,
+                        department_ids: this.isFilteringByDepartments
+                            ? this.selectedDepartmentIds
+                            : undefined,
                     },
                 })
                 .finally(() => this.$wait.end('fetching-physicians'))
 
             this.physicians = data
+        },
+
+        async fetchDepartments(): Promise<void> {
+            this.$wait.start('fetching-departments')
+
+            const { data } = await this.$http
+                .get<Department[]>('departments')
+                .finally(() => this.$wait.end('fetching-departments'))
+
+            this.departments = data
+            this.selectedDepartmentIds = data.map((department) => department.id)
+        },
+
+        filterByDepartments(departmentIds: string[]): void {
+            this.selectedDepartmentIds = departmentIds
+
+            this.fetchPhysicians()
         },
 
         addPhysician(): void {
@@ -104,6 +148,7 @@ export default defineComponent({
                 name: '',
                 position: '',
                 ssn: '',
+                department_ids: [],
             }
 
             this.openPhysicianForm()
@@ -116,6 +161,9 @@ export default defineComponent({
                 name: physician.name,
                 position: physician.position,
                 ssn: physician.ssn ?? '',
+                department_ids: (physician.departments ?? []).map(
+                    (department) => department.id,
+                ),
             }
         },
 
@@ -203,6 +251,14 @@ export default defineComponent({
                     placeholder="No positions selected"
                     all-selected-label="All positions"
                 />
+
+                <BaseMultiSelect
+                    :model-value="selectedDepartmentIds"
+                    :options="departmentOptions"
+                    placeholder="No departments selected"
+                    all-selected-label="All departments"
+                    @update:model-value="filterByDepartments"
+                />
             </div>
 
             <UiButton :disabled="$wait.any() > 0" @click="addPhysician">
@@ -227,6 +283,7 @@ export default defineComponent({
         >
             <PhysicianForm
                 :physician="selectedPhysician"
+                :department-options="departmentOptions"
                 @save="savePhysician"
             />
         </BaseSideDrawer>

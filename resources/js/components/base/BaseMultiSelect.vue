@@ -11,6 +11,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import type { SelectOption } from '@/types'
 
 const mostOptionsNamedInSummary = 2
 
@@ -35,7 +36,7 @@ export default defineComponent({
             default: () => [],
         },
         options: {
-            type: Array as PropType<string[]>,
+            type: Array as PropType<Array<string | SelectOption>>,
             required: true,
         },
         placeholder: {
@@ -45,6 +46,10 @@ export default defineComponent({
         allSelectedLabel: {
             type: String,
             default: 'All',
+        },
+        triggerClass: {
+            type: String,
+            default: 'w-48',
         },
     },
 
@@ -59,12 +64,26 @@ export default defineComponent({
     },
 
     computed: {
-        visibleOptions(): string[] {
+        labelledOptions(): SelectOption[] {
+            return this.options.map((option) =>
+                typeof option === 'string'
+                    ? { value: option, label: option }
+                    : option,
+            )
+        },
+
+        visibleOptions(): SelectOption[] {
             const optionSearchTerm = this.optionSearchTerm.trim().toLowerCase()
 
-            return this.options.filter((option) =>
-                option.toLowerCase().includes(optionSearchTerm),
+            return this.labelledOptions.filter((option) =>
+                option.label.toLowerCase().includes(optionSearchTerm),
             )
+        },
+
+        selectedLabels(): string[] {
+            return this.labelledOptions
+                .filter((option) => this.modelValue.includes(option.value))
+                .map((option) => option.label)
         },
 
         selectionSummary(): string {
@@ -77,7 +96,7 @@ export default defineComponent({
             }
 
             if (this.modelValue.length <= mostOptionsNamedInSummary) {
-                return this.modelValue.join(', ')
+                return this.selectedLabels.join(', ')
             }
 
             return `${this.modelValue.length} selected`
@@ -130,11 +149,13 @@ export default defineComponent({
                 ? this.draftSelection.filter(
                       (draftOption) => draftOption !== option,
                   )
-                : this.options.filter(
-                      (orderedOption) =>
-                          orderedOption === option ||
-                          this.isInDraft(orderedOption),
-                  )
+                : this.labelledOptions
+                      .map((orderedOption) => orderedOption.value)
+                      .filter(
+                          (orderedOption) =>
+                              orderedOption === option ||
+                              this.isInDraft(orderedOption),
+                      )
         },
 
         applyDraft(): void {
@@ -153,7 +174,8 @@ export default defineComponent({
         <DropdownMenuTrigger as-child>
             <button
                 type="button"
-                class="flex h-9 w-48 items-center justify-between gap-2 rounded-md border border-neutral-200 bg-transparent px-3 text-sm shadow-xs outline-none focus-visible:border-brand-700 focus-visible:ring-3 focus-visible:ring-brand-700/30 dark:border-neutral-800 dark:bg-neutral-950 dark:focus-visible:border-brand-400 dark:focus-visible:ring-brand-400/30"
+                class="flex h-9 items-center justify-between gap-2 rounded-md border border-neutral-200 bg-transparent px-3 text-sm shadow-xs outline-none focus-visible:border-brand-700 focus-visible:ring-3 focus-visible:ring-brand-700/30 dark:border-neutral-800 dark:bg-neutral-950 dark:focus-visible:border-brand-400 dark:focus-visible:ring-brand-400/30"
+                :class="triggerClass"
                 :aria-label="placeholder"
             >
                 <span
@@ -198,11 +220,11 @@ export default defineComponent({
 
             <DropdownMenuCheckboxItem
                 v-for="option in visibleOptions"
-                :key="option"
-                :model-value="isInDraft(option)"
-                @select.prevent="toggleInDraft(option)"
+                :key="option.value"
+                :model-value="isInDraft(option.value)"
+                @select.prevent="toggleInDraft(option.value)"
             >
-                {{ option }}
+                {{ option.label }}
             </DropdownMenuCheckboxItem>
 
             <DropdownMenuSeparator />

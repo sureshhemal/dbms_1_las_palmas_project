@@ -11,5 +11,6 @@ final readonly class PhysicianData
         public string $name,
         public PhysicianPosition $position,
         public ?string $ssn,
+        public array $departmentIds = [],
     ) {}
 }

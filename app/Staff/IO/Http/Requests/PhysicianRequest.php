@@ -15,6 +15,7 @@ class PhysicianRequest extends FormRequest
             name: $this->string('name')->toString(),
             position: $this->enum('position', PhysicianPosition::class),
             ssn: $this->filled('ssn') ? $this->string('ssn')->toString() : null,
+            departmentIds: collect($this->array('department_ids'))->map(fn (mixed $departmentId): string => (string) $departmentId)->values()->all(),
         );
     }
 }

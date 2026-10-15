@@ -1352,3 +1352,40 @@ Now I want to attach department heads from the seeder.
 [2026-10-15 13:43]
 update pr
 
+[2026-10-15 13:51]
+I merged pr. Now in new branch from main, lets make "AffiliatedWith". I guess this don't need seperate page. right? This is saying which doctors are working on which departments. So, maybe this can go with physicians table too. and the new input field (which is multiselect) to physician form. Is that okay?
+
+for the api, we need to fetch departments when page is loading. You can make Promise::all() to call multiple async function on created hook to call couple of apis at once. and make sure to run a $waiter for each call seperately. when fetching departments for this staff page, it is not neccasary to fetch department head of the departments. 
+
+so, when loading physicians
+fetch physicians::with('departments') and fetch departments seperatle for feed the UI forms
+
+[2026-10-15 13:55]
+I guess no point having soft deletes on pivot table for this, right?
+
+[2026-10-15 13:57]
+but what if, in later days, we need to see some physicians history?
+
+[2026-10-15 13:57]
+drop then
+
+[2026-10-15 13:58]
+when fetching physician departments, no need deptID right?
+
+[2026-10-15 13:59]
+Now i want seeder for this too.
+
+[2026-10-15 14:03]
+In small screens, table hides edit/delete buttons. should be x-scrollable then no?
+
+[2026-10-15 14:06]
+Now I want to make a page for department, when clicking row in the departments table, it should show the poge for that department. And that page must have following informations
+1. Department Head
+2. Physicians who works under that department with their join date (i.e. created_at)
+
+[2026-10-15 14:11]
+Now I want another filter for physicians tab, filter by departments. By default all departments are selected.
+
+[2026-10-15 14:17]
+open pr to main
+

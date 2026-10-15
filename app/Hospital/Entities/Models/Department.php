@@ -48,7 +48,6 @@ class Department extends Model
     {
         return $this->belongsToMany(Physician::class, 'AffiliatedWith', 'department_id', 'physician_id')
             ->using(AffiliatedWith::class)
-            ->withTimestamps()
-            ->wherePivotNull('deleted_at');
+            ->withTimestamps();
     }
 }

@@ -23,11 +23,17 @@ export type PhysicianFormData = {
     name: string
     position: PhysicianPosition | ''
     ssn: string
+    department_ids: string[]
 }
 
-export type HeadedDepartment = {
+export type DepartmentSummary = {
     id: string
     deptID: number
+    name: DepartmentName
+}
+
+export type AffiliatedDepartment = {
+    id: string
     name: DepartmentName
 }
 
@@ -37,7 +43,8 @@ export type Physician = {
     name: string
     position: PhysicianPosition
     ssn: string | null
-    headed_departments?: HeadedDepartment[]
+    headed_departments?: DepartmentSummary[]
+    departments?: AffiliatedDepartment[]
     created_at: string | null
     updated_at: string | null
     deleted_at: string | null

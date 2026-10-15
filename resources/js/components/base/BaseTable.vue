@@ -34,7 +34,7 @@ export default defineComponent({
 
 <template>
     <div
-        class="overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-800"
+        class="overflow-x-auto rounded-xl border border-neutral-200 dark:border-neutral-800"
     >
         <table class="w-full text-left text-sm">
             <thead

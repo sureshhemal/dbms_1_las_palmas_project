@@ -25,17 +25,6 @@ it('rejects affiliating a physician with the same department twice', function ()
     $physician->departments()->attach($department);
 })->throws(QueryException::class);
 
-it('leaves a soft-deleted affiliation out of the departments', function () {
-    $physician = Physician::create(['physicianID' => 3, 'name' => 'John Dorian', 'position' => PhysicianPosition::Resident]);
-    $department = $this->predefinedDepartment(DepartmentName::Surgery);
-    $physician->departments()->attach($department);
-
-    AffiliatedWith::first()->delete();
-
-    expect($physician->departments)->toBeEmpty();
-    $this->assertSoftDeleted('AffiliatedWith', ['physician_id' => $physician->id, 'department_id' => $department->id]);
-});
-
 it('removes the affiliations when the physician is permanently deleted', function () {
     $physician = Physician::create(['physicianID' => 4, 'name' => 'John Dorian', 'position' => PhysicianPosition::Resident]);
     $department = $this->predefinedDepartment(DepartmentName::Surgery);

@@ -16,15 +16,24 @@ it('lists the predefined departments in deptID order', function () {
     expect($response->json('*.name'))->toBe(DepartmentName::values());
 });
 
-it('includes the head physician of each department', function () {
+it('includes the head physician of each department when asked', function () {
     $physician = Physician::factory()->create(['name' => 'Bob Kelso']);
     $this->predefinedDepartment(DepartmentName::Surgery)->update(['head_id' => $physician->id]);
 
-    $response = $this->actingAsLoggedInUser()->getJson(route('api.departments.index'));
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.departments.index', ['with_head' => 1]));
 
     $surgery = collect($response->json())->firstWhere('name', 'Surgery');
     expect($surgery['head']['name'])->toBe('Bob Kelso');
     expect(collect($response->json())->firstWhere('name', 'Psychiatry')['head'])->toBeNull();
+});
+
+it('leaves out the head physician unless asked', function () {
+    $physician = Physician::factory()->create();
+    $this->predefinedDepartment(DepartmentName::Surgery)->update(['head_id' => $physician->id]);
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.departments.index'));
+
+    expect(collect($response->json())->firstWhere('name', 'Surgery'))->not->toHaveKey('head');
 });
 
 it('leaves out soft-deleted departments', function () {
@@ -33,6 +42,22 @@ it('leaves out soft-deleted departments', function () {
     $response = $this->actingAsLoggedInUser()->getJson(route('api.departments.index'));
 
     expect($response->json('*.name'))->toBe(['General Medicine', 'Surgery']);
+});
+
+it('shows a department with its head physician', function () {
+    $physician = Physician::factory()->create(['name' => 'Bob Kelso']);
+    $surgery = $this->predefinedDepartment(DepartmentName::Surgery);
+    $surgery->update(['head_id' => $physician->id]);
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.departments.show', $surgery));
+
+    $response->assertOk()->assertJson(['deptID' => 1002, 'name' => 'Surgery', 'head' => ['name' => 'Bob Kelso']]);
+});
+
+it('returns 401 to guests showing a department', function () {
+    $response = $this->getJson(route('api.departments.show', $this->predefinedDepartment(DepartmentName::Surgery)));
+
+    $response->assertUnauthorized();
 });
 
 it('returns 401 to guests updating a department', function () {
