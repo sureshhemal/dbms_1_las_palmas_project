@@ -11,4 +11,9 @@ class PhysiciansQueryBuilder extends Builder
     {
         return $this->whereIn('position', PhysicianPosition::capableOfBeingDepartmentHead());
     }
+
+    public function whereAffiliatedWithAnyDepartmentOf(array $departmentIds): self
+    {
+        return $this->whereHas('departments', fn (Builder $query) => $query->whereIn('Department.id', $departmentIds));
+    }
 }

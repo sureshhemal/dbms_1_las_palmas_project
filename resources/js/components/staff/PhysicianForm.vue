@@ -3,9 +3,11 @@ import type { PropType } from 'vue'
 import { Form } from 'vee-validate'
 import { defineComponent } from 'vue'
 import BaseInput from '@/components/base/BaseInput.vue'
+import BaseMultiSelect from '@/components/base/BaseMultiSelect.vue'
 import BaseSelect from '@/components/base/BaseSelect.vue'
 import { Button } from '@/components/ui/button'
-import type { PhysicianFormData } from '@/types'
+import { Label } from '@/components/ui/label'
+import type { PhysicianFormData, SelectOption } from '@/types'
 import { physicianPositions } from '@/types'
 
 export default defineComponent({
@@ -13,8 +15,10 @@ export default defineComponent({
 
     components: {
         BaseInput,
+        BaseMultiSelect,
         BaseSelect,
         UiButton: Button,
+        UiLabel: Label,
         VeeForm: Form,
     },
 
@@ -23,13 +27,20 @@ export default defineComponent({
             type: Object as PropType<PhysicianFormData>,
             required: true,
         },
+        departmentOptions: {
+            type: Array as PropType<SelectOption[]>,
+            required: true,
+        },
     },
 
     emits: ['save'],
 
     data() {
         return {
-            form: { ...this.physician },
+            form: {
+                ...this.physician,
+                department_ids: [...this.physician.department_ids],
+            },
             physicianPositions,
         }
     },
@@ -54,7 +65,10 @@ export default defineComponent({
 
     watch: {
         physician(): void {
-            this.form = { ...this.physician }
+            this.form = {
+                ...this.physician,
+                department_ids: [...this.physician.department_ids],
+            }
         },
     },
 })
@@ -92,6 +106,17 @@ export default defineComponent({
             rules="digits:9"
             placeholder="9 digits, e.g. 012345678"
         />
+
+        <div class="space-y-1.5">
+            <UiLabel>Departments</UiLabel>
+            <BaseMultiSelect
+                v-model="form.department_ids"
+                :options="departmentOptions"
+                placeholder="No departments"
+                all-selected-label="All departments"
+                trigger-class="w-full"
+            />
+        </div>
 
         <UiButton
             class="w-full"

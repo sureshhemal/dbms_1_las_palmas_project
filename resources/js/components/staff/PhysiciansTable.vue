@@ -36,6 +36,7 @@ export default defineComponent({
                 'Physician ID',
                 'Name',
                 'Position',
+                'Departments',
                 'Heads',
                 'SSN',
                 '',

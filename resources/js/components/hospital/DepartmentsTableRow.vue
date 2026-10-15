@@ -24,7 +24,7 @@ export default defineComponent({
         },
     },
 
-    emits: ['edit'],
+    emits: ['edit', 'open'],
 
     computed: {
         headName(): string {
@@ -35,7 +35,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <BaseTableRow>
+    <BaseTableRow is-selectable @click="$emit('open', department)">
         <BaseTableCell class="font-mono">
             {{ department.deptID }}
         </BaseTableCell>

@@ -105,6 +105,49 @@ it('combines the physician search and the position filter', function () {
     expect($response->json('*.id'))->toBe([$surgeonPerry->id]);
 });
 
+it('filters physicians by the chosen departments', function () {
+    $surgeon = Physician::factory()->create();
+    $surgeon->departments()->attach($this->predefinedDepartment(DepartmentName::Surgery));
+    $psychiatrist = Physician::factory()->create();
+    $psychiatrist->departments()->attach($this->predefinedDepartment(DepartmentName::Psychiatry));
+    Physician::factory()->create()->departments()->attach($this->predefinedDepartment(DepartmentName::GeneralMedicine));
+    Physician::factory()->create();
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.physicians.index', [
+        'department_ids' => [
+            $this->predefinedDepartment(DepartmentName::Surgery)->id,
+            $this->predefinedDepartment(DepartmentName::Psychiatry)->id,
+        ],
+    ]));
+
+    expect($response->json('*.id'))->toEqualCanonicalizing([$surgeon->id, $psychiatrist->id]);
+});
+
+it('lists a physician in several chosen departments only once', function () {
+    $physician = Physician::factory()->create();
+    $physician->departments()->attach([
+        $this->predefinedDepartment(DepartmentName::Surgery)->id,
+        $this->predefinedDepartment(DepartmentName::Psychiatry)->id,
+    ]);
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.physicians.index', [
+        'department_ids' => [
+            $this->predefinedDepartment(DepartmentName::Surgery)->id,
+            $this->predefinedDepartment(DepartmentName::Psychiatry)->id,
+        ],
+    ]));
+
+    expect($response->json('*.id'))->toBe([$physician->id]);
+});
+
+it('ignores department ids that are not ulids', function () {
+    Physician::factory()->count(2)->create();
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.physicians.index', ['department_ids' => ['surgery']]));
+
+    $response->assertJsonCount(2);
+});
+
 it('returns 401 to guests adding a physician', function () {
     $response = $this->postJson(route('api.physicians.store'), [
         'name' => 'Perry Cox',
@@ -261,4 +304,76 @@ it('returns 404 when offboarding a physician who is already offboarded', functio
     $response = $this->actingAsLoggedInUser()->deleteJson(route('api.physicians.destroy', $physician));
 
     $response->assertNotFound();
+});
+
+it('includes the departments each physician works in', function () {
+    $physician = Physician::factory()->create();
+    $surgery = $this->predefinedDepartment(DepartmentName::Surgery);
+    $physician->departments()->attach($surgery);
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.physicians.index'));
+
+    $departments = collect($response->json())->firstWhere('id', $physician->id)['departments'];
+    expect($departments)->toHaveCount(1);
+    expect($departments[0])->toMatchArray(['id' => $surgery->id, 'name' => 'Surgery']);
+    expect($departments[0])->not->toHaveKey('deptID');
+});
+
+it('affiliates a new physician with the chosen departments', function () {
+    $surgery = $this->predefinedDepartment(DepartmentName::Surgery);
+    $psychiatry = $this->predefinedDepartment(DepartmentName::Psychiatry);
+
+    $response = $this->actingAsLoggedInUser()->postJson(route('api.physicians.store'), [
+        'name' => 'Chris Turk',
+        'position' => 'Surgeon',
+        'department_ids' => [$surgery->id, $psychiatry->id],
+    ]);
+
+    $response->assertCreated();
+    expect($response->json('departments.*.name'))->toEqualCanonicalizing(['Surgery', 'Psychiatry']);
+    $this->assertDatabaseHas('AffiliatedWith', ['physician_id' => $response->json('id'), 'department_id' => $surgery->id]);
+    $this->assertDatabaseHas('AffiliatedWith', ['physician_id' => $response->json('id'), 'department_id' => $psychiatry->id]);
+});
+
+it('replaces a physician\'s departments when updating', function () {
+    $physician = Physician::factory()->create();
+    $surgery = $this->predefinedDepartment(DepartmentName::Surgery);
+    $psychiatry = $this->predefinedDepartment(DepartmentName::Psychiatry);
+    $physician->departments()->attach($surgery);
+
+    $response = $this->actingAsLoggedInUser()->putJson(route('api.physicians.update', $physician), [
+        'name' => $physician->name,
+        'position' => $physician->position->value,
+        'department_ids' => [$psychiatry->id],
+    ]);
+
+    $response->assertOk();
+    expect($physician->departments()->pluck('Department.id')->all())->toBe([$psychiatry->id]);
+});
+
+it('removes all of a physician\'s departments when none are chosen', function () {
+    $physician = Physician::factory()->create();
+    $physician->departments()->attach($this->predefinedDepartment(DepartmentName::Surgery));
+
+    $this->actingAsLoggedInUser()->putJson(route('api.physicians.update', $physician), [
+        'name' => $physician->name,
+        'position' => $physician->position->value,
+        'department_ids' => [],
+    ])->assertOk();
+
+    $this->assertDatabaseMissing('AffiliatedWith', ['physician_id' => $physician->id]);
+});
+
+it('shows the MySQL error when a chosen department does not exist', function () {
+    config(['app.debug' => true]);
+
+    $response = $this->actingAsLoggedInUser()->postJson(route('api.physicians.store'), [
+        'name' => 'Chris Turk',
+        'position' => 'Surgeon',
+        'department_ids' => [(string) str()->ulid()],
+    ]);
+
+    $response->assertInternalServerError();
+    expect($response->json('message'))->toContain('foreign key constraint fails');
+    $this->assertDatabaseMissing('Physician', ['name' => 'Chris Turk']);
 });

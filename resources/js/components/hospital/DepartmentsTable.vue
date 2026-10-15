@@ -24,7 +24,7 @@ export default defineComponent({
         },
     },
 
-    emits: ['edit'],
+    emits: ['edit', 'open'],
 
     data() {
         return {
@@ -46,6 +46,7 @@ export default defineComponent({
             :key="department.id"
             :department="department"
             @edit="$emit('edit', $event)"
+            @open="$emit('open', $event)"
         />
     </BaseTable>
 </template>

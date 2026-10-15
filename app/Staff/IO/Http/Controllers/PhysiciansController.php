@@ -12,6 +12,7 @@ use App\Staff\UseCases\UpdatePhysician;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 
 class PhysiciansController
 {
@@ -22,6 +23,10 @@ class PhysiciansController
             positions: collect($request->array('positions'))
                 ->map(fn (mixed $position): ?PhysicianPosition => PhysicianPosition::tryFrom((string) $position))
                 ->filter()
+                ->values()
+                ->all(),
+            departmentIds: collect($request->array('department_ids'))
+                ->filter(fn (mixed $departmentId): bool => Str::isUlid($departmentId))
                 ->values()
                 ->all(),
         ));

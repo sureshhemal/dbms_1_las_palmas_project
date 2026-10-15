@@ -1,4 +1,4 @@
-import type { Physician } from './staff'
+import type { Physician, PhysicianPosition } from './staff'
 
 export type DepartmentName = 'General Medicine' | 'Surgery' | 'Psychiatry'
 
@@ -18,4 +18,12 @@ export type DepartmentFormData = {
     deptID: string
     name: DepartmentName
     head_id: string | null
+}
+
+export type DepartmentPhysician = {
+    id: string
+    physicianID: number
+    name: string
+    position: PhysicianPosition
+    joined_at: string | null
 }

@@ -29,6 +29,20 @@ export default defineComponent({
     emits: ['edit', 'offboard'],
 
     computed: {
+        departmentsSummary(): string {
+            const departments = this.physician.departments ?? []
+
+            if (departments.length === 0) {
+                return '—'
+            }
+
+            return departments.map((department) => department.name).join(', ')
+        },
+
+        worksInAnyDepartment(): boolean {
+            return (this.physician.departments ?? []).length > 0
+        },
+
         headedDepartmentsSummary(): string {
             const headedDepartments = this.physician.headed_departments ?? []
 
@@ -63,6 +77,13 @@ export default defineComponent({
             {{ physician.name }}
         </BaseTableCell>
         <BaseTableCell>{{ physician.position }}</BaseTableCell>
+        <BaseTableCell
+            :class="{
+                'text-neutral-500 dark:text-neutral-400': !worksInAnyDepartment,
+            }"
+        >
+            {{ departmentsSummary }}
+        </BaseTableCell>
         <BaseTableCell
             :class="{
                 'text-neutral-500 dark:text-neutral-400': !headsAnyDepartment,
