@@ -10,6 +10,7 @@ use Illuminate\Support\Carbon;
 
 /**
  * @property string $id
+ * @property int $medID
  * @property string $name
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at

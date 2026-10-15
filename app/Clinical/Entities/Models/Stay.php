@@ -13,6 +13,7 @@ use Illuminate\Support\Carbon;
 
 /**
  * @property string $id
+ * @property int $stayID
  * @property string $patient_id
  * @property string $room_id
  * @property Carbon $startDate

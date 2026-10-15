@@ -13,9 +13,10 @@ use Illuminate\Support\Carbon;
 
 /**
  * @property string $id
+ * @property int $physicianID
  * @property string $name
  * @property PhysicianPosition $position
- * @property int|null $ssn
+ * @property string|null $ssn
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
