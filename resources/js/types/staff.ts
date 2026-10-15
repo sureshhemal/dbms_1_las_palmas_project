@@ -1,3 +1,5 @@
+import type { DepartmentName } from './hospital'
+
 export type PhysicianPosition =
     | 'Intern'
     | 'Surgeon'
@@ -23,12 +25,19 @@ export type PhysicianFormData = {
     ssn: string
 }
 
+export type HeadedDepartment = {
+    id: string
+    deptID: number
+    name: DepartmentName
+}
+
 export type Physician = {
     id: string
     physicianID: number
     name: string
     position: PhysicianPosition
     ssn: string | null
+    headed_departments?: HeadedDepartment[]
     created_at: string | null
     updated_at: string | null
     deleted_at: string | null

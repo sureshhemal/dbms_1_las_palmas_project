@@ -1,8 +1,9 @@
 <script lang="ts">
-import { ChevronDown } from '@lucide/vue'
+import { ChevronDown, Search } from '@lucide/vue'
 import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -23,7 +24,9 @@ export default defineComponent({
         DropdownMenuContent,
         DropdownMenuSeparator,
         DropdownMenuTrigger,
+        SearchIcon: Search,
         UiButton: Button,
+        UiInput: Input,
     },
 
     props: {
@@ -51,10 +54,19 @@ export default defineComponent({
         return {
             isOpen: false,
             draftSelection: [...this.modelValue],
+            optionSearchTerm: '',
         }
     },
 
     computed: {
+        visibleOptions(): string[] {
+            const optionSearchTerm = this.optionSearchTerm.trim().toLowerCase()
+
+            return this.options.filter((option) =>
+                option.toLowerCase().includes(optionSearchTerm),
+            )
+        },
+
         selectionSummary(): string {
             if (this.modelValue.length === 0) {
                 return this.placeholder
@@ -85,9 +97,28 @@ export default defineComponent({
         changeOpenState(isOpen: boolean): void {
             if (isOpen) {
                 this.draftSelection = [...this.modelValue]
+                this.optionSearchTerm = ''
             }
 
             this.isOpen = isOpen
+        },
+
+        focusOptionSearch(event: Event): void {
+            event.preventDefault()
+
+            this.$nextTick(() => {
+                const optionSearchInput = this.$refs.optionSearchInput as
+                    | { $el: HTMLInputElement }
+                    | undefined
+
+                optionSearchInput?.$el.focus()
+            })
+        },
+
+        keepTypingInsideOptionSearch(event: KeyboardEvent): void {
+            if (event.key !== 'Escape') {
+                event.stopPropagation()
+            }
         },
 
         isInDraft(option: string): boolean {
@@ -138,9 +169,35 @@ export default defineComponent({
             </button>
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent align="start" class="w-48">
+        <DropdownMenuContent
+            align="start"
+            class="w-56"
+            @open-auto-focus="focusOptionSearch"
+        >
+            <div class="relative p-1">
+                <SearchIcon
+                    class="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-neutral-400"
+                />
+                <UiInput
+                    ref="optionSearchInput"
+                    v-model="optionSearchTerm"
+                    type="search"
+                    placeholder="Search"
+                    :aria-label="`Search ${placeholder}`"
+                    class="h-8 pl-7"
+                    @keydown="keepTypingInsideOptionSearch"
+                />
+            </div>
+
+            <p
+                v-if="visibleOptions.length === 0"
+                class="px-2 py-1.5 text-sm text-neutral-500 dark:text-neutral-400"
+            >
+                No matches
+            </p>
+
             <DropdownMenuCheckboxItem
-                v-for="option in options"
+                v-for="option in visibleOptions"
                 :key="option"
                 :model-value="isInDraft(option)"
                 @select.prevent="toggleInDraft(option)"

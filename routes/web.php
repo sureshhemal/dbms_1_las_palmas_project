@@ -10,6 +10,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::inertia('staff', 'Staff')->name('staff');
+    Route::inertia('hospital', 'Hospital')->name('hospital');
 });
 
 require __DIR__.'/settings.php';

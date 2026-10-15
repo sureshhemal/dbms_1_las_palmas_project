@@ -11,6 +11,7 @@ final class ListPhysicians
     public function execute(?string $search = null, array $positions = []): Collection
     {
         return Physician::query()
+            ->with('headedDepartments:id,deptID,name,head_id')
             ->when($search, fn (Builder $query) => $query->whereAny(['name', 'physicianID'], 'like', "%{$search}%"))
             ->when($positions, fn (Builder $query) => $query->whereIn('position', $positions))
             ->latest()

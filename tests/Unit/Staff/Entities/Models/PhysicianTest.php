@@ -1,7 +1,6 @@
 <?php
 
 use App\Hospital\Entities\DepartmentName;
-use App\Hospital\Entities\Models\Department;
 use App\Staff\Entities\Models\Physician;
 use App\Staff\Entities\PhysicianPosition;
 use Illuminate\Database\QueryException;
@@ -27,8 +26,7 @@ it('rejects a position outside the schema list', function () {
 
 it('lists the departments the physician is affiliated with', function () {
     $physician = Physician::create(['physicianID' => 4, 'name' => 'John Dorian', 'position' => PhysicianPosition::Resident]);
-    $surgery = Department::create(['deptID' => 1, 'name' => DepartmentName::Surgery]);
-    Department::create(['deptID' => 2, 'name' => DepartmentName::Psychiatry]);
+    $surgery = $this->predefinedDepartment(DepartmentName::Surgery);
 
     $physician->departments()->attach($surgery);
 

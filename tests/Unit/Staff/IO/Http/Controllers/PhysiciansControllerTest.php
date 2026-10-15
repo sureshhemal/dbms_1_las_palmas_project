@@ -1,5 +1,6 @@
 <?php
 
+use App\Hospital\Entities\DepartmentName;
 use App\Staff\Entities\Models\Physician;
 use App\Staff\Entities\PhysicianPosition;
 
@@ -25,6 +26,21 @@ it('leaves out soft-deleted physicians', function () {
     $response = $this->actingAsLoggedInUser()->getJson(route('api.physicians.index'));
 
     expect($response->json('*.id'))->toBe([$keptPhysician->id]);
+});
+
+it('includes the departments each physician heads', function () {
+    $head = Physician::factory()->create();
+    Physician::factory()->create();
+    $surgery = $this->predefinedDepartment(DepartmentName::Surgery);
+    $surgery->update(['head_id' => $head->id]);
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.physicians.index'));
+
+    $physicians = collect($response->json())->keyBy('id');
+    expect($physicians[$head->id]['headed_departments'])->toBe([
+        ['id' => $surgery->id, 'deptID' => 1002, 'name' => 'Surgery', 'head_id' => $head->id],
+    ]);
+    expect($physicians->except($head->id)->first()['headed_departments'])->toBe([]);
 });
 
 it('lists the most recently added physicians first', function () {
@@ -222,6 +238,20 @@ it('offboards a physician by soft deleting them', function () {
 
     $response->assertNoContent();
     $this->assertSoftDeleted($physician);
+});
+
+it('removes an offboarded physician from the departments they head', function () {
+    $physician = Physician::factory()->create();
+    $otherHead = Physician::factory()->create();
+    $surgery = $this->predefinedDepartment(DepartmentName::Surgery);
+    $psychiatry = $this->predefinedDepartment(DepartmentName::Psychiatry);
+    $surgery->update(['head_id' => $physician->id]);
+    $psychiatry->update(['head_id' => $otherHead->id]);
+
+    $this->actingAsLoggedInUser()->deleteJson(route('api.physicians.destroy', $physician))->assertNoContent();
+
+    expect($surgery->fresh()->head_id)->toBeNull();
+    expect($psychiatry->fresh()->head_id)->toBe($otherHead->id);
 });
 
 it('returns 404 when offboarding a physician who is already offboarded', function () {

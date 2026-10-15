@@ -1,21 +1,18 @@
 <script lang="ts">
 import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
+import BaseTabs from '@/components/base/BaseTabs.vue'
 import NursesTabPanel from '@/components/staff/NursesTabPanel.vue'
 import PhysiciansTabPanel from '@/components/staff/PhysiciansTabPanel.vue'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import type { StaffCounts } from '@/types'
+import type { StaffCounts, TabDefinition } from '@/types'
 
 export default defineComponent({
     name: 'StaffTabs',
 
     components: {
+        BaseTabs,
         NursesTabPanel,
         PhysiciansTabPanel,
-        Tabs,
-        TabsContent,
-        TabsList,
-        TabsTrigger,
     },
 
     props: {
@@ -30,53 +27,36 @@ export default defineComponent({
     data() {
         return {
             selectedTabName: 'physicians',
-            staffTabs: [
+        }
+    },
+
+    computed: {
+        staffTabs(): TabDefinition[] {
+            return [
                 {
                     name: 'physicians',
                     label: 'Physicians',
-                    countName: 'physician_count' as keyof StaffCounts,
-                    panelComponentName: 'PhysiciansTabPanel',
+                    count: this.staffCounts?.physician_count,
                 },
                 {
                     name: 'nurses',
                     label: 'Nurses',
-                    countName: 'nurse_count' as keyof StaffCounts,
-                    panelComponentName: 'NursesTabPanel',
+                    count: this.staffCounts?.nurse_count,
                 },
-            ],
-        }
+            ]
+        },
     },
 })
 </script>
 
 <template>
-    <Tabs v-model="selectedTabName" class="gap-4">
-        <TabsList>
-            <TabsTrigger
-                v-for="staffTab in staffTabs"
-                :key="staffTab.name"
-                :value="staffTab.name"
-                class="px-4 data-[state=active]:bg-brand-700 data-[state=active]:text-white dark:data-[state=active]:bg-brand-400 dark:data-[state=active]:text-brand-950"
-            >
-                {{ staffTab.label }}
-                <span
-                    v-if="staffCounts"
-                    class="rounded-full bg-neutral-900/10 px-2 text-xs font-semibold tabular-nums dark:bg-white/10"
-                >
-                    {{ staffCounts[staffTab.countName] }}
-                </span>
-            </TabsTrigger>
-        </TabsList>
+    <BaseTabs v-model="selectedTabName" :tabs="staffTabs">
+        <template #physicians>
+            <PhysiciansTabPanel @staff-changed="$emit('staff-changed')" />
+        </template>
 
-        <TabsContent
-            v-for="staffTab in staffTabs"
-            :key="staffTab.name"
-            :value="staffTab.name"
-        >
-            <component
-                :is="staffTab.panelComponentName"
-                @staff-changed="$emit('staff-changed')"
-            />
-        </TabsContent>
-    </Tabs>
+        <template #nurses>
+            <NursesTabPanel @staff-changed="$emit('staff-changed')" />
+        </template>
+    </BaseTabs>
 </template>
