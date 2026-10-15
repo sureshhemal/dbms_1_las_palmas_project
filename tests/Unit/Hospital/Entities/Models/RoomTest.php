@@ -37,6 +37,11 @@ it('rejects a duplicate roomID', function () {
     Room::create(['roomID' => 1, 'roomType' => RoomType::Single]);
 })->throws(UniqueConstraintViolationException::class);
 
-it('requires a roomID', function () {
-    Room::create(['roomType' => RoomType::Single]);
-})->throws(QueryException::class, "Field 'roomID' doesn't have a default value");
+it('assigns the next roomID when none is given', function () {
+    Room::create(['roomID' => 1000, 'roomType' => RoomType::Single]);
+
+    $room = Room::create(['roomType' => RoomType::Single]);
+
+    expect($room->roomID)->toBe(1001);
+    expect(Room::find($room->id)->roomID)->toBe(1001);
+});

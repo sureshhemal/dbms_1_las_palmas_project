@@ -7,9 +7,6 @@ use App\Staff\Entities\Models\Physician;
 use App\Staff\Entities\PhysicianPosition;
 use Illuminate\Database\QueryException;
 
-/**
- * @return array{physician_id: string, patient_id: string, medication_id: string}
- */
 function prescriptionParties(): array
 {
     return [

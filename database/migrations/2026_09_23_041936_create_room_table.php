@@ -8,9 +8,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('Room', function (Blueprint $table) {
@@ -21,14 +18,15 @@ return new class extends Migration
             $table->softDeletes();
         });
 
+        Schema::table('Room', function (Blueprint $table) {
+            $table->integer('roomID')->autoIncrement()->change();
+        });
+
         $roomTypes = collect(RoomType::values())->map(fn (string $value): string => DB::escape($value))->implode(', ');
 
         DB::statement("alter table `Room` add constraint `room_room_type_check` check (roomType in ({$roomTypes}))");
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('Room');

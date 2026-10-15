@@ -74,9 +74,14 @@ it('rejects a duplicate patientID', function () {
     Patient::create(['patientID' => 1, 'name' => 'Harvey Corman']);
 })->throws(UniqueConstraintViolationException::class);
 
-it('requires a patientID', function () {
-    Patient::create(['name' => 'Harvey Corman']);
-})->throws(QueryException::class, "Field 'patientID' doesn't have a default value");
+it('assigns the next patientID when none is given', function () {
+    Patient::create(['patientID' => 1000, 'name' => 'Harvey Corman']);
+
+    $patient = Patient::create(['name' => 'Harvey Corman']);
+
+    expect($patient->patientID)->toBe(1001);
+    expect(Patient::find($patient->id)->patientID)->toBe(1001);
+});
 
 it('keeps the leading zeros of the ssn', function () {
     $patient = Patient::create(['patientID' => 1, 'name' => 'Harvey Corman', 'ssn' => '012-34-5678']);

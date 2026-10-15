@@ -69,6 +69,11 @@ it('rejects a duplicate deptID', function () {
     Department::create(['deptID' => 1, 'name' => DepartmentName::Surgery]);
 })->throws(UniqueConstraintViolationException::class);
 
-it('requires a deptID', function () {
-    Department::create(['name' => DepartmentName::Surgery]);
-})->throws(QueryException::class, "Field 'deptID' doesn't have a default value");
+it('assigns the next deptID when none is given', function () {
+    Department::create(['deptID' => 1000, 'name' => DepartmentName::Surgery]);
+
+    $department = Department::create(['name' => DepartmentName::Surgery]);
+
+    expect($department->deptID)->toBe(1001);
+    expect(Department::find($department->id)->deptID)->toBe(1001);
+});

@@ -2,9 +2,13 @@
 
 namespace App\Staff\Entities\Models;
 
+use App\Foundation\Entities\Concerns\HasAutoIncrementingColumn;
 use App\Staff\Entities\NursePosition;
+use Database\Factories\Staff\NurseFactory;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
@@ -20,15 +24,15 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $deleted_at
  */
 #[Table(name: 'Nurse')]
+#[UseFactory(NurseFactory::class)]
 class Nurse extends Model
 {
-    use HasUlids, SoftDeletes;
+    use HasAutoIncrementingColumn, HasFactory, HasUlids, SoftDeletes;
+
+    protected string $autoIncrementingColumn = 'nurseID';
 
     protected $guarded = [];
 
-    /**
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [

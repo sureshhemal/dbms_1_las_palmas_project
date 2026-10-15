@@ -1,32 +1,32 @@
 <script setup lang="ts">
-import { router } from '@inertiajs/vue3';
-import { KeyRound } from '@lucide/vue';
-import type { Passkey } from '@/types/auth';
-import Heading from '@/components/Heading.vue';
-import PasskeyItem from '@/components/PasskeyItem.vue';
-import PasskeyRegister from '@/components/PasskeyRegister.vue';
-import { destroy } from '@/actions/Laravel/Passkeys/Http/Controllers/PasskeyRegistrationController';
+import { router } from '@inertiajs/vue3'
+import { KeyRound } from '@lucide/vue'
+import type { Passkey } from '@/types/auth'
+import Heading from '@/components/Heading.vue'
+import PasskeyItem from '@/components/PasskeyItem.vue'
+import PasskeyRegister from '@/components/PasskeyRegister.vue'
+import { destroy } from '@/actions/Laravel/Passkeys/Http/Controllers/PasskeyRegistrationController'
 
 export type Props = {
-    canManagePasskeys?: boolean;
-    passkeys?: Passkey[];
-};
+    canManagePasskeys?: boolean
+    passkeys?: Passkey[]
+}
 
 withDefaults(defineProps<Props>(), {
     canManagePasskeys: false,
     passkeys: () => [],
-});
+})
 
 const handleDelete = (id: string, onError: () => void) => {
     router.delete(destroy.url(id), {
         preserveScroll: true,
         onError,
-    });
-};
+    })
+}
 
 const handleRegisterSuccess = () => {
-    router.reload();
-};
+    router.reload()
+}
 </script>
 
 <template>

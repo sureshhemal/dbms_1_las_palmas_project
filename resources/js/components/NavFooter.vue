@@ -5,16 +5,16 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-} from '@/components/ui/sidebar';
-import { toUrl } from '@/lib/utils';
-import type { NavItem } from '@/types';
+} from '@/components/ui/sidebar'
+import { toUrl } from '@/lib/utils'
+import type { NavItem } from '@/types'
 
 type Props = {
-    items: NavItem[];
-    class?: string;
-};
+    items: NavItem[]
+    class?: string
+}
 
-defineProps<Props>();
+defineProps<Props>()
 </script>
 
 <template>

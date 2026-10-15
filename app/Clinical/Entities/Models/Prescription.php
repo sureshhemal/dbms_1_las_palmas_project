@@ -29,9 +29,6 @@ class Prescription extends Model
 
     protected $guarded = [];
 
-    /**
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -39,25 +36,16 @@ class Prescription extends Model
         ];
     }
 
-    /**
-     * @return BelongsTo<Physician, $this>
-     */
     public function physician(): BelongsTo
     {
         return $this->belongsTo(Physician::class);
     }
 
-    /**
-     * @return BelongsTo<Patient, $this>
-     */
     public function patient(): BelongsTo
     {
         return $this->belongsTo(Patient::class);
     }
 
-    /**
-     * @return BelongsTo<Medication, $this>
-     */
     public function medication(): BelongsTo
     {
         return $this->belongsTo(Medication::class);

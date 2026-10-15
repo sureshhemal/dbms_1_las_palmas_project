@@ -2,6 +2,7 @@
 
 namespace App\Clinical\Entities\Models;
 
+use App\Foundation\Entities\Concerns\HasAutoIncrementingColumn;
 use App\Patient\Entities\Models\Patient;
 use App\Staff\Entities\Models\Nurse;
 use App\Staff\Entities\Models\Physician;
@@ -27,13 +28,12 @@ use Illuminate\Support\Carbon;
 #[Table(name: 'Appointment')]
 class Appointment extends Model
 {
-    use HasUlids, SoftDeletes;
+    use HasAutoIncrementingColumn, HasUlids, SoftDeletes;
+
+    protected string $autoIncrementingColumn = 'appID';
 
     protected $guarded = [];
 
-    /**
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -42,25 +42,16 @@ class Appointment extends Model
         ];
     }
 
-    /**
-     * @return BelongsTo<Patient, $this>
-     */
     public function patient(): BelongsTo
     {
         return $this->belongsTo(Patient::class);
     }
 
-    /**
-     * @return BelongsTo<Nurse, $this>
-     */
     public function nurse(): BelongsTo
     {
         return $this->belongsTo(Nurse::class);
     }
 
-    /**
-     * @return BelongsTo<Physician, $this>
-     */
     public function physician(): BelongsTo
     {
         return $this->belongsTo(Physician::class);

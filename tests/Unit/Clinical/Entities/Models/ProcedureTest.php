@@ -1,7 +1,6 @@
 <?php
 
 use App\Clinical\Entities\Models\Procedure;
-use Illuminate\Database\QueryException;
 use Illuminate\Database\UniqueConstraintViolationException;
 
 it('generates a ulid primary key', function () {
@@ -36,6 +35,11 @@ it('rejects a duplicate procID', function () {
     Procedure::create(['procID' => 1, 'name' => 'Appendectomy']);
 })->throws(UniqueConstraintViolationException::class);
 
-it('requires a procID', function () {
-    Procedure::create(['name' => 'Appendectomy']);
-})->throws(QueryException::class, "Field 'procID' doesn't have a default value");
+it('assigns the next procID when none is given', function () {
+    Procedure::create(['procID' => 1000, 'name' => 'Appendectomy']);
+
+    $procedure = Procedure::create(['name' => 'Appendectomy']);
+
+    expect($procedure->procID)->toBe(1001);
+    expect(Procedure::find($procedure->id)->procID)->toBe(1001);
+});

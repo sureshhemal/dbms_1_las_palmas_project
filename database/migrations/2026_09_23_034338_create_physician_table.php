@@ -8,9 +8,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('Physician', function (Blueprint $table) {
@@ -23,14 +20,15 @@ return new class extends Migration
             $table->softDeletes();
         });
 
+        Schema::table('Physician', function (Blueprint $table) {
+            $table->integer('physicianID')->autoIncrement()->change();
+        });
+
         $positions = collect(PhysicianPosition::values())->map(fn (string $value): string => DB::escape($value))->implode(', ');
 
         DB::statement("alter table `Physician` add constraint `physician_position_check` check (position in ({$positions}))");
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('Physician');

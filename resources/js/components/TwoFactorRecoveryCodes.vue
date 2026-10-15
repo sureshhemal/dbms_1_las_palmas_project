@@ -1,41 +1,41 @@
 <script setup lang="ts">
-import { Form } from '@inertiajs/vue3';
-import { Eye, EyeOff, LockKeyhole, RefreshCw } from '@lucide/vue';
-import { nextTick, onMounted, ref, useTemplateRef } from 'vue';
-import AlertError from '@/components/AlertError.vue';
-import { Button } from '@/components/ui/button';
+import { Form } from '@inertiajs/vue3'
+import { Eye, EyeOff, LockKeyhole, RefreshCw } from '@lucide/vue'
+import { nextTick, onMounted, ref, useTemplateRef } from 'vue'
+import AlertError from '@/components/AlertError.vue'
+import { Button } from '@/components/ui/button'
 import {
     Card,
     CardContent,
     CardDescription,
     CardHeader,
     CardTitle,
-} from '@/components/ui/card';
-import { useTwoFactorAuth } from '@/composables/useTwoFactorAuth';
-import { regenerateRecoveryCodes } from '@/routes/two-factor';
+} from '@/components/ui/card'
+import { useTwoFactorAuth } from '@/composables/useTwoFactorAuth'
+import { regenerateRecoveryCodes } from '@/routes/two-factor'
 
-const { recoveryCodesList, fetchRecoveryCodes, errors } = useTwoFactorAuth();
-const isRecoveryCodesVisible = ref<boolean>(false);
-const recoveryCodeSectionRef = useTemplateRef('recoveryCodeSectionRef');
+const { recoveryCodesList, fetchRecoveryCodes, errors } = useTwoFactorAuth()
+const isRecoveryCodesVisible = ref<boolean>(false)
+const recoveryCodeSectionRef = useTemplateRef('recoveryCodeSectionRef')
 
 const toggleRecoveryCodesVisibility = async () => {
     if (!isRecoveryCodesVisible.value && !recoveryCodesList.value.length) {
-        await fetchRecoveryCodes();
+        await fetchRecoveryCodes()
     }
 
-    isRecoveryCodesVisible.value = !isRecoveryCodesVisible.value;
+    isRecoveryCodesVisible.value = !isRecoveryCodesVisible.value
 
     if (isRecoveryCodesVisible.value) {
-        await nextTick();
-        recoveryCodeSectionRef.value?.scrollIntoView({ behavior: 'smooth' });
+        await nextTick()
+        recoveryCodeSectionRef.value?.scrollIntoView({ behavior: 'smooth' })
     }
-};
+}
 
 onMounted(async () => {
     if (!recoveryCodesList.value.length) {
-        await fetchRecoveryCodes();
+        await fetchRecoveryCodes()
     }
-});
+})
 </script>
 
 <template>
@@ -53,7 +53,7 @@ onMounted(async () => {
             <div
                 class="flex flex-col gap-3 select-none sm:flex-row sm:items-center sm:justify-between"
             >
-                <Button @click="toggleRecoveryCodesVisibility" class="w-fit">
+                <Button class="w-fit" @click="toggleRecoveryCodesVisibility">
                     <component
                         :is="isRecoveryCodesVisible ? EyeOff : Eye"
                         class="size-4"
@@ -64,11 +64,11 @@ onMounted(async () => {
 
                 <Form
                     v-if="isRecoveryCodesVisible && recoveryCodesList.length"
+                    v-slot="{ processing }"
                     v-bind="regenerateRecoveryCodes.form()"
                     method="post"
                     :options="{ preserveScroll: true }"
                     @success="fetchRecoveryCodes"
-                    #default="{ processing }"
                 >
                     <Button
                         variant="secondary"
@@ -103,8 +103,8 @@ onMounted(async () => {
                             ></div>
                         </div>
                         <div
-                            v-else
                             v-for="(code, index) in recoveryCodesList"
+                            v-else
                             :key="index"
                         >
                             {{ code }}

@@ -9,9 +9,6 @@ use App\Staff\Entities\PhysicianPosition;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\UniqueConstraintViolationException;
 
-/**
- * @return array{patient_id: string, nurse_id: string, physician_id: string}
- */
 function appointmentParties(): array
 {
     return [
@@ -92,8 +89,12 @@ it('rejects a duplicate appID', function () {
     Appointment::create(['appID' => 1, ...$parties, 'startDateTime' => '2026-09-01 09:00:00']);
 })->throws(UniqueConstraintViolationException::class);
 
-it('requires a appID', function () {
+it('assigns the next appID when none is given', function () {
     $parties = appointmentParties();
+    Appointment::create(['appID' => 1000, ...$parties, 'startDateTime' => '2026-09-01 09:00:00']);
 
-    Appointment::create([...$parties, 'startDateTime' => '2026-09-01 09:00:00']);
-})->throws(QueryException::class, "Field 'appID' doesn't have a default value");
+    $appointment = Appointment::create([...$parties, 'startDateTime' => '2026-09-01 09:00:00']);
+
+    expect($appointment->appID)->toBe(1001);
+    expect(Appointment::find($appointment->id)->appID)->toBe(1001);
+});

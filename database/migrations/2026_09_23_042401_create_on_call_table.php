@@ -7,9 +7,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('OnCall', function (Blueprint $table) {
@@ -26,9 +23,6 @@ return new class extends Migration
         DB::statement('alter table `OnCall` add constraint `oncall_dates_check` check (endDate > startDate)');
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('OnCall');

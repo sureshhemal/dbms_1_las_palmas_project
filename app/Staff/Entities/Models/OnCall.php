@@ -25,9 +25,6 @@ class OnCall extends Model
 
     protected $guarded = [];
 
-    /**
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -36,9 +33,6 @@ class OnCall extends Model
         ];
     }
 
-    /**
-     * @return BelongsTo<Nurse, $this>
-     */
     public function nurse(): BelongsTo
     {
         return $this->belongsTo(Nurse::class);

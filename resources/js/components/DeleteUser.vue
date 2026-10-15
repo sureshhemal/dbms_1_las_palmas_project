@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { Form } from '@inertiajs/vue3';
-import { useTemplateRef } from 'vue';
-import ProfileController from '@/actions/App/Foundation/IO/Http/Controllers/Settings/ProfileController';
-import Heading from '@/components/Heading.vue';
-import InputError from '@/components/InputError.vue';
-import PasswordInput from '@/components/PasswordInput.vue';
-import { Button } from '@/components/ui/button';
+import { Form } from '@inertiajs/vue3'
+import { useTemplateRef } from 'vue'
+import ProfileController from '@/actions/App/Foundation/IO/Http/Controllers/Settings/ProfileController'
+import Heading from '@/components/Heading.vue'
+import InputError from '@/components/InputError.vue'
+import PasswordInput from '@/components/PasswordInput.vue'
+import { Button } from '@/components/ui/button'
 import {
     Dialog,
     DialogClose,
@@ -15,10 +15,10 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
+} from '@/components/ui/dialog'
+import { Label } from '@/components/ui/label'
 
-const passwordInput = useTemplateRef('passwordInput');
+const passwordInput = useTemplateRef('passwordInput')
 </script>
 
 <template>
@@ -45,14 +45,14 @@ const passwordInput = useTemplateRef('passwordInput');
                 </DialogTrigger>
                 <DialogContent>
                     <Form
+                        v-slot="{ errors, processing, reset, clearErrors }"
                         v-bind="ProfileController.destroy.form()"
                         reset-on-success
-                        @error="() => passwordInput?.focus()"
                         :options="{
                             preserveScroll: true,
                         }"
                         class="space-y-6"
-                        v-slot="{ errors, processing, reset, clearErrors }"
+                        @error="() => passwordInput?.focus()"
                     >
                         <DialogHeader class="space-y-3">
                             <DialogTitle
@@ -74,8 +74,8 @@ const passwordInput = useTemplateRef('passwordInput');
                             >
                             <PasswordInput
                                 id="password"
-                                name="password"
                                 ref="passwordInput"
+                                name="password"
                                 placeholder="Password"
                             />
                             <InputError :message="errors.password" />
@@ -87,8 +87,8 @@ const passwordInput = useTemplateRef('passwordInput');
                                     variant="secondary"
                                     @click="
                                         () => {
-                                            clearErrors();
-                                            reset();
+                                            clearErrors()
+                                            reset()
                                         }
                                     "
                                 >

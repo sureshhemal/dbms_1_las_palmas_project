@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { KeyRound, Trash2 } from '@lucide/vue';
-import { ref } from 'vue';
-import { Button } from '@/components/ui/button';
+import { KeyRound, Trash2 } from '@lucide/vue'
+import { ref } from 'vue'
+import { Button } from '@/components/ui/button'
 import {
     Dialog,
     DialogClose,
@@ -10,25 +10,25 @@ import {
     DialogFooter,
     DialogTitle,
     DialogTrigger,
-} from '@/components/ui/dialog';
-import type { Passkey } from '@/types/auth';
+} from '@/components/ui/dialog'
+import type { Passkey } from '@/types/auth'
 
 const props = defineProps<{
-    passkey: Passkey;
-}>();
+    passkey: Passkey
+}>()
 
 const emit = defineEmits<{
-    remove: [id: string, onError: () => void];
-}>();
+    remove: [id: string, onError: () => void]
+}>()
 
-const isDeleting = ref(false);
+const isDeleting = ref(false)
 
 const handleDelete = () => {
-    isDeleting.value = true;
+    isDeleting.value = true
     emit('remove', props.passkey.id, () => {
-        isDeleting.value = false;
-    });
-};
+        isDeleting.value = false
+    })
+}
 </script>
 
 <template>

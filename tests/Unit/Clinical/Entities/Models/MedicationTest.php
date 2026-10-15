@@ -29,6 +29,11 @@ it('rejects a duplicate medID', function () {
     Medication::create(['medID' => 1, 'name' => 'Amoxicillin']);
 })->throws(UniqueConstraintViolationException::class);
 
-it('requires a medID', function () {
-    Medication::create(['name' => 'Amoxicillin']);
-})->throws(QueryException::class, "Field 'medID' doesn't have a default value");
+it('assigns the next medID when none is given', function () {
+    Medication::create(['medID' => 1000, 'name' => 'Amoxicillin']);
+
+    $medication = Medication::create(['name' => 'Amoxicillin']);
+
+    expect($medication->medID)->toBe(1001);
+    expect(Medication::find($medication->id)->medID)->toBe(1001);
+});
