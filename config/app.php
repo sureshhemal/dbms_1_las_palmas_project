@@ -67,6 +67,8 @@ return [
 
     'timezone' => 'UTC',
 
+    'hospital_timezone' => env('HOSPITAL_TIMEZONE', 'UTC'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration

@@ -16,3 +16,11 @@ it('renders the staff page for a signed-in user', function () {
 
     $response->assertInertia(fn (Assert $page) => $page->component('Staff'));
 });
+
+it('shares the hospital timezone with the page', function () {
+    config(['app.hospital_timezone' => 'Asia/Colombo']);
+
+    $response = $this->actingAsLoggedInUser()->get(route('staff'));
+
+    $response->assertInertia(fn (Assert $page) => $page->where('hospitalTimezone', 'Asia/Colombo'));
+});

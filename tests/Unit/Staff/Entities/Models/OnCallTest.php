@@ -55,10 +55,16 @@ it('removes the on-call periods when the nurse is permanently deleted', function
     $this->assertDatabaseEmpty('OnCall');
 });
 
-it('keeps the row when an on-call period is deleted', function () {
+it('removes the row when an on-call period is deleted', function () {
     $onCall = OnCall::create(['nurse_id' => onCallNurse()->id, 'startDate' => '2026-09-01', 'endDate' => '2026-09-03']);
 
     $onCall->delete();
 
-    $this->assertSoftDeleted($onCall);
+    $this->assertModelMissing($onCall);
+});
+
+it('serializes the dates without a time', function () {
+    $onCall = OnCall::create(['nurse_id' => onCallNurse()->id, 'startDate' => '2026-09-01', 'endDate' => '2026-09-03']);
+
+    expect($onCall->fresh()->toArray())->toMatchArray(['startDate' => '2026-09-01', 'endDate' => '2026-09-03']);
 });

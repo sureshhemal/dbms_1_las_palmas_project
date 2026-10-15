@@ -1,0 +1,40 @@
+:root {
+    --fc-classic-button: #f5f5f5;
+    --fc-classic-button-border: #e5e5e5;
+    --fc-classic-button-strong: #e5e5e5;
+    --fc-classic-button-strong-border: #d4d4d4;
+    --fc-classic-button-outline: #0369a14d;
+    --fc-classic-button-foreground: #171717;
+    --fc-classic-primary: #0369a1;
+    --fc-classic-primary-foreground: #fff;
+    --fc-classic-highlight: #38bdf833;
+    --fc-classic-today: #38bdf81f;
+    --fc-classic-background: #fff;
+    --fc-classic-foreground: #171717;
+    --fc-classic-muted-foreground: #737373;
+    --fc-classic-faint-foreground: #a3a3a3;
+    --fc-classic-border: #e5e5e5;
+    --fc-classic-strong-border: #d4d4d4;
+}
+
+:root.dark {
+    --fc-classic-button: #171717;
+    --fc-classic-button-border: #262626;
+    --fc-classic-button-strong: #262626;
+    --fc-classic-button-strong-border: #404040;
+    --fc-classic-button-outline: #38bdf84d;
+    --fc-classic-button-foreground: #f5f5f5;
+    --fc-classic-primary: #38bdf8;
+    --fc-classic-primary-foreground: #082f49;
+    --fc-classic-highlight: #38bdf833;
+    --fc-classic-today: #38bdf81a;
+    --fc-classic-background: #0a0a0a;
+    --fc-classic-faint: #ffffff0a;
+    --fc-classic-muted: #ffffff14;
+    --fc-classic-strong: #ffffff24;
+    --fc-classic-foreground: #f5f5f5;
+    --fc-classic-muted-foreground: #a3a3a3;
+    --fc-classic-faint-foreground: #525252;
+    --fc-classic-border: #262626;
+    --fc-classic-strong-border: #404040;
+}

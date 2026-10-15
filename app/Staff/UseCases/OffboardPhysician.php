@@ -12,6 +12,7 @@ final class OffboardPhysician
     {
         DB::transaction(function () use ($physician): void {
             $this->removeFromDepartmentHead($physician);
+            $this->removeFromDepartments($physician);
 
             $physician->delete();
         });
@@ -20,5 +21,10 @@ final class OffboardPhysician
     private function removeFromDepartmentHead(Physician $physician): void
     {
         Department::query()->where('head_id', $physician->id)->update(['head_id' => null]);
+    }
+
+    private function removeFromDepartments(Physician $physician): void
+    {
+        $physician->departments()->detach();
     }
 }

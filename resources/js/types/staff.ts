@@ -73,7 +73,47 @@ export type Nurse = {
     deleted_at: string | null
 }
 
+export type NurseSummary = {
+    id: string
+    nurseID: number
+    name: string
+    position: NursePosition
+}
+
+export type OnCall = {
+    id: string
+    nurse_id: string
+    startDate: string
+    endDate: string
+    nurse: NurseSummary
+    created_at: string | null
+    updated_at: string | null
+}
+
+export type OnCallFormData = {
+    id: string | null
+    nurse_id: string
+    startDate: string
+    endDate: string
+}
+
+export type OnCallDates = {
+    startDate: string
+    endDate: string
+}
+
+export type OnCallDatesChange = OnCallDates & {
+    onCall: OnCall
+    revert: () => void
+}
+
+export type CalendarRange = {
+    from: string
+    to: string
+}
+
 export type StaffCounts = {
     physician_count: number
     nurse_count: number
+    on_call_nurse_count: number
 }

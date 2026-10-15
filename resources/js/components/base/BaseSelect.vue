@@ -92,7 +92,9 @@ export default defineComponent({
             <SelectTrigger :id="name" class="w-full">
                 <SelectValue :placeholder="placeholder" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent
+                class="max-h-[min(20rem,var(--reka-select-content-available-height))]"
+            >
                 <SelectItem
                     v-for="option in labelledOptions"
                     :key="option.value"

@@ -297,6 +297,21 @@ it('removes an offboarded physician from the departments they head', function ()
     expect($psychiatry->fresh()->head_id)->toBe($otherHead->id);
 });
 
+it('removes an offboarded physician from the departments they work in', function () {
+    $physician = Physician::factory()->create();
+    $physician->departments()->attach([
+        $this->predefinedDepartment(DepartmentName::Surgery)->id,
+        $this->predefinedDepartment(DepartmentName::Psychiatry)->id,
+    ]);
+    $colleague = Physician::factory()->create();
+    $colleague->departments()->attach($this->predefinedDepartment(DepartmentName::Surgery));
+
+    $this->actingAsLoggedInUser()->deleteJson(route('api.physicians.destroy', $physician));
+
+    $this->assertDatabaseMissing('AffiliatedWith', ['physician_id' => $physician->id]);
+    $this->assertDatabaseHas('AffiliatedWith', ['physician_id' => $colleague->id]);
+});
+
 it('returns 404 when offboarding a physician who is already offboarded', function () {
     $physician = Physician::factory()->create();
     $physician->delete();
