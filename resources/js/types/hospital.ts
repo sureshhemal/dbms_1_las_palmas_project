@@ -27,3 +27,22 @@ export type DepartmentPhysician = {
     position: PhysicianPosition
     joined_at: string | null
 }
+
+export type RoomType = 'Single' | 'Double'
+
+export const roomTypes: RoomType[] = ['Single', 'Double']
+
+export type Room = {
+    id: string
+    roomID: number
+    roomType: RoomType
+    created_at: string | null
+    updated_at: string | null
+    deleted_at: string | null
+}
+
+export type RoomFormData = {
+    id: string | null
+    roomID: string
+    roomType: RoomType | ''
+}

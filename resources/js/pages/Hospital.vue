@@ -31,7 +31,7 @@ export default defineComponent({
 
         <Heading
             title="Hospital"
-            description="Departments of Las Palmas Medical Center."
+            description="Departments and rooms of Las Palmas Medical Center."
         />
 
         <HospitalTabs />

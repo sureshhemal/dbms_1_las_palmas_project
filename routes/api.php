@@ -3,6 +3,7 @@
 use App\Hospital\IO\Http\Controllers\DepartmentHeadCandidatesController;
 use App\Hospital\IO\Http\Controllers\DepartmentPhysiciansController;
 use App\Hospital\IO\Http\Controllers\DepartmentsController;
+use App\Hospital\IO\Http\Controllers\RoomsController;
 use App\Staff\IO\Http\Controllers\NursesController;
 use App\Staff\IO\Http\Controllers\OnCallNurseCandidatesController;
 use App\Staff\IO\Http\Controllers\OnCallsController;
@@ -23,6 +24,11 @@ Route::middleware('auth')->group(function () {
     Route::put('departments/{department}', [DepartmentsController::class, 'update'])->name('api.departments.update');
     Route::get('departments/{department}/physicians', [DepartmentPhysiciansController::class, 'index'])->name('api.departments.physicians.index');
     Route::get('department-head-candidates', [DepartmentHeadCandidatesController::class, 'index'])->name('api.department-head-candidates.index');
+
+    Route::get('rooms', [RoomsController::class, 'index'])->name('api.rooms.index');
+    Route::post('rooms', [RoomsController::class, 'store'])->name('api.rooms.store');
+    Route::put('rooms/{room}', [RoomsController::class, 'update'])->name('api.rooms.update');
+    Route::delete('rooms/{room}', [RoomsController::class, 'destroy'])->name('api.rooms.destroy');
 
     Route::get('nurses', [NursesController::class, 'index'])->name('api.nurses.index');
     Route::post('nurses', [NursesController::class, 'store'])->name('api.nurses.store');
