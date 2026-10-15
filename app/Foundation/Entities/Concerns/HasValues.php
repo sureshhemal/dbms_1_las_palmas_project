@@ -8,7 +8,7 @@ namespace App\Foundation\Entities\Concerns;
 trait HasValues
 {
     /**
-     * @return list<string|int>
+     * @return list<value-of<self>>
      */
     public static function values(): array
     {

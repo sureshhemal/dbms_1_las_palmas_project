@@ -39,7 +39,7 @@ Each domain is organized into layers following Clean Architecture principles:
 Booking/
 ├── Entities/             # Domain entities, models, business rules
 ├── UseCases/             # Application business logic
-├── Adapters/             # Framework-agnostic interface adapters  
+├── Adapters/             # Framework-agnostic interface adapters
 ├── IO/                   # Frameworks, drivers, external services
 ├── Specs/                # Behavior specifications
 └── Testing/              # Testing utilities
@@ -58,7 +58,7 @@ use App\User\Entities\Models\User;use Illuminate\Database\Eloquent\Model;
 class Booking extends Model
 {
     protected $fillable = ['user_id', 'start_date', 'end_date', 'status', 'notes'];
-    
+
     // Domain methods (business logic)
     public function cancel()
     {
@@ -66,12 +66,12 @@ class Booking extends Model
         $this->cancelled_at = now();
         return $this;
     }
-    
+
     public function canBeCancelled()
     {
         return $this->status === 'active' && $this->start_date > now();
     }
-    
+
     // Relationships
     public function user()
     {
@@ -100,18 +100,18 @@ class CancelBooking
     {
         // Directly use Eloquent for simplicity
         $booking = Booking::find($bookingId);
-        
+
         if (!$booking) {
             throw new BookingNotFoundException("Booking not found: {$bookingId}");
         }
-        
+
         if (!$booking->canBeCancelled()) {
             throw new BookingCancellationException('Booking cannot be cancelled');
         }
-        
+
         $booking->cancel();
         $booking->save();
-        
+
         return $booking;
     }
 }
@@ -131,12 +131,12 @@ use Illuminate\Http\JsonResponse;
 class BookingController
 {
     private $cancelBooking;
-    
+
     public function __construct(CancelBooking $cancelBooking)
     {
         $this->cancelBooking = $cancelBooking;
     }
-    
+
     public function cancel(string $id): JsonResponse
     {
         try {
@@ -190,24 +190,24 @@ use App\Booking\Entities\Booking;
 class CancelBooking
 {
     private $bookingRepository;
-    
+
     public function __construct(BookingRepositoryInterface $bookingRepository)
     {
         $this->bookingRepository = $bookingRepository;
     }
-    
+
     public function execute(string $bookingId)
     {
         $booking = $this->bookingRepository->findById($bookingId);
-        
+
         if (!$booking) {
             throw new BookingNotFoundException("Booking not found: {$bookingId}");
         }
-        
+
         if (!$booking->canBeCancelled()) {
             throw new BookingCancellationException('Booking cannot be cancelled');
         }
-        
+
         $booking->cancel();
         return $this->bookingRepository->save($booking);
     }
@@ -287,12 +287,12 @@ use App\Booking\UseCases\Repositories\BookingRepositoryInterface;
 class CreateBooking
 {
     private $bookingRepository;
-    
+
     public function __construct(BookingRepositoryInterface $bookingRepository)
     {
         $this->bookingRepository = $bookingRepository;
     }
-    
+
     public function execute(CreateBookingRequest $request): Booking
     {
         $booking = new Booking();
@@ -301,7 +301,7 @@ class CreateBooking
         $booking->end_date = $request->endDate;
         $booking->notes = $request->notes;
         $booking->status = 'pending';
-        
+
         return $this->bookingRepository->save($booking);
     }
 }
@@ -326,7 +326,7 @@ class EloquentBookingRepository implements BookingRepositoryInterface
     {
         return Booking::find($id);
     }
-    
+
     public function save(Booking $booking): Booking
     {
         $booking->save();
@@ -336,6 +336,7 @@ class EloquentBookingRepository implements BookingRepositoryInterface
 ```
 
 **Best for:**
+
 - Smaller applications with straightforward data access
 - When you need to leverage Eloquent relationships
 - When performance is not the primary concern
@@ -357,14 +358,14 @@ class QueryBookingRepository implements BookingRepositoryInterface
     {
         // Use DB::table for better performance
         $bookingData = DB::table('bookings')->where('id', $id)->first();
-        
+
         if (!$bookingData) {
             return null;
         }
-        
+
         return $this->mapToEntity($bookingData);
     }
-    
+
     public function save(Booking $booking): Booking
     {
         if (empty($booking->id)) {
@@ -378,7 +379,7 @@ class QueryBookingRepository implements BookingRepositoryInterface
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
-            
+
             $booking->id = $id;
         } else {
             // Update existing record
@@ -393,10 +394,10 @@ class QueryBookingRepository implements BookingRepositoryInterface
                     'updated_at' => now(),
                 ]);
         }
-        
+
         return $booking;
     }
-    
+
     /**
      * Map a database record to a domain entity
      */
@@ -412,13 +413,14 @@ class QueryBookingRepository implements BookingRepositoryInterface
         $booking->notes = $data->notes;
         $booking->created_at = $data->created_at;
         $booking->updated_at = $data->updated_at;
-        
+
         return $booking;
     }
 }
 ```
 
 **Best for:**
+
 - Applications with high performance requirements
 - Complex queries with many joins or conditions
 - When you need explicit control over the SQL being generated
@@ -445,10 +447,10 @@ class BookingServiceProvider extends ServiceProvider
             BookingRepositoryInterface::class,
             EloquentBookingRepository::class
         );
-        
+
         // Register other bindings...
     }
-    
+
     public function boot()
     {
         // Load routes, views, etc.
@@ -483,27 +485,27 @@ use App\Booking\UseCases\CancelBooking\CancelBookingPresenterInterface;
 class CancelBooking
 {
     private $bookingRepository;
-    
+
     public function __construct(BookingRepositoryInterface $bookingRepository)
     {
         $this->bookingRepository = $bookingRepository;
     }
-    
+
     public function execute(string $bookingId, CancelBookingPresenterInterface $presenter)
     {
         $booking = $this->bookingRepository->findById($bookingId);
-        
+
         if (!$booking) {
             return $presenter->presentNotFound($bookingId);
         }
-        
+
         if (!$booking->canBeCancelled()) {
             return $presenter->presentCannotCancel('Booking is not in an active state or has already started');
         }
-        
+
         $booking->cancel();
         $booking = $this->bookingRepository->save($booking);
-        
+
         return $presenter->presentSuccess($booking);
     }
 }
@@ -531,7 +533,7 @@ class CancelBookingJsonPresenter implements CancelBookingPresenterInterface
             ]
         ];
     }
-    
+
     public function presentNotFound(string $bookingId): array
     {
         return [
@@ -542,7 +544,7 @@ class CancelBookingJsonPresenter implements CancelBookingPresenterInterface
             ]
         ];
     }
-    
+
     public function presentCannotCancel(string $reason): array
     {
         return [
@@ -567,12 +569,12 @@ class CancelBookingCliPresenter implements CancelBookingPresenterInterface
     {
         return "✓ Booking {$booking->id} has been successfully cancelled.";
     }
-    
+
     public function presentNotFound(string $bookingId): string
     {
         return "✗ Error: Booking {$bookingId} not found.";
     }
-    
+
     public function presentCannotCancel(string $reason): string
     {
         return "✗ Error: Cannot cancel booking. {$reason}";
@@ -593,20 +595,20 @@ use Illuminate\Http\JsonResponse;
 class BookingController
 {
     private $cancelBooking;
-    
+
     public function __construct(CancelBooking $cancelBooking)
     {
         $this->cancelBooking = $cancelBooking;
     }
-    
+
     public function cancel(string $id): JsonResponse
     {
         $presenter = new CancelBookingJsonPresenter();
         $result = $this->cancelBooking->execute($id, $presenter);
-        
-        $statusCode = isset($result['success']) && $result['success'] ? 200 : 
+
+        $statusCode = isset($result['success']) && $result['success'] ? 200 :
             (isset($result['error']['code']) && $result['error']['code'] === 'booking_not_found' ? 404 : 400);
-            
+
         return response()->json($result, $statusCode);
     }
 }
@@ -622,24 +624,24 @@ class CancelBookingCommand extends Command
 {
     protected $signature = 'booking:cancel {id}';
     protected $description = 'Cancel a booking';
-    
+
     private $cancelBooking;
-    
+
     public function __construct(CancelBooking $cancelBooking)
     {
         parent::__construct();
         $this->cancelBooking = $cancelBooking;
     }
-    
+
     public function handle()
     {
         $bookingId = $this->argument('id');
         $presenter = new CancelBookingCliPresenter();
-        
+
         $result = $this->cancelBooking->execute($bookingId, $presenter);
-        
+
         $this->line($result);
-        
+
         return str_contains($result, '✓') ? 0 : 1; // Success or error exit code
     }
 }
@@ -662,7 +664,7 @@ class BookingRepositoryMock implements BookingRepositoryInterface
 {
     private array $bookings = [];
     private ?Booking $lastSavedBooking = null;
-    
+
     public function findById(string $id): ?Booking
     {
         foreach ($this->bookings as $booking) {
@@ -670,31 +672,31 @@ class BookingRepositoryMock implements BookingRepositoryInterface
                 return $booking;
             }
         }
-        
+
         return null;
     }
-    
+
     public function save(Booking $booking): Booking
     {
         // Simulate auto-increment ID if not set
         if (empty($booking->id)) {
             $booking->id = count($this->bookings) + 1;
         }
-        
+
         // Store the booking
         $this->lastSavedBooking = $booking;
         $this->bookings[] = $booking;
-        
+
         return $booking;
     }
-    
+
     // Helper methods for tests
     public function addBooking(Booking $booking): self
     {
         $this->bookings[] = $booking;
         return $this;
     }
-    
+
     public function getLastSavedBooking(): ?Booking
     {
         return $this->lastSavedBooking;
@@ -719,10 +721,10 @@ class BookingTestAssertions
      * Assert that a booking has expected basic properties
      */
     public static function assertBookingHasProperties(
-        Booking $booking, 
-        string $userId, 
-        string $startDate, 
-        string $endDate, 
+        Booking $booking,
+        string $userId,
+        string $startDate,
+        string $endDate,
         string $status,
         ?string $notes = null
     ): void {
@@ -730,7 +732,7 @@ class BookingTestAssertions
         Assert::assertEquals($startDate, $booking->start_date, 'Booking has incorrect start date');
         Assert::assertEquals($endDate, $booking->end_date, 'Booking has incorrect end date');
         Assert::assertEquals($status, $booking->status, 'Booking has incorrect status');
-        
+
         if ($notes !== null) {
             Assert::assertEquals($notes, $booking->notes, 'Booking has incorrect notes');
         }
@@ -740,7 +742,7 @@ class BookingTestAssertions
      * Assert that a booking was saved in the repository
      */
     public static function assertBookingWasSaved(
-        BookingRepositoryMock $repository, 
+        BookingRepositoryMock $repository,
         Booking $expectedBooking
     ): void {
         $savedBooking = $repository->getLastSavedBooking();
@@ -766,12 +768,12 @@ use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 class CreateBookingMutation
 {
     private $createBooking;
-    
+
     public function __construct(CreateBooking $createBooking)
     {
         $this->createBooking = $createBooking;
     }
-    
+
     public function __invoke($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
         // Transform GraphQL input to use case input
@@ -781,10 +783,10 @@ class CreateBookingMutation
             'endDate' => $args['input']['end_date'],
             'notes' => $args['input']['notes'] ?? null,
         ]);
-        
+
         // Execute use case
         $booking = $this->createBooking->execute($input);
-        
+
         // Return result (will be automatically transformed to GraphQL type)
         return $booking;
     }
@@ -805,7 +807,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class BookingFactory extends Factory
 {
     protected $model = Booking::class;
-    
+
     public function definition()
     {
         return [
@@ -815,7 +817,7 @@ class BookingFactory extends Factory
             'status' => $this->faker->randomElement(['pending', 'confirmed', 'cancelled']),
         ];
     }
-    
+
     // Factory states
     public function confirmed()
     {
