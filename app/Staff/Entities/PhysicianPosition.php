@@ -14,4 +14,20 @@ enum PhysicianPosition: string
     case ChiefOfMedicine = 'Chief of Medicine';
     case Resident = 'Resident';
     case Psychiatrist = 'Psychiatrist';
+
+    public function isCapableOfBeingDepartmentHead(): bool
+    {
+        return match ($this) {
+            self::Senior, self::Surgeon, self::Psychiatrist, self::ChiefOfMedicine => true,
+            self::Intern, self::Resident => false,
+        };
+    }
+
+    public static function capableOfBeingDepartmentHead(): array
+    {
+        return array_values(array_filter(
+            self::cases(),
+            fn (self $position): bool => $position->isCapableOfBeingDepartmentHead(),
+        ));
+    }
 }

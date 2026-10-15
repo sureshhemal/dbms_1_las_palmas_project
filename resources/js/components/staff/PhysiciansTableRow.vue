@@ -29,6 +29,24 @@ export default defineComponent({
     emits: ['edit', 'offboard'],
 
     computed: {
+        headedDepartmentsSummary(): string {
+            const headedDepartments = this.physician.headed_departments ?? []
+
+            if (headedDepartments.length === 0) {
+                return '—'
+            }
+
+            return headedDepartments
+                .map(
+                    (department) => `${department.name} (${department.deptID})`,
+                )
+                .join(', ')
+        },
+
+        headsAnyDepartment(): boolean {
+            return (this.physician.headed_departments ?? []).length > 0
+        },
+
         maskedSsn(): string {
             return this.physician.ssn ? maskSsn(this.physician.ssn) : '—'
         },
@@ -45,6 +63,13 @@ export default defineComponent({
             {{ physician.name }}
         </BaseTableCell>
         <BaseTableCell>{{ physician.position }}</BaseTableCell>
+        <BaseTableCell
+            :class="{
+                'text-neutral-500 dark:text-neutral-400': !headsAnyDepartment,
+            }"
+        >
+            {{ headedDepartmentsSummary }}
+        </BaseTableCell>
         <BaseTableCell class="font-mono text-neutral-500 dark:text-neutral-400">
             {{ maskedSsn }}
         </BaseTableCell>

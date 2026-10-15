@@ -11,6 +11,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
+import type { SelectOption } from '@/types'
 
 export default defineComponent({
     name: 'BaseSelect',
@@ -40,7 +41,7 @@ export default defineComponent({
             required: true,
         },
         options: {
-            type: Array as PropType<string[]>,
+            type: Array as PropType<Array<string | SelectOption>>,
             required: true,
         },
         rules: {
@@ -58,6 +59,14 @@ export default defineComponent({
     computed: {
         hasValue(): boolean {
             return this.modelValue !== ''
+        },
+
+        labelledOptions(): SelectOption[] {
+            return this.options.map((option) =>
+                typeof option === 'string'
+                    ? { value: option, label: option }
+                    : option,
+            )
         },
     },
 })
@@ -85,11 +94,11 @@ export default defineComponent({
             </SelectTrigger>
             <SelectContent>
                 <SelectItem
-                    v-for="option in options"
-                    :key="option"
-                    :value="option"
+                    v-for="option in labelledOptions"
+                    :key="option.value"
+                    :value="option.value"
                 >
-                    {{ option }}
+                    {{ option.label }}
                 </SelectItem>
             </SelectContent>
         </UiSelect>

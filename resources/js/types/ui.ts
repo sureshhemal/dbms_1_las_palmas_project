@@ -7,3 +7,14 @@ export type FlashToast = {
     type: 'success' | 'info' | 'warning' | 'error'
     message: string
 }
+
+export type TabDefinition = {
+    name: string
+    label: string
+    count?: number | null
+}
+
+export type SelectOption = {
+    value: string
+    label: string
+}

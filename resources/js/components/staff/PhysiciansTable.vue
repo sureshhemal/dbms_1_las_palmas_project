@@ -32,7 +32,14 @@ export default defineComponent({
 
     data() {
         return {
-            columnHeadings: ['Physician ID', 'Name', 'Position', 'SSN', ''],
+            columnHeadings: [
+                'Physician ID',
+                'Name',
+                'Position',
+                'Heads',
+                'SSN',
+                '',
+            ],
         }
     },
 })
