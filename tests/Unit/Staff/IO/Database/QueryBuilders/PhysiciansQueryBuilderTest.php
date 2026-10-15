@@ -26,3 +26,19 @@ it('leaves out interns and residents', function (PhysicianPosition $traineePosit
     'intern' => [PhysicianPosition::Intern],
     'resident' => [PhysicianPosition::Resident],
 ]);
+
+it('finds every physician except interns as possible primary physicians', function () {
+    foreach (PhysicianPosition::cases() as $position) {
+        Physician::factory()->withPosition($position)->create();
+    }
+
+    $possiblePrimaryPhysicians = Physician::query()->whereCapableOfBeingPrimaryPhysicianBasedOnPosition()->get();
+
+    expect($possiblePrimaryPhysicians->pluck('position')->all())->toEqualCanonicalizing([
+        PhysicianPosition::Senior,
+        PhysicianPosition::Surgeon,
+        PhysicianPosition::Psychiatrist,
+        PhysicianPosition::ChiefOfMedicine,
+        PhysicianPosition::Resident,
+    ]);
+});

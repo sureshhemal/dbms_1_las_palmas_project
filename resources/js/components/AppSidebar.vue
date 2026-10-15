@@ -4,6 +4,7 @@ import {
     BookOpen,
     Building2,
     FolderGit2,
+    HeartPulse,
     LayoutGrid,
     Pill,
     Users,
@@ -21,7 +22,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar'
-import { clinical, dashboard, hospital, staff } from '@/routes'
+import { clinical, dashboard, hospital, patients, staff } from '@/routes'
 import type { NavItem } from '@/types'
 
 const mainNavItems: NavItem[] = [
@@ -39,6 +40,11 @@ const mainNavItems: NavItem[] = [
         title: 'Hospital',
         href: hospital(),
         icon: Building2,
+    },
+    {
+        title: 'Patients',
+        href: patients(),
+        icon: HeartPulse,
     },
     {
         title: 'Clinical',

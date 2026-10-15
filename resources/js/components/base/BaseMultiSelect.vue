@@ -102,6 +102,12 @@ export default defineComponent({
             return `${this.modelValue.length} selected`
         },
 
+        areAllVisibleOptionsInDraft(): boolean {
+            return this.visibleOptions.every((option) =>
+                this.draftSelection.includes(option.value),
+            )
+        },
+
         draftDiffersFromSelection(): boolean {
             return (
                 this.draftSelection.length !== this.modelValue.length ||
@@ -156,6 +162,19 @@ export default defineComponent({
                               orderedOption === option ||
                               this.isInDraft(orderedOption),
                       )
+        },
+
+        selectAllVisibleInDraft(): void {
+            const visibleValues = this.visibleOptions.map(
+                (option) => option.value,
+            )
+
+            this.draftSelection = this.labelledOptions
+                .map((option) => option.value)
+                .filter(
+                    (value) =>
+                        visibleValues.includes(value) || this.isInDraft(value),
+                )
         },
 
         clearDraft(): void {
@@ -235,17 +254,28 @@ export default defineComponent({
 
             <DropdownMenuSeparator class="shrink-0" />
 
-            <div class="flex shrink-0 gap-1 p-1">
-                <UiButton
-                    size="sm"
-                    variant="outline"
-                    class="flex-1"
-                    :disabled="draftSelection.length === 0"
-                    @click="clearDraft"
-                >
-                    Clear
-                </UiButton>
-                <UiButton size="sm" class="flex-1" @click="applyDraft">
+            <div class="shrink-0 space-y-1 p-1">
+                <div class="flex gap-1">
+                    <UiButton
+                        size="sm"
+                        variant="outline"
+                        class="flex-1"
+                        :disabled="areAllVisibleOptionsInDraft"
+                        @click="selectAllVisibleInDraft"
+                    >
+                        Select all
+                    </UiButton>
+                    <UiButton
+                        size="sm"
+                        variant="outline"
+                        class="flex-1"
+                        :disabled="draftSelection.length === 0"
+                        @click="clearDraft"
+                    >
+                        Clear
+                    </UiButton>
+                </div>
+                <UiButton size="sm" class="w-full" @click="applyDraft">
                     Apply
                 </UiButton>
             </div>

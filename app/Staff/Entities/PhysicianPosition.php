@@ -23,11 +23,24 @@ enum PhysicianPosition: string
         };
     }
 
+    public function isCapableOfBeingPrimaryPhysician(): bool
+    {
+        return $this !== self::Intern;
+    }
+
     public static function capableOfBeingDepartmentHead(): array
     {
         return array_values(array_filter(
             self::cases(),
             fn (self $position): bool => $position->isCapableOfBeingDepartmentHead(),
+        ));
+    }
+
+    public static function capableOfBeingPrimaryPhysician(): array
+    {
+        return array_values(array_filter(
+            self::cases(),
+            fn (self $position): bool => $position->isCapableOfBeingPrimaryPhysician(),
         ));
     }
 }

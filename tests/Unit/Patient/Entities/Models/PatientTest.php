@@ -88,3 +88,30 @@ it('keeps the leading zeros of the ssn', function () {
 
     expect(Patient::find($patient->id)->ssn)->toBe('012-34-5678');
 });
+
+it('calculates the age in whole years on the hospital day', function (string $dob, string $today, int $expectedAge) {
+    $this->travelTo($today);
+
+    $patient = Patient::factory()->create(['dob' => $dob]);
+
+    expect($patient->age)->toBe($expectedAge);
+})->with([
+    'the day before the birthday' => ['1975-04-12', '2026-04-11 12:00:00', 50],
+    'on the birthday' => ['1975-04-12', '2026-04-12 12:00:00', 51],
+    'a baby under a year old' => ['2026-01-20', '2026-10-15 12:00:00', 0],
+]);
+
+it('uses the hospital time zone to decide which day it is', function () {
+    config(['app.hospital_timezone' => 'Asia/Colombo']);
+    $this->travelTo('2026-04-11 20:00:00');
+
+    $patient = Patient::factory()->create(['dob' => '1975-04-12']);
+
+    expect($patient->age)->toBe(51);
+});
+
+it('has no age without a date of birth', function () {
+    $patient = Patient::factory()->create(['dob' => null]);
+
+    expect($patient->age)->toBeNull();
+});
