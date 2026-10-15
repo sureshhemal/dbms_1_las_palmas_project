@@ -4,15 +4,16 @@ use App\Patient\Entities\Models\Patient;
 use App\Staff\Entities\Models\Physician;
 use App\Staff\Entities\PhysicianPosition;
 use Illuminate\Database\QueryException;
+use Illuminate\Database\UniqueConstraintViolationException;
 
 it('generates a ulid primary key', function () {
-    $patient = Patient::create(['name' => 'Harvey Corman']);
+    $patient = Patient::create(['patientID' => 1, 'name' => 'Harvey Corman']);
 
     expect($patient->getKey())->toBeString()->toHaveLength(26);
 });
 
-it('allows a patient with only a name', function () {
-    $patient = Patient::create(['name' => 'Harvey Corman']);
+it('allows a patient with only a name and patient id', function () {
+    $patient = Patient::create(['patientID' => 2, 'name' => 'Harvey Corman']);
 
     $this->assertDatabaseHas('Patient', [
         'id' => $patient->id,
@@ -26,33 +27,33 @@ it('allows a patient with only a name', function () {
 });
 
 it('reads the date of birth back as a date', function () {
-    $patient = Patient::create(['name' => 'Harvey Corman', 'dob' => '1970-03-15']);
+    $patient = Patient::create(['patientID' => 3, 'name' => 'Harvey Corman', 'dob' => '1970-03-15']);
 
     expect(Patient::find($patient->id)->dob->toDateString())->toBe('1970-03-15');
 });
 
 it('allows patients to share an insurance number', function () {
-    Patient::create(['name' => 'Harvey Corman', 'insuranceNumber' => 68421879]);
+    Patient::create(['patientID' => 4, 'name' => 'Harvey Corman', 'insuranceNumber' => 68421879]);
 
-    Patient::create(['name' => 'Mary Corman', 'insuranceNumber' => 68421879]);
+    Patient::create(['patientID' => 5, 'name' => 'Mary Corman', 'insuranceNumber' => 68421879]);
 
     $this->assertDatabaseCount('Patient', 2);
 });
 
 it('returns the primary physician', function () {
-    $physician = Physician::create(['name' => 'John Dorian', 'position' => PhysicianPosition::Resident]);
-    $patient = Patient::create(['name' => 'Harvey Corman', 'primary_physician_id' => $physician->id]);
+    $physician = Physician::create(['physicianID' => 1, 'name' => 'John Dorian', 'position' => PhysicianPosition::Resident]);
+    $patient = Patient::create(['patientID' => 6, 'name' => 'Harvey Corman', 'primary_physician_id' => $physician->id]);
 
     expect($patient->primaryPhysician->is($physician))->toBeTrue();
 });
 
 it('rejects a primary physician that does not exist', function () {
-    Patient::create(['name' => 'Harvey Corman', 'primary_physician_id' => (string) str()->ulid()]);
+    Patient::create(['patientID' => 7, 'name' => 'Harvey Corman', 'primary_physician_id' => (string) str()->ulid()]);
 })->throws(QueryException::class);
 
 it('clears the primary physician when the physician is permanently deleted', function () {
-    $physician = Physician::create(['name' => 'John Dorian', 'position' => PhysicianPosition::Resident]);
-    $patient = Patient::create(['name' => 'Harvey Corman', 'primary_physician_id' => $physician->id]);
+    $physician = Physician::create(['physicianID' => 2, 'name' => 'John Dorian', 'position' => PhysicianPosition::Resident]);
+    $patient = Patient::create(['patientID' => 8, 'name' => 'Harvey Corman', 'primary_physician_id' => $physician->id]);
 
     $physician->forceDelete();
 
@@ -60,9 +61,25 @@ it('clears the primary physician when the physician is permanently deleted', fun
 });
 
 it('keeps the row when a patient is deleted', function () {
-    $patient = Patient::create(['name' => 'Harvey Corman']);
+    $patient = Patient::create(['patientID' => 9, 'name' => 'Harvey Corman']);
 
     $patient->delete();
 
     $this->assertSoftDeleted($patient);
+});
+
+it('rejects a duplicate patientID', function () {
+    Patient::create(['patientID' => 1, 'name' => 'Harvey Corman']);
+
+    Patient::create(['patientID' => 1, 'name' => 'Harvey Corman']);
+})->throws(UniqueConstraintViolationException::class);
+
+it('requires a patientID', function () {
+    Patient::create(['name' => 'Harvey Corman']);
+})->throws(QueryException::class, "Field 'patientID' doesn't have a default value");
+
+it('keeps the leading zeros of the ssn', function () {
+    $patient = Patient::create(['patientID' => 1, 'name' => 'Harvey Corman', 'ssn' => '012-34-5678']);
+
+    expect(Patient::find($patient->id)->ssn)->toBe('012-34-5678');
 });

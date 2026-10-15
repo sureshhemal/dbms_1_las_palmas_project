@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('Procedure', function (Blueprint $table) {
             $table->ulid('id')->primary();
+            $table->integer('procID')->unique();
             $table->string('name', 40);
             $table->double('cost')->nullable();
             $table->timestamps();

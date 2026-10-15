@@ -14,6 +14,7 @@ return new class extends Migration
     {
         Schema::create('Stay', function (Blueprint $table) {
             $table->ulid('id')->primary();
+            $table->integer('stayID')->unique();
             $table->foreignUlid('patient_id')->constrained('Patient', 'id')->cascadeOnDelete();
             $table->foreignUlid('room_id')->constrained('Room', 'id');
             $table->date('startDate');

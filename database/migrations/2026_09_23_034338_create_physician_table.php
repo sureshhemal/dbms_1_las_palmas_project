@@ -15,9 +15,10 @@ return new class extends Migration
     {
         Schema::create('Physician', function (Blueprint $table) {
             $table->ulid('id')->primary();
+            $table->integer('physicianID')->unique();
             $table->string('name', 40);
             $table->string('position', 40);
-            $table->integer('ssn')->nullable();
+            $table->string('ssn', 11)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

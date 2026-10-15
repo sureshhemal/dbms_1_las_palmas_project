@@ -12,7 +12,8 @@ use Illuminate\Support\Carbon;
 
 /**
  * @property string $id
- * @property int|null $ssn
+ * @property int $patientID
+ * @property string|null $ssn
  * @property string $name
  * @property string|null $address
  * @property Carbon|null $dob

@@ -7,7 +7,7 @@ use Illuminate\Database\QueryException;
 
 function onCallNurse(): Nurse
 {
-    return Nurse::create(['name' => 'Carla Espinosa', 'position' => NursePosition::Nurse]);
+    return Nurse::create(['nurseID' => 1, 'name' => 'Carla Espinosa', 'position' => NursePosition::Nurse]);
 }
 
 it('returns the nurse', function () {

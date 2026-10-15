@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('Department', function (Blueprint $table) {
             $table->ulid('id')->primary();
+            $table->integer('deptID')->unique();
             $table->string('name', 40);
             $table->foreignUlid('head_id')->nullable()->constrained('Physician', 'id')->nullOnDelete();
             $table->timestamps();

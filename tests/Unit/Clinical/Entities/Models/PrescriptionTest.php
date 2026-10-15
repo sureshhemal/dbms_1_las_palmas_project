@@ -13,9 +13,9 @@ use Illuminate\Database\QueryException;
 function prescriptionParties(): array
 {
     return [
-        'physician_id' => Physician::create(['name' => 'John Dorian', 'position' => PhysicianPosition::Resident])->id,
-        'patient_id' => Patient::create(['name' => 'Harvey Corman'])->id,
-        'medication_id' => Medication::create(['name' => 'Amoxicillin'])->id,
+        'physician_id' => Physician::create(['physicianID' => 1, 'name' => 'John Dorian', 'position' => PhysicianPosition::Resident])->id,
+        'patient_id' => Patient::create(['patientID' => 1, 'name' => 'Harvey Corman'])->id,
+        'medication_id' => Medication::create(['medID' => 1, 'name' => 'Amoxicillin'])->id,
     ];
 }
 

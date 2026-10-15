@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('Room', function (Blueprint $table) {
             $table->ulid('id')->primary();
+            $table->integer('roomID')->unique();
             $table->string('roomType', 40);
             $table->timestamps();
             $table->softDeletes();

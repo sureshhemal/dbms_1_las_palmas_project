@@ -14,6 +14,7 @@ return new class extends Migration
     {
         Schema::create('Appointment', function (Blueprint $table) {
             $table->ulid('id')->primary();
+            $table->integer('appID')->unique();
             $table->foreignUlid('patient_id')->constrained('Patient', 'id')->cascadeOnDelete();
             $table->foreignUlid('nurse_id')->constrained('Nurse', 'id');
             $table->foreignUlid('physician_id')->constrained('Physician', 'id');

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('Medication', function (Blueprint $table) {
             $table->ulid('id')->primary();
+            $table->integer('medID')->unique();
             $table->string('name', 40);
             $table->timestamps();
             $table->softDeletes();

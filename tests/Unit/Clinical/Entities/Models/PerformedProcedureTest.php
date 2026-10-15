@@ -17,15 +17,15 @@ use Illuminate\Database\QueryException;
  */
 function performedProcedureParties(): array
 {
-    $patient = Patient::create(['name' => 'Harvey Corman']);
-    $room = Room::create(['roomType' => RoomType::Single]);
+    $patient = Patient::create(['patientID' => 1, 'name' => 'Harvey Corman']);
+    $room = Room::create(['roomID' => 1, 'roomType' => RoomType::Single]);
 
     return [
         'patient_id' => $patient->id,
-        'procedure_id' => Procedure::create(['name' => 'Appendectomy'])->id,
-        'stay_id' => Stay::create(['patient_id' => $patient->id, 'room_id' => $room->id, 'startDate' => '2026-09-01'])->id,
-        'physician_id' => Physician::create(['name' => 'Chris Turk', 'position' => PhysicianPosition::Surgeon])->id,
-        'nurse_id' => Nurse::create(['name' => 'Carla Espinosa', 'position' => NursePosition::HeadNurse])->id,
+        'procedure_id' => Procedure::create(['procID' => 1, 'name' => 'Appendectomy'])->id,
+        'stay_id' => Stay::create(['stayID' => 1, 'patient_id' => $patient->id, 'room_id' => $room->id, 'startDate' => '2026-09-01'])->id,
+        'physician_id' => Physician::create(['physicianID' => 1, 'name' => 'Chris Turk', 'position' => PhysicianPosition::Surgeon])->id,
+        'nurse_id' => Nurse::create(['nurseID' => 1, 'name' => 'Carla Espinosa', 'position' => NursePosition::HeadNurse])->id,
     ];
 }
 
