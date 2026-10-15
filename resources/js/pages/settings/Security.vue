@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { Form, Head } from '@inertiajs/vue3';
-import SecurityController from '@/actions/App/Foundation/IO/Http/Controllers/Settings/SecurityController';
-import Heading from '@/components/Heading.vue';
-import InputError from '@/components/InputError.vue';
-import PasswordInput from '@/components/PasswordInput.vue';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { edit } from '@/routes/security';
-import type { Props as ManagePasskeysProps } from '@/components/ManagePasskeys.vue';
-import ManagePasskeys from '@/components/ManagePasskeys.vue';
-import type { Props as ManageTwoFactorProps } from '@/components/ManageTwoFactor.vue';
-import ManageTwoFactor from '@/components/ManageTwoFactor.vue';
+import { Form, Head } from '@inertiajs/vue3'
+import SecurityController from '@/actions/App/Foundation/IO/Http/Controllers/Settings/SecurityController'
+import Heading from '@/components/Heading.vue'
+import InputError from '@/components/InputError.vue'
+import PasswordInput from '@/components/PasswordInput.vue'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { edit } from '@/routes/security'
+import type { Props as ManagePasskeysProps } from '@/components/ManagePasskeys.vue'
+import ManagePasskeys from '@/components/ManagePasskeys.vue'
+import type { Props as ManageTwoFactorProps } from '@/components/ManageTwoFactor.vue'
+import ManageTwoFactor from '@/components/ManageTwoFactor.vue'
 
 // oxfmt-ignore
 type Props = {
@@ -18,7 +18,7 @@ type Props = {
 } & ManagePasskeysProps &
     ManageTwoFactorProps;
 
-const props = defineProps<Props>();
+const props = defineProps<Props>()
 
 defineOptions({
     layout: {
@@ -29,7 +29,7 @@ defineOptions({
             },
         ],
     },
-});
+})
 </script>
 
 <template>
@@ -45,6 +45,7 @@ defineOptions({
         />
 
         <Form
+            v-slot="{ errors, processing }"
             v-bind="SecurityController.update.form()"
             :options="{
                 preserveScroll: true,
@@ -56,7 +57,6 @@ defineOptions({
                 'current_password',
             ]"
             class="space-y-6"
-            v-slot="{ errors, processing }"
         >
             <div class="grid gap-2">
                 <Label for="current_password">Current password</Label>
@@ -108,13 +108,13 @@ defineOptions({
     </div>
 
     <ManageTwoFactor
-        :canManageTwoFactor="canManageTwoFactor"
-        :requiresConfirmation="requiresConfirmation"
-        :twoFactorEnabled="twoFactorEnabled"
+        :can-manage-two-factor="canManageTwoFactor"
+        :requires-confirmation="requiresConfirmation"
+        :two-factor-enabled="twoFactorEnabled"
     />
 
     <ManagePasskeys
-        :canManagePasskeys="canManagePasskeys"
+        :can-manage-passkeys="canManagePasskeys"
         :passkeys="passkeys"
     />
 </template>

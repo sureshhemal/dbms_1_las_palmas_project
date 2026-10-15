@@ -7,9 +7,6 @@ use App\Patient\Entities\Models\Patient;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\UniqueConstraintViolationException;
 
-/**
- * @return array{patient_id: string, room_id: string}
- */
 function stayParties(): array
 {
     return [
@@ -85,8 +82,12 @@ it('rejects a duplicate stayID', function () {
     Stay::create(['stayID' => 1, ...$parties, 'startDate' => '2026-09-01']);
 })->throws(UniqueConstraintViolationException::class);
 
-it('requires a stayID', function () {
+it('assigns the next stayID when none is given', function () {
     $parties = stayParties();
+    Stay::create(['stayID' => 1000, ...$parties, 'startDate' => '2026-09-01']);
 
-    Stay::create([...$parties, 'startDate' => '2026-09-01']);
-})->throws(QueryException::class, "Field 'stayID' doesn't have a default value");
+    $stay = Stay::create([...$parties, 'startDate' => '2026-09-01']);
+
+    expect($stay->stayID)->toBe(1001);
+    expect(Stay::find($stay->id)->stayID)->toBe(1001);
+});

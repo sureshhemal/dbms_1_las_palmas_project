@@ -31,9 +31,6 @@ class PerformedProcedure extends Model
 
     protected $guarded = [];
 
-    /**
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -41,41 +38,26 @@ class PerformedProcedure extends Model
         ];
     }
 
-    /**
-     * @return BelongsTo<Patient, $this>
-     */
     public function patient(): BelongsTo
     {
         return $this->belongsTo(Patient::class);
     }
 
-    /**
-     * @return BelongsTo<Procedure, $this>
-     */
     public function procedure(): BelongsTo
     {
         return $this->belongsTo(Procedure::class);
     }
 
-    /**
-     * @return BelongsTo<Stay, $this>
-     */
     public function stay(): BelongsTo
     {
         return $this->belongsTo(Stay::class);
     }
 
-    /**
-     * @return BelongsTo<Physician, $this>
-     */
     public function physician(): BelongsTo
     {
         return $this->belongsTo(Physician::class);
     }
 
-    /**
-     * @return BelongsTo<Nurse, $this>
-     */
     public function nurse(): BelongsTo
     {
         return $this->belongsTo(Nurse::class);

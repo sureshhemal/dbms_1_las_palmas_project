@@ -2,6 +2,7 @@
 
 namespace App\Hospital\Entities\Models;
 
+use App\Foundation\Entities\Concerns\HasAutoIncrementingColumn;
 use App\Hospital\Entities\DepartmentName;
 use App\Staff\Entities\Models\AffiliatedWith;
 use App\Staff\Entities\Models\Physician;
@@ -25,13 +26,12 @@ use Illuminate\Support\Carbon;
 #[Table(name: 'Department')]
 class Department extends Model
 {
-    use HasUlids, SoftDeletes;
+    use HasAutoIncrementingColumn, HasUlids, SoftDeletes;
+
+    protected string $autoIncrementingColumn = 'deptID';
 
     protected $guarded = [];
 
-    /**
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -39,17 +39,11 @@ class Department extends Model
         ];
     }
 
-    /**
-     * @return BelongsTo<Physician, $this>
-     */
     public function head(): BelongsTo
     {
         return $this->belongsTo(Physician::class, 'head_id');
     }
 
-    /**
-     * @return BelongsToMany<Physician, $this, AffiliatedWith>
-     */
     public function physicians(): BelongsToMany
     {
         return $this->belongsToMany(Physician::class, 'AffiliatedWith', 'department_id', 'physician_id')

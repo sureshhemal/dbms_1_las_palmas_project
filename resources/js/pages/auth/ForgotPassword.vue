@@ -1,24 +1,24 @@
 <script setup lang="ts">
-import { Form, Head } from '@inertiajs/vue3';
-import InputError from '@/components/InputError.vue';
-import TextLink from '@/components/TextLink.vue';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Spinner } from '@/components/ui/spinner';
-import { login } from '@/routes';
-import { email } from '@/routes/password';
+import { Form, Head } from '@inertiajs/vue3'
+import InputError from '@/components/InputError.vue'
+import TextLink from '@/components/TextLink.vue'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Spinner } from '@/components/ui/spinner'
+import { login } from '@/routes'
+import { email } from '@/routes/password'
 
 defineOptions({
     layout: {
         title: 'Forgot password',
         description: 'Enter your email to receive a password reset link',
     },
-});
+})
 
 defineProps<{
-    status?: string;
-}>();
+    status?: string
+}>()
 </script>
 
 <template>
@@ -32,15 +32,15 @@ defineProps<{
     </div>
 
     <div class="space-y-6">
-        <Form v-bind="email.form()" v-slot="{ errors, processing }">
+        <Form v-slot="{ errors, processing }" v-bind="email.form()">
             <div class="grid gap-2">
                 <Label for="email">Email address</Label>
                 <Input
                     id="email"
+                    v-focus
                     type="email"
                     name="email"
                     autocomplete="off"
-                    v-focus
                     placeholder="email@example.com"
                 />
                 <InputError :message="errors.email" />

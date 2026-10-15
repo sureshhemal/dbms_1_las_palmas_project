@@ -2,6 +2,7 @@
 
 namespace App\Clinical\Entities\Models;
 
+use App\Foundation\Entities\Concerns\HasAutoIncrementingColumn;
 use App\Hospital\Entities\Models\Room;
 use App\Patient\Entities\Models\Patient;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -25,13 +26,12 @@ use Illuminate\Support\Carbon;
 #[Table(name: 'Stay')]
 class Stay extends Model
 {
-    use HasUlids, SoftDeletes;
+    use HasAutoIncrementingColumn, HasUlids, SoftDeletes;
+
+    protected string $autoIncrementingColumn = 'stayID';
 
     protected $guarded = [];
 
-    /**
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -40,17 +40,11 @@ class Stay extends Model
         ];
     }
 
-    /**
-     * @return BelongsTo<Patient, $this>
-     */
     public function patient(): BelongsTo
     {
         return $this->belongsTo(Patient::class);
     }
 
-    /**
-     * @return BelongsTo<Room, $this>
-     */
     public function room(): BelongsTo
     {
         return $this->belongsTo(Room::class);

@@ -2,6 +2,7 @@
 
 namespace App\Patient\Entities\Models;
 
+use App\Foundation\Entities\Concerns\HasAutoIncrementingColumn;
 use App\Staff\Entities\Models\Physician;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
@@ -27,13 +28,12 @@ use Illuminate\Support\Carbon;
 #[Table(name: 'Patient')]
 class Patient extends Model
 {
-    use HasUlids, SoftDeletes;
+    use HasAutoIncrementingColumn, HasUlids, SoftDeletes;
+
+    protected string $autoIncrementingColumn = 'patientID';
 
     protected $guarded = [];
 
-    /**
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -41,9 +41,6 @@ class Patient extends Model
         ];
     }
 
-    /**
-     * @return BelongsTo<Physician, $this>
-     */
     public function primaryPhysician(): BelongsTo
     {
         return $this->belongsTo(Physician::class, 'primary_physician_id');

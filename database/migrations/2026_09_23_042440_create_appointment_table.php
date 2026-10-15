@@ -7,9 +7,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('Appointment', function (Blueprint $table) {
@@ -24,12 +21,13 @@ return new class extends Migration
             $table->softDeletes();
         });
 
+        Schema::table('Appointment', function (Blueprint $table) {
+            $table->integer('appID')->autoIncrement()->change();
+        });
+
         DB::statement('alter table `Appointment` add constraint `appointment_date_times_check` check (endDateTime > startDateTime)');
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('Appointment');

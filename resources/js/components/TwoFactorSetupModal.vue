@@ -1,47 +1,47 @@
 <script setup lang="ts">
-import { Form } from '@inertiajs/vue3';
-import { useClipboard } from '@vueuse/core';
-import { Check, Copy, ScanLine } from '@lucide/vue';
-import { computed, nextTick, ref, useTemplateRef, watch } from 'vue';
-import AlertError from '@/components/AlertError.vue';
-import InputError from '@/components/InputError.vue';
-import { Button } from '@/components/ui/button';
+import { Form } from '@inertiajs/vue3'
+import { useClipboard } from '@vueuse/core'
+import { Check, Copy, ScanLine } from '@lucide/vue'
+import { computed, nextTick, ref, useTemplateRef, watch } from 'vue'
+import AlertError from '@/components/AlertError.vue'
+import InputError from '@/components/InputError.vue'
+import { Button } from '@/components/ui/button'
 import {
     Dialog,
     DialogContent,
     DialogDescription,
     DialogHeader,
     DialogTitle,
-} from '@/components/ui/dialog';
+} from '@/components/ui/dialog'
 import {
     InputOTP,
     InputOTPGroup,
     InputOTPSlot,
-} from '@/components/ui/input-otp';
-import { Spinner } from '@/components/ui/spinner';
-import { useAppearance } from '@/composables/useAppearance';
-import { useTwoFactorAuth } from '@/composables/useTwoFactorAuth';
-import { confirm } from '@/routes/two-factor';
-import type { TwoFactorConfigContent } from '@/types';
+} from '@/components/ui/input-otp'
+import { Spinner } from '@/components/ui/spinner'
+import { useAppearance } from '@/composables/useAppearance'
+import { useTwoFactorAuth } from '@/composables/useTwoFactorAuth'
+import { confirm } from '@/routes/two-factor'
+import type { TwoFactorConfigContent } from '@/types'
 
 type Props = {
-    requiresConfirmation: boolean;
-    twoFactorEnabled: boolean;
-};
+    requiresConfirmation: boolean
+    twoFactorEnabled: boolean
+}
 
-const { resolvedAppearance } = useAppearance();
+const { resolvedAppearance } = useAppearance()
 
-const props = defineProps<Props>();
-const isOpen = defineModel<boolean>('isOpen');
+const props = defineProps<Props>()
+const isOpen = defineModel<boolean>('isOpen')
 
-const { copy, copied } = useClipboard();
+const { copy, copied } = useClipboard()
 const { qrCodeSvg, manualSetupKey, clearSetupData, fetchSetupData, errors } =
-    useTwoFactorAuth();
+    useTwoFactorAuth()
 
-const showVerificationStep = ref(false);
-const code = ref<string>('');
+const showVerificationStep = ref(false)
+const code = ref<string>('')
 
-const pinInputContainerRef = useTemplateRef('pinInputContainerRef');
+const pinInputContainerRef = useTemplateRef('pinInputContainerRef')
 
 const modalConfig = computed<TwoFactorConfigContent>(() => {
     if (props.twoFactorEnabled) {
@@ -50,7 +50,7 @@ const modalConfig = computed<TwoFactorConfigContent>(() => {
             description:
                 'Two-factor authentication is now enabled. Scan the QR code or enter the setup key in your authenticator app.',
             buttonText: 'Close',
-        };
+        }
     }
 
     if (showVerificationStep.value) {
@@ -58,7 +58,7 @@ const modalConfig = computed<TwoFactorConfigContent>(() => {
             title: 'Verify authentication code',
             description: 'Enter the 6-digit code from your authenticator app',
             buttonText: 'Continue',
-        };
+        }
     }
 
     return {
@@ -66,47 +66,47 @@ const modalConfig = computed<TwoFactorConfigContent>(() => {
         description:
             'To finish enabling two-factor authentication, scan the QR code or enter the setup key in your authenticator app',
         buttonText: 'Continue',
-    };
-});
+    }
+})
 
 const handleModalNextStep = () => {
     if (props.requiresConfirmation) {
-        showVerificationStep.value = true;
+        showVerificationStep.value = true
 
         nextTick(() => {
-            pinInputContainerRef.value?.querySelector('input')?.focus();
-        });
+            pinInputContainerRef.value?.querySelector('input')?.focus()
+        })
 
-        return;
+        return
     }
 
-    clearSetupData();
-    isOpen.value = false;
-};
+    clearSetupData()
+    isOpen.value = false
+}
 
 const resetModalState = () => {
     if (props.twoFactorEnabled) {
-        clearSetupData();
+        clearSetupData()
     }
 
-    showVerificationStep.value = false;
-    code.value = '';
-};
+    showVerificationStep.value = false
+    code.value = ''
+}
 
 watch(
     () => isOpen.value,
     async (isOpen) => {
         if (!isOpen) {
-            resetModalState();
+            resetModalState()
 
-            return;
+            return
         }
 
         if (!qrCodeSvg.value) {
-            await fetchSetupData();
+            await fetchSetupData()
         }
     },
-);
+)
 </script>
 
 <template>
@@ -171,7 +171,6 @@ watch(
                                     class="relative z-10 overflow-hidden border p-5"
                                 >
                                     <div
-                                        v-html="qrCodeSvg"
                                         class="flex aspect-square size-full items-center justify-center"
                                         :style="{
                                             filter:
@@ -179,6 +178,7 @@ watch(
                                                     ? 'invert(1) brightness(1.5)'
                                                     : undefined,
                                         }"
+                                        v-html="qrCodeSvg"
                                     />
                                 </div>
                             </div>
@@ -221,8 +221,8 @@ watch(
                                         class="h-full w-full bg-background p-3 text-foreground"
                                     />
                                     <button
-                                        @click="copy(manualSetupKey || '')"
                                         class="relative block h-auto border-l border-border px-3 hover:bg-muted"
+                                        @click="copy(manualSetupKey || '')"
                                     >
                                         <Check
                                             v-if="copied"
@@ -238,12 +238,12 @@ watch(
 
                 <template v-else>
                     <Form
+                        v-slot="{ errors, processing }"
                         v-bind="confirm.form()"
                         error-bag="confirmTwoFactorAuthentication"
                         reset-on-error
                         @finish="code = ''"
                         @success="isOpen = false"
-                        v-slot="{ errors, processing }"
                     >
                         <input type="hidden" name="code" :value="code" />
                         <div
@@ -276,8 +276,8 @@ watch(
                                     type="button"
                                     variant="outline"
                                     class="w-auto flex-1"
-                                    @click="showVerificationStep = false"
                                     :disabled="processing"
+                                    @click="showVerificationStep = false"
                                 >
                                     Back
                                 </Button>

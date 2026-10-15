@@ -2,6 +2,7 @@
 
 namespace App\Hospital\Entities\Models;
 
+use App\Foundation\Entities\Concerns\HasAutoIncrementingColumn;
 use App\Hospital\Entities\RoomType;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
@@ -20,13 +21,12 @@ use Illuminate\Support\Carbon;
 #[Table(name: 'Room')]
 class Room extends Model
 {
-    use HasUlids, SoftDeletes;
+    use HasAutoIncrementingColumn, HasUlids, SoftDeletes;
+
+    protected string $autoIncrementingColumn = 'roomID';
 
     protected $guarded = [];
 
-    /**
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [

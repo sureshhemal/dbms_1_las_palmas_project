@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
-import { BookOpen, FolderGit2, LayoutGrid } from '@lucide/vue';
-import AppLogo from '@/components/AppLogo.vue';
-import NavFooter from '@/components/NavFooter.vue';
-import NavMain from '@/components/NavMain.vue';
-import NavUser from '@/components/NavUser.vue';
+import { Link } from '@inertiajs/vue3'
+import { BookOpen, FolderGit2, LayoutGrid, Users } from '@lucide/vue'
+import AppLogo from '@/components/AppLogo.vue'
+import NavFooter from '@/components/NavFooter.vue'
+import NavMain from '@/components/NavMain.vue'
+import NavUser from '@/components/NavUser.vue'
 import {
     Sidebar,
     SidebarContent,
@@ -13,9 +13,9 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-} from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
-import type { NavItem } from '@/types';
+} from '@/components/ui/sidebar'
+import { dashboard, staff } from '@/routes'
+import type { NavItem } from '@/types'
 
 const mainNavItems: NavItem[] = [
     {
@@ -23,7 +23,12 @@ const mainNavItems: NavItem[] = [
         href: dashboard(),
         icon: LayoutGrid,
     },
-];
+    {
+        title: 'Staff',
+        href: staff(),
+        icon: Users,
+    },
+]
 
 const footerNavItems: NavItem[] = [
     {
@@ -36,7 +41,7 @@ const footerNavItems: NavItem[] = [
         href: 'https://laravel.com/docs/starter-kits#vue',
         icon: BookOpen,
     },
-];
+]
 </script>
 
 <template>

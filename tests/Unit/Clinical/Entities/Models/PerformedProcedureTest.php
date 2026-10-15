@@ -12,9 +12,6 @@ use App\Staff\Entities\NursePosition;
 use App\Staff\Entities\PhysicianPosition;
 use Illuminate\Database\QueryException;
 
-/**
- * @return array{patient_id: string, procedure_id: string, stay_id: string, physician_id: string, nurse_id: string}
- */
 function performedProcedureParties(): array
 {
     $patient = Patient::create(['patientID' => 1, 'name' => 'Harvey Corman']);

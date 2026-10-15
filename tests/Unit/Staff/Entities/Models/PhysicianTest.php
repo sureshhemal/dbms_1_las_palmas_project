@@ -49,12 +49,23 @@ it('rejects a duplicate physicianID', function () {
     Physician::create(['physicianID' => 1, 'name' => 'Perry Cox', 'position' => PhysicianPosition::Senior]);
 })->throws(UniqueConstraintViolationException::class);
 
-it('requires a physicianID', function () {
-    Physician::create(['name' => 'Perry Cox', 'position' => PhysicianPosition::Senior]);
-})->throws(QueryException::class, "Field 'physicianID' doesn't have a default value");
+it('assigns the next physicianID when none is given', function () {
+    Physician::create(['physicianID' => 1000, 'name' => 'Perry Cox', 'position' => PhysicianPosition::Senior]);
+
+    $physician = Physician::create(['name' => 'Perry Cox', 'position' => PhysicianPosition::Senior]);
+
+    expect($physician->physicianID)->toBe(1001);
+    expect(Physician::find($physician->id)->physicianID)->toBe(1001);
+});
 
 it('keeps the leading zeros of the ssn', function () {
     $physician = Physician::create(['physicianID' => 1, 'name' => 'Perry Cox', 'position' => PhysicianPosition::Senior, 'ssn' => '012-34-5678']);
 
     expect(Physician::find($physician->id)->ssn)->toBe('012-34-5678');
+});
+
+it('creates valid physicians from the factory', function () {
+    Physician::factory()->count(3)->create();
+
+    $this->assertDatabaseCount('Physician', 3);
 });

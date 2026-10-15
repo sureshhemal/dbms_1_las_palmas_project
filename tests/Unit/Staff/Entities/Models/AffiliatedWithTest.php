@@ -7,16 +7,15 @@ use App\Staff\Entities\Models\Physician;
 use App\Staff\Entities\PhysicianPosition;
 use Illuminate\Database\QueryException;
 
-it('gives each affiliation a ulid primary key', function () {
+it('deletes only the affiliation it was loaded for', function () {
     $physician = Physician::create(['physicianID' => 1, 'name' => 'John Dorian', 'position' => PhysicianPosition::Resident]);
-    $department = Department::create(['deptID' => 1, 'name' => DepartmentName::Surgery]);
+    $surgery = Department::create(['deptID' => 1, 'name' => DepartmentName::Surgery]);
+    $psychiatry = Department::create(['deptID' => 5, 'name' => DepartmentName::Psychiatry]);
+    $physician->departments()->attach([$surgery->id, $psychiatry->id]);
 
-    $physician->departments()->attach($department);
+    AffiliatedWith::where('department_id', $surgery->id)->first()->delete();
 
-    $affiliation = AffiliatedWith::first();
-    expect($affiliation->id)->toBeString()->toHaveLength(26);
-    expect($affiliation->physician_id)->toBe($physician->id);
-    expect($affiliation->department_id)->toBe($department->id);
+    expect($physician->departments->pluck('id')->all())->toBe([$psychiatry->id]);
 });
 
 it('rejects affiliating a physician with the same department twice', function () {

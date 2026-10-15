@@ -37,12 +37,23 @@ it('rejects a duplicate nurseID', function () {
     Nurse::create(['nurseID' => 1, 'name' => 'Carla Espinosa', 'position' => NursePosition::Nurse]);
 })->throws(UniqueConstraintViolationException::class);
 
-it('requires a nurseID', function () {
-    Nurse::create(['name' => 'Carla Espinosa', 'position' => NursePosition::Nurse]);
-})->throws(QueryException::class, "Field 'nurseID' doesn't have a default value");
+it('assigns the next nurseID when none is given', function () {
+    Nurse::create(['nurseID' => 1000, 'name' => 'Carla Espinosa', 'position' => NursePosition::Nurse]);
+
+    $nurse = Nurse::create(['name' => 'Carla Espinosa', 'position' => NursePosition::Nurse]);
+
+    expect($nurse->nurseID)->toBe(1001);
+    expect(Nurse::find($nurse->id)->nurseID)->toBe(1001);
+});
 
 it('keeps the leading zeros of the ssn', function () {
     $nurse = Nurse::create(['nurseID' => 1, 'name' => 'Carla Espinosa', 'position' => NursePosition::Nurse, 'ssn' => '012-34-5678']);
 
     expect(Nurse::find($nurse->id)->ssn)->toBe('012-34-5678');
+});
+
+it('creates valid nurses from the factory', function () {
+    Nurse::factory()->count(3)->create();
+
+    $this->assertDatabaseCount('Nurse', 3);
 });

@@ -2,10 +2,14 @@
 
 namespace App\Staff\Entities\Models;
 
+use App\Foundation\Entities\Concerns\HasAutoIncrementingColumn;
 use App\Hospital\Entities\Models\Department;
 use App\Staff\Entities\PhysicianPosition;
+use Database\Factories\Staff\PhysicianFactory;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -22,15 +26,15 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $deleted_at
  */
 #[Table(name: 'Physician')]
+#[UseFactory(PhysicianFactory::class)]
 class Physician extends Model
 {
-    use HasUlids, SoftDeletes;
+    use HasAutoIncrementingColumn, HasFactory, HasUlids, SoftDeletes;
+
+    protected string $autoIncrementingColumn = 'physicianID';
 
     protected $guarded = [];
 
-    /**
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -38,9 +42,6 @@ class Physician extends Model
         ];
     }
 
-    /**
-     * @return BelongsToMany<Department, $this, AffiliatedWith>
-     */
     public function departments(): BelongsToMany
     {
         return $this->belongsToMany(Department::class, 'AffiliatedWith', 'physician_id', 'department_id')

@@ -8,9 +8,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('Department', function (Blueprint $table) {
@@ -22,14 +19,15 @@ return new class extends Migration
             $table->softDeletes();
         });
 
+        Schema::table('Department', function (Blueprint $table) {
+            $table->integer('deptID')->autoIncrement()->change();
+        });
+
         $names = collect(DepartmentName::values())->map(fn (string $value): string => DB::escape($value))->implode(', ');
 
         DB::statement("alter table `Department` add constraint `department_name_check` check (name in ({$names}))");
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('Department');
