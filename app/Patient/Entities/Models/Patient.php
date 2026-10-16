@@ -2,6 +2,7 @@
 
 namespace App\Patient\Entities\Models;
 
+use App\Clinical\Entities\Models\Stay;
 use App\Foundation\Entities\Concerns\HasAutoIncrementingColumn;
 use App\Hospital\Entities\HospitalCalendar;
 use App\Staff\Entities\Models\Physician;
@@ -13,6 +14,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Carbon;
@@ -28,6 +30,7 @@ use Illuminate\Support\Carbon;
  * @property int|null $insuranceNumber
  * @property string|null $primary_physician_id
  * @property-read int|null $age
+ * @property-read Stay|null $currentStay
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
@@ -61,5 +64,10 @@ class Patient extends Model
     public function primaryPhysician(): BelongsTo
     {
         return $this->belongsTo(Physician::class, 'primary_physician_id')->withoutGlobalScope(SoftDeletingScope::class);
+    }
+
+    public function currentStay(): HasOne
+    {
+        return $this->hasOne(Stay::class)->whereAdmitted();
     }
 }

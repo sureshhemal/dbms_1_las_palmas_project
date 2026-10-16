@@ -1,4 +1,5 @@
 <script lang="ts">
+import { router } from '@inertiajs/vue3'
 import { Plus } from '@lucide/vue'
 import { defineComponent } from 'vue'
 import BaseConfirmDialog from '@/components/base/BaseConfirmDialog.vue'
@@ -9,6 +10,7 @@ import BaseSideDrawer from '@/components/base/BaseSideDrawer.vue'
 import PatientForm from '@/components/patient/PatientForm.vue'
 import PatientsTable from '@/components/patient/PatientsTable.vue'
 import { Button } from '@/components/ui/button'
+import { show } from '@/routes/patients'
 import type {
     PaginatedResponse,
     PaginationDetails,
@@ -110,6 +112,10 @@ export default defineComponent({
     },
 
     methods: {
+        openPatient(patient: Patient): void {
+            router.visit(show(patient.id))
+        },
+
         async fetchPatients(page?: number, perPage?: number): Promise<void> {
             if (
                 this.primaryPhysicianCandidates.length > 0 &&
@@ -316,6 +322,7 @@ export default defineComponent({
             :is-loading="$wait.is('fetching-patients')"
             @edit="editPatient"
             @deactivate="deactivatePatient"
+            @open="openPatient"
         />
 
         <BasePaginationBar

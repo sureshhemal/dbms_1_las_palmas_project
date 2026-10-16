@@ -26,7 +26,7 @@ export default defineComponent({
         },
     },
 
-    emits: ['edit', 'deactivate'],
+    emits: ['edit', 'deactivate', 'open'],
 
     computed: {
         dateOfBirth(): string {
@@ -53,7 +53,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <BaseTableRow>
+    <BaseTableRow is-selectable @click="$emit('open', patient)">
         <BaseTableCell class="font-mono">
             {{ patient.patientID }}
         </BaseTableCell>

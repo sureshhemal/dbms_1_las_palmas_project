@@ -7,6 +7,7 @@ use App\Patient\IO\Http\Requests\PatientRequest;
 use App\Patient\UseCases\CreatePatient;
 use App\Patient\UseCases\DeactivatePatient;
 use App\Patient\UseCases\ListPatients;
+use App\Patient\UseCases\ShowPatient;
 use App\Patient\UseCases\UpdatePatient;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -26,6 +27,11 @@ class PatientsController
                 ->values()
                 ->all(),
         ));
+    }
+
+    public function show(Patient $patient, ShowPatient $showPatient): JsonResponse
+    {
+        return response()->json($showPatient->execute($patient));
     }
 
     public function store(PatientRequest $request, CreatePatient $createPatient): JsonResponse

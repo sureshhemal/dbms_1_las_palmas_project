@@ -1,6 +1,11 @@
 <?php
 
 use App\Clinical\IO\Http\Controllers\MedicationsController;
+use App\Clinical\IO\Http\Controllers\PatientMedicationsController;
+use App\Clinical\IO\Http\Controllers\PatientPerformedProceduresController;
+use App\Clinical\IO\Http\Controllers\PatientPrescriptionsController;
+use App\Clinical\IO\Http\Controllers\PatientSummaryController;
+use App\Clinical\IO\Http\Controllers\PatientUpcomingProceduresController;
 use App\Clinical\IO\Http\Controllers\PerformedProceduresController;
 use App\Clinical\IO\Http\Controllers\PerformedProcedureYearsController;
 use App\Clinical\IO\Http\Controllers\PrescriberCandidatesController;
@@ -66,6 +71,12 @@ Route::middleware('auth')->group(function () {
     Route::get('prescriber-candidates', [PrescriberCandidatesController::class, 'index'])->name('api.prescriber-candidates.index');
 
     Route::get('patients', [PatientsController::class, 'index'])->name('api.patients.index');
+    Route::get('patients/{patient}', [PatientsController::class, 'show'])->name('api.patients.show');
+    Route::get('patients/{patient}/summary', [PatientSummaryController::class, 'show'])->name('api.patients.summary.show');
+    Route::get('patients/{patient}/performed-procedures', [PatientPerformedProceduresController::class, 'index'])->name('api.patients.performed-procedures.index');
+    Route::get('patients/{patient}/upcoming-procedures', [PatientUpcomingProceduresController::class, 'index'])->name('api.patients.upcoming-procedures.index');
+    Route::get('patients/{patient}/medications', [PatientMedicationsController::class, 'index'])->name('api.patients.medications.index');
+    Route::get('patients/{patient}/prescriptions', [PatientPrescriptionsController::class, 'index'])->name('api.patients.prescriptions.index');
     Route::post('patients', [PatientsController::class, 'store'])->name('api.patients.store');
     Route::put('patients/{patient}', [PatientsController::class, 'update'])->name('api.patients.update');
     Route::delete('patients/{patient}', [PatientsController::class, 'destroy'])->name('api.patients.destroy');

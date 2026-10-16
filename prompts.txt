@@ -1847,3 +1847,87 @@ In stays table, we don't want to see patient id
 [2026-10-16 13:55]
 Open PR to main
 
+[2026-10-16 13:58]
+<task-notification>
+<task-id>ba8rcigt5</task-id>
+<tool-use-id>toolu_0188DELG6yzmMHfqCKiPRc5Q</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-sureshhemal-MSc-Sem-1-dbms-las-palmas/72f98d11-78da-49ca-a9fb-07041404af8c/tasks/ba8rcigt5.output</output-file>
+<status>completed</status>
+<summary>Background command "Watch CI checks on PR 15" completed (exit code 0)</summary>
+</task-notification>
+
+[2026-10-16 14:02]
+I merged the PR. Now I need patient's profile. It should be open by clicking patient's table row. Or we can add a view button to the actions button list too. Anyway si fine for me for now. 
+
+When the page is loaded, I want to see followings.
+
+0. His personal details and Age (years, months only. no need of days. Calculate this on frontend. UI recieves the dob anyways)
+1. Primary physician
+2. When did he registered
+3. His past performed procedure list. a paginated list would be better. 
+4. His past prescritions. Also a paginated list
+5. If he is currently admitted on room, show the room number too. 
+
+more things will be add in future. Lets go with this for now.
+
+[2026-10-16 14:09]
+It is better if you divide personal informations to two column view,
+
+[2026-10-16 14:09]
+ah. no original way is better
+
+[2026-10-16 14:09]
+Patient 10000 of Las Palmas Medical Center. dont show that. remove completly
+
+[2026-10-16 14:10]
+Also show upcomming procedures
+
+[2026-10-16 14:17]
+Now I want to add some cards at the very top of the page, 
+
+1. Upcoming procedure -> if none, say there is no, if present, show the name and date. use orderBy('proc date', asc) and first
+2. Number of performed precedures -> only count
+3. Number of prescrtiptions issued
+4. Total reenue of that patient, based on performed procedures. only past procedures. not scheduled ones
+
+[2026-10-16 14:19]
+procID: is no needed
+
+[2026-10-16 14:21]
+Upcoming Procedure. Show doctor and nurse names too
+
+[2026-10-16 14:22]
+no need. It shows the table anyways. so remvoe i
+
+[2026-10-16 14:27]
+Now I want to show the medications (drugs) that he have been taking so far. But as a percentage of his own prescriptions. Which means group his prescriptions by medication_id and get sum of each group, and average of all prescriptions of his. for now, lets show it as a table down below the cards
+
+[2026-10-16 14:33]
+can we remove 'Medication.name', 'Medication.deleted_at' from group by clause?
+
+[2026-10-16 14:34]
+sum(count(*)) over (), 1) as percentage is window function. can we do this without window functions
+
+[2026-10-16 14:36]
+can we show it in a pie chart? It is more visually better
+
+[2026-10-16 14:38]
+Lets try with plotly
+
+[2026-10-16 14:43]
+Now I want two columns on the top of page.
+
+div -> col-2
+
+col - 1 => having cards as 2x2 grid
+col - 2 => having chart
+
+[2026-10-16 14:44]
+Medications title is no needed. remove it
+
+[2026-10-16 14:44]
+who has the largest Prescriptions list
+
+[2026-10-16 14:46]
+open pr to main
+

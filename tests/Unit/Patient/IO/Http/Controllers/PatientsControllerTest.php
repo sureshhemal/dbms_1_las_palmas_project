@@ -1,5 +1,7 @@
 <?php
 
+use App\Clinical\Entities\Models\Stay;
+use App\Hospital\Entities\Models\Room;
 use App\Patient\Entities\Models\Patient;
 use App\Staff\Entities\Models\Physician;
 use App\Staff\Entities\PhysicianPosition;
@@ -103,6 +105,96 @@ it('filters patients by their primary physician', function () {
     $response = $this->actingAsLoggedInUser()->getJson(route('api.patients.index', ['primary_physician_ids' => [$perryCox->id]]));
 
     expect($response->json('data.*.id'))->toBe([$patientOfPerry->id]);
+});
+
+it('returns 401 to guests showing a patient', function () {
+    $response = $this->getJson(route('api.patients.show', Patient::factory()->create()));
+
+    $response->assertUnauthorized();
+});
+
+it('shows a patient with their personal details, primary physician and registration', function () {
+    $this->travelTo('2026-10-15 12:00:00');
+    $physician = Physician::factory()->create(['name' => 'Perry Cox', 'physicianID' => 432]);
+    $patient = Patient::factory()->withPrimaryPhysician($physician)->create([
+        'name' => 'Jordan Sullivan',
+        'dob' => '1975-04-12',
+        'phone' => '555-0100',
+        'address' => '12 Sacred Heart Way',
+        'insuranceNumber' => 778899,
+        'created_at' => '2019-03-08 09:30:00',
+    ]);
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.patients.show', $patient));
+
+    $response->assertOk()->assertJson([
+        'id' => $patient->id,
+        'patientID' => $patient->patientID,
+        'name' => 'Jordan Sullivan',
+        'dob' => '1975-04-12',
+        'phone' => '555-0100',
+        'address' => '12 Sacred Heart Way',
+        'insuranceNumber' => 778899,
+        'primary_physician' => ['id' => $physician->id, 'physicianID' => 432, 'name' => 'Perry Cox', 'deleted_at' => null],
+    ]);
+    expect($response->json('created_at'))->toStartWith('2019-03-08T09:30:00');
+});
+
+it('still shows an offboarded primary physician on the patient', function () {
+    $physician = Physician::factory()->create(['name' => 'Perry Cox']);
+    $patient = Patient::factory()->withPrimaryPhysician($physician)->create();
+    $physician->delete();
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.patients.show', $patient));
+
+    expect($response->json('primary_physician.name'))->toBe('Perry Cox');
+    expect($response->json('primary_physician.deleted_at'))->not->toBeNull();
+});
+
+it('includes the room of the stay the patient is currently admitted to', function (?string $endDate) {
+    $this->travelTo('2026-10-15 12:00:00');
+    $patient = Patient::factory()->create();
+    $room = Room::factory()->create(['roomID' => 214]);
+    Stay::factory()->for($patient)->between('2026-09-01', '2026-09-05')->create();
+    $currentStay = Stay::factory()->for($patient)->for($room)->between('2026-10-12', $endDate)->create();
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.patients.show', $patient));
+
+    expect($response->json('current_stay'))->toMatchArray([
+        'id' => $currentStay->id,
+        'stayID' => $currentStay->stayID,
+        'startDate' => '2026-10-12',
+        'endDate' => $endDate,
+    ]);
+    expect($response->json('current_stay.room'))->toMatchArray(['id' => $room->id, 'roomID' => 214]);
+})->with([
+    'open stay' => [null],
+    'stay ending today' => ['2026-10-15'],
+    'stay ending later' => ['2026-10-20'],
+]);
+
+it('has no current stay when the patient is not admitted today', function (string $startDate, string $endDate) {
+    $this->travelTo('2026-10-15 12:00:00');
+    $patient = Patient::factory()->create();
+    Stay::factory()->for($patient)->between($startDate, $endDate)->create();
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.patients.show', $patient));
+
+    $response->assertOk();
+    expect($response->json())->toHaveKey('current_stay');
+    expect($response->json('current_stay'))->toBeNull();
+})->with([
+    'discharged' => ['2026-10-01', '2026-10-14'],
+    'scheduled' => ['2026-10-16', '2026-10-20'],
+]);
+
+it('returns 404 when showing an inactive patient', function () {
+    $patient = Patient::factory()->create();
+    $patient->delete();
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.patients.show', $patient));
+
+    $response->assertNotFound();
 });
 
 it('returns 401 to guests adding a patient', function () {

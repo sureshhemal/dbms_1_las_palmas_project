@@ -33,3 +33,15 @@ export type PatientFormData = {
     insuranceNumber: string
     primary_physician_id: string
 }
+
+export type CurrentStay = {
+    id: string
+    stayID: number
+    startDate: string
+    endDate: string | null
+    room: { id: string; roomID: number; roomType: string }
+}
+
+export type PatientProfile = Patient & {
+    current_stay: CurrentStay | null
+}
