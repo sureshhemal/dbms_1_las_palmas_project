@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Pencil, Trash2 } from '@lucide/vue'
+import { DoorClosed, Pencil } from '@lucide/vue'
 import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
 import BaseTableActionButton from '@/components/base/BaseTableActionButton.vue'
@@ -14,8 +14,8 @@ export default defineComponent({
         BaseTableActionButton,
         BaseTableCell,
         BaseTableRow,
+        DoorClosed,
         Pencil,
-        Trash2,
     },
 
     props: {
@@ -25,7 +25,23 @@ export default defineComponent({
         },
     },
 
-    emits: ['edit', 'remove'],
+    emits: ['edit', 'decommission'],
+
+    computed: {
+        isFull(): boolean {
+            return this.room.bedsFree === 0
+        },
+
+        availability(): string {
+            if (this.isFull) {
+                return 'Full'
+            }
+
+            return this.room.bedsFree === 1
+                ? '1 bed free'
+                : `${this.room.bedsFree} beds free`
+        },
+    },
 })
 </script>
 
@@ -35,6 +51,18 @@ export default defineComponent({
             {{ room.roomID }}
         </BaseTableCell>
         <BaseTableCell>{{ room.roomType }}</BaseTableCell>
+        <BaseTableCell>
+            <span
+                class="rounded-full px-2 py-0.5 text-xs font-medium"
+                :class="
+                    isFull
+                        ? 'bg-danger-100 text-danger-800 dark:bg-danger-950 dark:text-danger-300'
+                        : 'bg-success-100 text-success-800 dark:bg-success-950 dark:text-success-300'
+                "
+            >
+                {{ availability }}
+            </span>
+        </BaseTableCell>
         <BaseTableCell class="w-0 text-right">
             <div class="flex items-center justify-end gap-1">
                 <BaseTableActionButton
@@ -46,10 +74,10 @@ export default defineComponent({
                 </BaseTableActionButton>
                 <BaseTableActionButton
                     tone="danger"
-                    @click.stop="$emit('remove', room)"
+                    @click.stop="$emit('decommission', room)"
                 >
-                    <Trash2 />
-                    Remove
+                    <DoorClosed />
+                    Decommission
                 </BaseTableActionButton>
             </div>
         </BaseTableCell>

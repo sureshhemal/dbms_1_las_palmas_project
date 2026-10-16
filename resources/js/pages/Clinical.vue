@@ -31,7 +31,7 @@ export default defineComponent({
 
         <Heading
             title="Clinical"
-            description="Medications, procedures and prescriptions of Las Palmas Medical Center."
+            description="Medications, procedures, prescriptions and stays at Las Palmas Medical Center."
         />
 
         <ClinicalTabs />

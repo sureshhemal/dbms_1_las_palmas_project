@@ -28,7 +28,7 @@ use Illuminate\Support\Carbon;
  * @property int|null $insuranceNumber
  * @property string|null $primary_physician_id
  * @property-read int|null $age
- * @property Carbon|null $created_at
+ * @property Carbon $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  */

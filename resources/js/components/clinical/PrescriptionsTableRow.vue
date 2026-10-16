@@ -32,7 +32,7 @@ export default defineComponent({
                 'text-neutral-500 line-through dark:text-neutral-400':
                     prescription.patient.deleted_at,
             }"
-            :title="prescription.patient.deleted_at ? 'Removed' : undefined"
+            :title="prescription.patient.deleted_at ? 'Inactive' : undefined"
         >
             <span class="font-medium">{{ prescription.patient.name }}</span>
             <span class="ml-1 font-mono text-neutral-500 dark:text-neutral-400">

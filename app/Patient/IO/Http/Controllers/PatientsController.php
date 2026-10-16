@@ -5,8 +5,8 @@ namespace App\Patient\IO\Http\Controllers;
 use App\Patient\Entities\Models\Patient;
 use App\Patient\IO\Http\Requests\PatientRequest;
 use App\Patient\UseCases\CreatePatient;
+use App\Patient\UseCases\DeactivatePatient;
 use App\Patient\UseCases\ListPatients;
-use App\Patient\UseCases\RemovePatient;
 use App\Patient\UseCases\UpdatePatient;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -38,9 +38,9 @@ class PatientsController
         return response()->json($updatePatient->execute($patient, $request->getData()));
     }
 
-    public function destroy(Patient $patient, RemovePatient $removePatient): Response
+    public function destroy(Patient $patient, DeactivatePatient $deactivatePatient): Response
     {
-        $removePatient->execute($patient);
+        $deactivatePatient->execute($patient);
 
         return response()->noContent();
     }

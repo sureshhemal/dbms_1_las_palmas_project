@@ -1,5 +1,6 @@
 <?php
 
+use App\Clinical\Entities\Models\Stay;
 use App\Hospital\Entities\Models\Room;
 use App\Hospital\Entities\RoomType;
 
@@ -47,7 +48,69 @@ it('counts only the matching rooms in the page details', function () {
     expect($response->json('total'))->toBe(2);
 });
 
-it('leaves out removed rooms', function () {
+it('shows how many beds of each room are free today', function () {
+    $this->travelTo('2026-10-15 12:00:00');
+    $fullSingle = Room::factory()->withType(RoomType::Single)->create(['roomID' => 101]);
+    $halfFullDouble = Room::factory()->withType(RoomType::Double)->create(['roomID' => 102]);
+    $emptyDouble = Room::factory()->withType(RoomType::Double)->create(['roomID' => 103]);
+    $singleFreedToday = Room::factory()->withType(RoomType::Single)->create(['roomID' => 104]);
+    Stay::factory()->for($fullSingle)->between('2026-10-12')->create();
+    Stay::factory()->for($halfFullDouble)->between('2026-10-14')->create();
+    Stay::factory()->for($emptyDouble)->between('2026-10-01', '2026-10-05')->create();
+    Stay::factory()->for($singleFreedToday)->between('2026-10-10', '2026-10-15')->create();
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.rooms.index'));
+
+    expect(collect($response->json('data'))->pluck('bedsFree', 'roomID')->all())->toBe([
+        101 => 0,
+        102 => 1,
+        103 => 2,
+        104 => 1,
+    ]);
+    expect($response->json('data.0'))->not->toHaveKeys(['beds', 'bedsTaken']);
+});
+
+it('counts a bed as taken from the admission day in the hospital time zone', function () {
+    config(['app.hospital_timezone' => 'Asia/Colombo']);
+    $this->travelTo('2026-10-14 20:00:00');
+    $room = Room::factory()->withType(RoomType::Single)->create();
+    Stay::factory()->for($room)->between('2026-10-15')->create();
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.rooms.index'));
+
+    expect($response->json('data.0.bedsFree'))->toBe(0);
+});
+
+it('filters rooms by how many beds are free today', function (array $bedsFree, array $expectedRoomIds) {
+    $this->travelTo('2026-10-15 12:00:00');
+    $fullSingle = Room::factory()->withType(RoomType::Single)->create(['roomID' => 101]);
+    $halfFullDouble = Room::factory()->withType(RoomType::Double)->create(['roomID' => 102]);
+    Room::factory()->withType(RoomType::Double)->create(['roomID' => 103]);
+    $singleFreedToday = Room::factory()->withType(RoomType::Single)->create(['roomID' => 104]);
+    Stay::factory()->for($fullSingle)->between('2026-10-12')->create();
+    Stay::factory()->for($halfFullDouble)->between('2026-10-14')->create();
+    Stay::factory()->for($singleFreedToday)->between('2026-10-10', '2026-10-15')->create();
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.rooms.index', ['beds_free' => $bedsFree]));
+
+    expect($response->json('data.*.roomID'))->toBe($expectedRoomIds);
+    expect($response->json('total'))->toBe(count($expectedRoomIds));
+})->with([
+    'full' => [[0], [101]],
+    'one bed free' => [[1], [102, 104]],
+    'two beds free' => [[2], [103]],
+    'any free bed' => [[1, 2], [102, 103, 104]],
+]);
+
+it('ignores free bed counts that are not numbers', function () {
+    Room::factory()->count(2)->create();
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.rooms.index', ['beds_free' => ['many']]));
+
+    $response->assertJsonCount(2, 'data');
+});
+
+it('leaves out decommissioned rooms', function () {
     $keptRoom = Room::factory()->create();
     Room::factory()->create()->delete();
 
@@ -141,7 +204,7 @@ it('shows the MySQL error when the room id is already taken', function () {
     $this->assertDatabaseCount('Room', 1);
 });
 
-it('shows the MySQL error when the room id belongs to a removed room', function () {
+it('shows the MySQL error when the room id belongs to a decommissioned room', function () {
     config(['app.debug' => true]);
     Room::factory()->create(['roomID' => 101])->delete();
 
@@ -218,7 +281,7 @@ it('shows the MySQL error when updating to a room id that is already taken', fun
     expect($room->fresh()->roomID)->toBe(202);
 });
 
-it('returns 401 to guests removing a room', function () {
+it('returns 401 to guests decommissioning a room', function () {
     $room = Room::factory()->create();
 
     $response = $this->deleteJson(route('api.rooms.destroy', $room));
@@ -227,7 +290,7 @@ it('returns 401 to guests removing a room', function () {
     $this->assertNotSoftDeleted($room);
 });
 
-it('removes a room by soft deleting it', function () {
+it('decommissions a room by soft deleting it, keeping its record', function () {
     $room = Room::factory()->create();
 
     $response = $this->actingAsLoggedInUser()->deleteJson(route('api.rooms.destroy', $room));
@@ -236,7 +299,7 @@ it('removes a room by soft deleting it', function () {
     $this->assertSoftDeleted($room);
 });
 
-it('returns 404 when removing a room that is already removed', function () {
+it('returns 404 when decommissioning a room that is already decommissioned', function () {
     $room = Room::factory()->create();
     $room->delete();
 

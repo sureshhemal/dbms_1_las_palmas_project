@@ -15,8 +15,15 @@ import type {
     Room,
     RoomFormData,
     RoomType,
+    SelectOption,
 } from '@/types'
 import { roomTypes } from '@/types'
+
+const freeBedOptions: SelectOption[] = [
+    { value: '0', label: 'Full' },
+    { value: '1', label: '1 bed free' },
+    { value: '2', label: '2 beds free' },
+]
 
 export default defineComponent({
     name: 'RoomsTabPanel',
@@ -39,6 +46,8 @@ export default defineComponent({
             searchTerm: '',
             selectedRoomTypes: [...roomTypes] as RoomType[],
             roomTypes,
+            freeBedOptions,
+            selectedFreeBeds: freeBedOptions.map((option) => option.value),
             paginationDetails: {
                 current_page: 1,
                 per_page: 20,
@@ -50,17 +59,22 @@ export default defineComponent({
             } as PaginationDetails,
             selectedRoom: null as RoomFormData | null,
             isShowingRoomForm: false,
-            isConfirmingRemoval: false,
+            isConfirmingDecommission: false,
         }
     },
 
     computed: {
-        removalConfirmationDescription(): string {
-            return `Room ${this.selectedRoom?.roomID} will be removed from the room list. Its record is kept.`
+        decommissionConfirmationDescription(): string {
+            return `Room ${this.selectedRoom?.roomID} will no longer take patients. Its record and history are kept.`
+        },
+
+        isFilteringByFreeBeds(): boolean {
+            return this.selectedFreeBeds.length < freeBedOptions.length
         },
 
         roomsEmptyMessage(): string {
             return this.searchTerm ||
+                this.isFilteringByFreeBeds ||
                 this.selectedRoomTypes.length < roomTypes.length
                 ? 'No rooms match your search or filter.'
                 : 'No rooms yet.'
@@ -79,6 +93,10 @@ export default defineComponent({
         selectedRoomTypes(): void {
             this.fetchRooms(1)
         },
+
+        selectedFreeBeds(): void {
+            this.fetchRooms(1)
+        },
     },
 
     created() {
@@ -87,7 +105,10 @@ export default defineComponent({
 
     methods: {
         async fetchRooms(page?: number, perPage?: number): Promise<void> {
-            if (this.selectedRoomTypes.length === 0) {
+            if (
+                this.selectedRoomTypes.length === 0 ||
+                this.selectedFreeBeds.length === 0
+            ) {
                 this.showNoRooms()
 
                 return
@@ -102,6 +123,9 @@ export default defineComponent({
                         per_page: perPage ?? this.paginationDetails.per_page,
                         search: this.searchTerm || undefined,
                         room_types: this.selectedRoomTypes,
+                        beds_free: this.isFilteringByFreeBeds
+                            ? this.selectedFreeBeds
+                            : undefined,
                     },
                 })
                 .finally(() => this.$wait.end('fetching-rooms'))
@@ -149,10 +173,10 @@ export default defineComponent({
             this.openRoomForm()
         },
 
-        removeRoom(room: Room): void {
+        decommissionRoom(room: Room): void {
             this.selectedRoom = this.toRoomFormData(room)
 
-            this.isConfirmingRemoval = true
+            this.isConfirmingDecommission = true
         },
 
         openRoomForm(): void {
@@ -163,8 +187,8 @@ export default defineComponent({
             this.isShowingRoomForm = false
         },
 
-        cancelRemoval(): void {
-            this.isConfirmingRemoval = false
+        cancelDecommission(): void {
+            this.isConfirmingDecommission = false
         },
 
         async saveRoom(room: RoomFormData): Promise<void> {
@@ -183,19 +207,19 @@ export default defineComponent({
             await this.fetchRooms()
         },
 
-        async removeSelectedRoom(): Promise<void> {
+        async decommissionSelectedRoom(): Promise<void> {
             if (!this.selectedRoom?.id) {
                 return
             }
 
-            this.$wait.start('removing-room')
+            this.$wait.start('decommissioning-room')
 
             await this.$http
                 .delete(`rooms/${this.selectedRoom.id}`)
-                .finally(() => this.$wait.end('removing-room'))
+                .finally(() => this.$wait.end('decommissioning-room'))
 
-            this.notifySuccess('Room removed')
-            this.isConfirmingRemoval = false
+            this.notifySuccess('Room decommissioned')
+            this.isConfirmingDecommission = false
 
             await this.fetchRooms()
         },
@@ -218,6 +242,13 @@ export default defineComponent({
                     placeholder="No room types selected"
                     all-selected-label="All room types"
                 />
+
+                <BaseMultiSelect
+                    v-model="selectedFreeBeds"
+                    :options="freeBedOptions"
+                    placeholder="No availability selected"
+                    all-selected-label="Any availability"
+                />
             </div>
 
             <UiButton :disabled="$wait.any() > 0" @click="addRoom">
@@ -238,7 +269,7 @@ export default defineComponent({
             :empty-message="roomsEmptyMessage"
             :is-loading="$wait.is('fetching-rooms')"
             @edit="editRoom"
-            @remove="removeRoom"
+            @decommission="decommissionRoom"
         />
 
         <BasePaginationBar
@@ -258,12 +289,12 @@ export default defineComponent({
         </BaseSideDrawer>
 
         <BaseConfirmDialog
-            :is-open="isConfirmingRemoval"
-            title="Remove room?"
-            :description="removalConfirmationDescription"
-            confirm-label="Remove"
-            @confirm="removeSelectedRoom"
-            @cancel="cancelRemoval"
+            :is-open="isConfirmingDecommission"
+            title="Decommission room?"
+            :description="decommissionConfirmationDescription"
+            confirm-label="Decommission"
+            @confirm="decommissionSelectedRoom"
+            @cancel="cancelDecommission"
         />
     </div>
 </template>

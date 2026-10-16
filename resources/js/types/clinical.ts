@@ -59,3 +59,33 @@ export type Prescriber = {
     physicianID: number
     name: string
 }
+
+export type Stay = {
+    id: string
+    stayID: number
+    startDate: string
+    endDate: string | null
+    patient: PrescriptionParty & { patientID: number }
+    room: {
+        id: string
+        roomID: number
+        roomType: string
+        deleted_at: string | null
+    }
+}
+
+export type AdmissionFormData = {
+    patient_id: string
+    room_id: string
+    startDate: string
+    endDate: string
+}
+
+export type RoomAvailability = {
+    id: string
+    roomID: number
+    roomType: string
+    beds: number
+    bedsTaken: number
+    bedsFree: number
+}

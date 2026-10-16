@@ -232,14 +232,14 @@ it('rejects an offboarded physician as the prescriber', function () {
     ]);
 });
 
-it('rejects a removed patient', function () {
+it('rejects an inactive patient', function () {
     $patient = Patient::factory()->create(['name' => 'Jordan Sullivan']);
     $patient->delete();
 
     $response = $this->actingAsLoggedInUser()->postJson(route('api.prescriptions.store'), prescriptionRequest(['patient_id' => $patient->id]));
 
     $response->assertUnprocessable()->assertJsonValidationErrors([
-        'patient_id' => 'Jordan Sullivan has been removed and cannot be prescribed to.',
+        'patient_id' => 'Jordan Sullivan is inactive and cannot be prescribed to.',
     ]);
 });
 

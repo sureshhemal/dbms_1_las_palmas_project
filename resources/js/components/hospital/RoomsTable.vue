@@ -28,11 +28,11 @@ export default defineComponent({
         },
     },
 
-    emits: ['edit', 'remove'],
+    emits: ['edit', 'decommission'],
 
     data() {
         return {
-            columnHeadings: ['Room ID', 'Room Type', ''],
+            columnHeadings: ['Room ID', 'Room Type', 'Availability', ''],
         }
     },
 })
@@ -50,7 +50,7 @@ export default defineComponent({
             :key="room.id"
             :room="room"
             @edit="$emit('edit', $event)"
-            @remove="$emit('remove', $event)"
+            @decommission="$emit('decommission', $event)"
         />
     </BaseTable>
 </template>

@@ -59,7 +59,7 @@ class PrescriptionSeeder extends Seeder
         $this->patients = Patient::query()->orderBy('created_at')->get(['id', 'created_at', 'primary_physician_id'])
             ->map(fn (Patient $patient): array => [
                 'id' => $patient->id,
-                'registeredOn' => $patient->created_at?->toDateString(),
+                'registeredOn' => $patient->created_at->toDateString(),
                 'primaryPhysicianId' => in_array($patient->primary_physician_id, $this->prescriberIds, true) ? $patient->primary_physician_id : null,
             ])
             ->all();
