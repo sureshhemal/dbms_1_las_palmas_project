@@ -26,3 +26,12 @@ export type ShareSlice = {
     count: number
     percentage: number
 }
+
+export type SortDirection = 'asc' | 'desc'
+
+export type TableSorting = {
+    column: string
+    direction: SortDirection
+}
+
+export type ColumnAlignment = 'left' | 'center' | 'right'

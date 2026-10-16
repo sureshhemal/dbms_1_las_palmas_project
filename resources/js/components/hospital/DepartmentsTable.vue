@@ -3,7 +3,7 @@ import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
 import BaseTable from '@/components/base/BaseTable.vue'
 import DepartmentsTableRow from '@/components/hospital/DepartmentsTableRow.vue'
-import type { Department } from '@/types'
+import type { ColumnAlignment, Department } from '@/types'
 
 export default defineComponent({
     name: 'DepartmentsTable',
@@ -29,6 +29,10 @@ export default defineComponent({
     data() {
         return {
             columnHeadings: ['Department ID', 'Name', 'Head', ''],
+            columnAlignments: {
+                'Department ID': 'center',
+                '': 'right',
+            } as Record<string, ColumnAlignment>,
         }
     },
 })
@@ -40,6 +44,7 @@ export default defineComponent({
         :is-loading="isLoading"
         :is-empty="departments.length === 0"
         empty-message="No departments."
+        :column-alignments="columnAlignments"
     >
         <DepartmentsTableRow
             v-for="department in departments"

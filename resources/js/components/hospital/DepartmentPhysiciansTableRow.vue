@@ -35,13 +35,13 @@ export default defineComponent({
 
 <template>
     <BaseTableRow>
-        <BaseTableCell class="font-mono">
+        <BaseTableCell align="center" class="font-mono">
             {{ physician.physicianID }}
         </BaseTableCell>
         <BaseTableCell>
             <PhysicianNameLink :physician="physician" />
         </BaseTableCell>
         <BaseTableCell>{{ physician.position }}</BaseTableCell>
-        <BaseTableCell>{{ joinDate }}</BaseTableCell>
+        <BaseTableCell align="center">{{ joinDate }}</BaseTableCell>
     </BaseTableRow>
 </template>

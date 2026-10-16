@@ -3,7 +3,7 @@ import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
 import BaseTable from '@/components/base/BaseTable.vue'
 import PhysiciansTableRow from '@/components/staff/PhysiciansTableRow.vue'
-import type { Physician } from '@/types'
+import type { ColumnAlignment, Physician } from '@/types'
 
 export default defineComponent({
     name: 'PhysiciansTable',
@@ -41,6 +41,11 @@ export default defineComponent({
                 'SSN',
                 '',
             ],
+            columnAlignments: {
+                'Physician ID': 'center',
+                SSN: 'center',
+                '': 'right',
+            } as Record<string, ColumnAlignment>,
         }
     },
 })
@@ -52,6 +57,7 @@ export default defineComponent({
         :is-loading="isLoading"
         :is-empty="physicians.length === 0"
         :empty-message="emptyMessage"
+        :column-alignments="columnAlignments"
     >
         <PhysiciansTableRow
             v-for="physician in physicians"

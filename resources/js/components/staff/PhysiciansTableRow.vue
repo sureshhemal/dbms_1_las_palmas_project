@@ -72,7 +72,7 @@ export default defineComponent({
 
 <template>
     <BaseTableRow>
-        <BaseTableCell class="font-mono">
+        <BaseTableCell align="center" class="font-mono">
             {{ physician.physicianID }}
         </BaseTableCell>
         <BaseTableCell>
@@ -93,10 +93,13 @@ export default defineComponent({
         >
             {{ headedDepartmentsSummary }}
         </BaseTableCell>
-        <BaseTableCell class="font-mono text-neutral-500 dark:text-neutral-400">
+        <BaseTableCell
+            align="center"
+            class="font-mono text-neutral-500 dark:text-neutral-400"
+        >
             {{ maskedSsn }}
         </BaseTableCell>
-        <BaseTableCell class="w-0 text-right">
+        <BaseTableCell align="right" class="w-0">
             <div class="flex items-center justify-end gap-1">
                 <BaseTableActionButton
                     tone="brand"

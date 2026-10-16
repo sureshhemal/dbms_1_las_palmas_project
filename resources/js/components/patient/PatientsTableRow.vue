@@ -50,19 +50,21 @@ export default defineComponent({
 
 <template>
     <BaseTableRow>
-        <BaseTableCell class="font-mono">
+        <BaseTableCell align="center" class="font-mono">
             {{ patient.patientID }}
         </BaseTableCell>
         <BaseTableCell>
             <PatientNameLink :patient="patient" />
         </BaseTableCell>
         <BaseTableCell
+            align="center"
             class="tabular-nums"
             :class="{ 'text-neutral-500 dark:text-neutral-400': !patient.dob }"
         >
             {{ dateOfBirth }}
         </BaseTableCell>
         <BaseTableCell
+            align="center"
             class="whitespace-nowrap"
             :class="{
                 'text-neutral-500 dark:text-neutral-400': !patient.phone,
@@ -71,6 +73,7 @@ export default defineComponent({
             {{ patient.phone ?? '—' }}
         </BaseTableCell>
         <BaseTableCell
+            align="center"
             class="font-mono"
             :class="{
                 'text-neutral-500 dark:text-neutral-400':
@@ -88,10 +91,13 @@ export default defineComponent({
                 —
             </span>
         </BaseTableCell>
-        <BaseTableCell class="font-mono text-neutral-500 dark:text-neutral-400">
+        <BaseTableCell
+            align="center"
+            class="font-mono text-neutral-500 dark:text-neutral-400"
+        >
             {{ maskedSsn }}
         </BaseTableCell>
-        <BaseTableCell class="w-0 text-right">
+        <BaseTableCell align="right" class="w-0">
             <div class="flex items-center justify-end gap-1">
                 <BaseTableActionButton
                     tone="brand"

@@ -3,7 +3,7 @@ import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
 import BaseTable from '@/components/base/BaseTable.vue'
 import RoomsTableRow from '@/components/hospital/RoomsTableRow.vue'
-import type { Room } from '@/types'
+import type { ColumnAlignment, Room } from '@/types'
 
 export default defineComponent({
     name: 'RoomsTable',
@@ -39,6 +39,11 @@ export default defineComponent({
                 'Patients',
                 '',
             ],
+            columnAlignments: {
+                'Room ID': 'center',
+                Availability: 'center',
+                '': 'right',
+            } as Record<string, ColumnAlignment>,
         }
     },
 })
@@ -50,6 +55,7 @@ export default defineComponent({
         :is-loading="isLoading"
         :is-empty="rooms.length === 0"
         :empty-message="emptyMessage"
+        :column-alignments="columnAlignments"
     >
         <RoomsTableRow
             v-for="room in rooms"

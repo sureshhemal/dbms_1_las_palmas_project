@@ -3,7 +3,7 @@ import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
 import BaseTable from '@/components/base/BaseTable.vue'
 import PhysicianPrescriptionsTableRow from '@/components/staff/PhysicianPrescriptionsTableRow.vue'
-import type { PhysicianPrescription } from '@/types'
+import type { ColumnAlignment, PhysicianPrescription } from '@/types'
 
 export default defineComponent({
     name: 'PhysicianPrescriptionsTable',
@@ -27,6 +27,9 @@ export default defineComponent({
     data() {
         return {
             columnHeadings: ['Prescribed', 'Patient', 'Medication', 'Dose'],
+            columnAlignments: {
+                Prescribed: 'center',
+            } as Record<string, ColumnAlignment>,
         }
     },
 })
@@ -38,6 +41,7 @@ export default defineComponent({
         :is-loading="isLoading"
         :is-empty="prescriptions.length === 0"
         empty-message="No prescriptions issued yet."
+        :column-alignments="columnAlignments"
     >
         <PhysicianPrescriptionsTableRow
             v-for="prescription in prescriptions"

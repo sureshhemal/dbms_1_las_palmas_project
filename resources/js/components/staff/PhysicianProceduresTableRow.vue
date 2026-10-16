@@ -26,14 +26,14 @@ export default defineComponent({
 
 <template>
     <BaseTableRow>
-        <BaseTableCell class="whitespace-nowrap tabular-nums">
+        <BaseTableCell align="center" class="whitespace-nowrap tabular-nums">
             {{ performedProcedure.procDate }}
         </BaseTableCell>
         <BaseTableCell>
             <PatientNameLink :patient="performedProcedure.patient" />
         </BaseTableCell>
         <BaseTableCell>{{ performedProcedure.procedure.name }}</BaseTableCell>
-        <BaseTableCell class="whitespace-nowrap">
+        <BaseTableCell align="center" class="whitespace-nowrap">
             Room {{ performedProcedure.stay.room.roomID }}
         </BaseTableCell>
         <BaseTableCell>{{ performedProcedure.nurse.name }}</BaseTableCell>

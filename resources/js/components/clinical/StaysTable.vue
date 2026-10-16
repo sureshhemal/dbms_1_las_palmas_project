@@ -3,7 +3,7 @@ import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
 import BaseTable from '@/components/base/BaseTable.vue'
 import StaysTableRow from '@/components/clinical/StaysTableRow.vue'
-import type { Stay } from '@/types'
+import type { ColumnAlignment, Stay } from '@/types'
 
 export default defineComponent({
     name: 'StaysTable',
@@ -45,6 +45,14 @@ export default defineComponent({
                 'Status',
                 '',
             ],
+            columnAlignments: {
+                'Stay ID': 'center',
+                Room: 'center',
+                Admitted: 'center',
+                Discharge: 'center',
+                Status: 'center',
+                '': 'right',
+            } as Record<string, ColumnAlignment>,
         }
     },
 })
@@ -56,6 +64,7 @@ export default defineComponent({
         :is-loading="isLoading"
         :is-empty="stays.length === 0"
         :empty-message="emptyMessage"
+        :column-alignments="columnAlignments"
     >
         <StaysTableRow
             v-for="stay in stays"

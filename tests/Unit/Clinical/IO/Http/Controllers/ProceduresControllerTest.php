@@ -1,5 +1,6 @@
 <?php
 
+use App\Clinical\Entities\Models\PerformedProcedure;
 use App\Clinical\Entities\Models\Procedure;
 
 it('returns 401 to guests', function () {
@@ -35,6 +36,99 @@ it('returns the requested page of procedures', function () {
         'last_page' => 3,
     ]);
     expect($response->json('data.0.name'))->toBe('Procedure 11');
+});
+
+it('shows the share of all performed procedures each procedure makes up', function () {
+    $this->travelTo('2026-10-15 12:00:00');
+    $appendectomy = Procedure::factory()->create(['name' => 'Appendectomy']);
+    $biopsy = Procedure::factory()->create(['name' => 'Biopsy']);
+    Procedure::factory()->create(['name' => 'Colonoscopy']);
+    $removed = Procedure::factory()->create(['name' => 'Lobotomy']);
+    PerformedProcedure::factory()->for($appendectomy)->performedOn('2026-10-01')->count(3)->create();
+    PerformedProcedure::factory()->for($appendectomy)->performedOn('2026-10-16')->create();
+    PerformedProcedure::factory()->for($biopsy)->performedOn('2026-10-15')->create();
+    PerformedProcedure::factory()->for($removed)->performedOn('2026-10-02')->create();
+    $removed->delete();
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.procedures.index', ['sort' => 'name']));
+
+    expect(collect($response->json('data'))->map(fn (array $procedure): array => [
+        $procedure['name'],
+        $procedure['performedCount'],
+        $procedure['performedShare'],
+    ])->all())->toEqual([
+        ['Appendectomy', 3, 60.0],
+        ['Biopsy', 1, 20.0],
+        ['Colonoscopy', 0, 0.0],
+    ]);
+});
+
+it('rounds the performed share to two decimal places', function () {
+    $this->travelTo('2026-10-15 12:00:00');
+    $biopsy = Procedure::factory()->create(['name' => 'Biopsy']);
+    PerformedProcedure::factory()->for($biopsy)->performedOn('2026-10-01')->create();
+    PerformedProcedure::factory()->performedOn('2026-10-01')->count(2)->create();
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.procedures.index', ['search' => 'Biopsy']));
+
+    expect($response->json('data.0.performedShare'))->toEqual(33.33);
+});
+
+it('shows a zero share when no procedure has been performed yet', function () {
+    Procedure::factory()->create();
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.procedures.index'));
+
+    expect($response->json('data.0.performedShare'))->toBe(0);
+});
+
+it('counts each procedure once in the page details however often it was performed', function () {
+    $this->travelTo('2026-10-15 12:00:00');
+    $appendectomy = Procedure::factory()->create(['name' => 'Appendectomy']);
+    Procedure::factory()->create(['name' => 'Biopsy']);
+    PerformedProcedure::factory()->for($appendectomy)->performedOn('2026-10-01')->count(5)->create();
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.procedures.index', ['per_page' => 10, 'sort' => 'name']));
+
+    $response->assertJson(['total' => 2, 'last_page' => 1]);
+    expect($response->json('data.*.name'))->toBe(['Appendectomy', 'Biopsy']);
+});
+
+it('sorts the procedures by name in the chosen direction', function () {
+    Procedure::factory()->create(['name' => 'Biopsy']);
+    Procedure::factory()->create(['name' => 'Appendectomy']);
+    Procedure::factory()->create(['name' => 'Colonoscopy']);
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.procedures.index', ['sort' => 'name', 'direction' => 'desc']));
+
+    expect($response->json('data.*.name'))->toBe(['Colonoscopy', 'Biopsy', 'Appendectomy']);
+});
+
+it('sorts the procedures by how often they were performed, breaking ties by name', function (string $direction, array $expectedNames) {
+    $this->travelTo('2026-10-15 12:00:00');
+    $biopsy = Procedure::factory()->create(['name' => 'Biopsy']);
+    $appendectomy = Procedure::factory()->create(['name' => 'Appendectomy']);
+    $colonoscopy = Procedure::factory()->create(['name' => 'Colonoscopy']);
+    Procedure::factory()->create(['name' => 'Tonsillectomy']);
+    PerformedProcedure::factory()->for($biopsy)->performedOn('2026-10-01')->count(3)->create();
+    PerformedProcedure::factory()->for($appendectomy)->performedOn('2026-10-01')->create();
+    PerformedProcedure::factory()->for($colonoscopy)->performedOn('2026-10-01')->create();
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.procedures.index', ['sort' => 'performedShare', 'direction' => $direction]));
+
+    expect($response->json('data.*.name'))->toBe($expectedNames);
+})->with([
+    'ascending' => ['asc', ['Tonsillectomy', 'Appendectomy', 'Colonoscopy', 'Biopsy']],
+    'descending' => ['desc', ['Biopsy', 'Appendectomy', 'Colonoscopy', 'Tonsillectomy']],
+]);
+
+it('sorts by name ascending when the sort column or direction is unknown', function () {
+    Procedure::factory()->create(['name' => 'Biopsy']);
+    Procedure::factory()->create(['name' => 'Appendectomy']);
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.procedures.index', ['sort' => 'cost', 'direction' => 'sideways']));
+
+    expect($response->json('data.*.name'))->toBe(['Appendectomy', 'Biopsy']);
 });
 
 it('leaves out removed procedures', function () {

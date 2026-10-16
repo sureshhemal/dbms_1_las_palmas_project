@@ -1,6 +1,7 @@
 <?php
 
 use App\Clinical\Entities\Models\Medication;
+use App\Clinical\Entities\Models\Prescription;
 
 it('returns 401 to guests', function () {
     $response = $this->getJson(route('api.medications.index'));
@@ -35,6 +36,94 @@ it('returns the requested page of medications', function () {
         'last_page' => 3,
     ]);
     expect($response->json('data.0.name'))->toBe('Medication 11');
+});
+
+it('shows the share of all prescriptions each medication was prescribed in', function () {
+    $amoxicillin = Medication::factory()->create(['name' => 'Amoxicillin']);
+    $gabapentin = Medication::factory()->create(['name' => 'Gabapentin']);
+    Medication::factory()->create(['name' => 'Metformin Hydrochloride']);
+    $removed = Medication::factory()->create(['name' => 'Ranitidine']);
+    Prescription::factory()->for($amoxicillin)->count(3)->create();
+    Prescription::factory()->for($gabapentin)->create();
+    Prescription::factory()->for($removed)->create();
+    $removed->delete();
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.medications.index'));
+
+    expect(collect($response->json('data'))->map(fn (array $medication): array => [
+        $medication['name'],
+        $medication['prescriptionsCount'],
+        $medication['prescriptionShare'],
+    ])->all())->toEqual([
+        ['Amoxicillin', 3, 60.0],
+        ['Gabapentin', 1, 20.0],
+        ['Metformin Hydrochloride', 0, 0.0],
+    ]);
+});
+
+it('rounds the prescription share to two decimal places', function () {
+    $amoxicillin = Medication::factory()->create(['name' => 'Amoxicillin']);
+    Prescription::factory()->for($amoxicillin)->create();
+    Prescription::factory()->count(2)->create();
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.medications.index', ['search' => 'Amoxicillin']));
+
+    expect($response->json('data.0.prescriptionShare'))->toBe(33.33);
+});
+
+it('shows a zero share when there are no prescriptions at all', function () {
+    Medication::factory()->create();
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.medications.index'));
+
+    expect($response->json('data.0.prescriptionShare'))->toBe(0);
+});
+
+it('counts each medication once in the page details however often it was prescribed', function () {
+    $amoxicillin = Medication::factory()->create(['name' => 'Amoxicillin']);
+    Medication::factory()->create(['name' => 'Gabapentin']);
+    Prescription::factory()->for($amoxicillin)->count(5)->create();
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.medications.index', ['per_page' => 10]));
+
+    $response->assertJson(['total' => 2, 'last_page' => 1]);
+    expect($response->json('data.*.name'))->toBe(['Amoxicillin', 'Gabapentin']);
+});
+
+it('sorts the medications by name in the chosen direction', function () {
+    Medication::factory()->create(['name' => 'Gabapentin']);
+    Medication::factory()->create(['name' => 'Amoxicillin']);
+    Medication::factory()->create(['name' => 'Metformin Hydrochloride']);
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.medications.index', ['sort' => 'name', 'direction' => 'desc']));
+
+    expect($response->json('data.*.name'))->toBe(['Metformin Hydrochloride', 'Gabapentin', 'Amoxicillin']);
+});
+
+it('sorts the medications by their share of prescriptions, breaking ties by name', function (string $direction, array $expectedNames) {
+    $gabapentin = Medication::factory()->create(['name' => 'Gabapentin']);
+    $amoxicillin = Medication::factory()->create(['name' => 'Amoxicillin']);
+    $metformin = Medication::factory()->create(['name' => 'Metformin Hydrochloride']);
+    Medication::factory()->create(['name' => 'Zolpidem Tartrate']);
+    Prescription::factory()->for($gabapentin)->count(3)->create();
+    Prescription::factory()->for($amoxicillin)->create();
+    Prescription::factory()->for($metformin)->create();
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.medications.index', ['sort' => 'prescriptionShare', 'direction' => $direction]));
+
+    expect($response->json('data.*.name'))->toBe($expectedNames);
+})->with([
+    'ascending' => ['asc', ['Zolpidem Tartrate', 'Amoxicillin', 'Metformin Hydrochloride', 'Gabapentin']],
+    'descending' => ['desc', ['Gabapentin', 'Amoxicillin', 'Metformin Hydrochloride', 'Zolpidem Tartrate']],
+]);
+
+it('sorts by name ascending when the sort column or direction is unknown', function () {
+    Medication::factory()->create(['name' => 'Gabapentin']);
+    Medication::factory()->create(['name' => 'Amoxicillin']);
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.medications.index', ['sort' => 'medID; drop table', 'direction' => 'sideways']));
+
+    expect($response->json('data.*.name'))->toBe(['Amoxicillin', 'Gabapentin']);
 });
 
 it('leaves out removed medications', function () {
