@@ -13,6 +13,7 @@ import type {
     MedicationFormData,
     PaginatedResponse,
     PaginationDetails,
+    TableSorting,
 } from '@/types'
 
 export default defineComponent({
@@ -33,6 +34,10 @@ export default defineComponent({
         return {
             medications: [] as Medication[],
             searchTerm: '',
+            sorting: {
+                column: 'prescriptionShare',
+                direction: 'desc',
+            } as TableSorting,
             paginationDetails: {
                 current_page: 1,
                 per_page: 20,
@@ -89,6 +94,8 @@ export default defineComponent({
                         page: page ?? this.paginationDetails.current_page,
                         per_page: perPage ?? this.paginationDetails.per_page,
                         search: this.searchTerm || undefined,
+                        sort: this.sorting.column,
+                        direction: this.sorting.direction,
                     },
                 })
                 .finally(() => this.$wait.end('fetching-medications'))
@@ -97,6 +104,11 @@ export default defineComponent({
 
             this.medications = medications
             this.paginationDetails = paginationDetails
+        },
+
+        sortMedications(sorting: TableSorting): void {
+            this.sorting = sorting
+            this.fetchMedications(1)
         },
 
         toMedicationFormData(medication: Medication): MedicationFormData {
@@ -204,8 +216,10 @@ export default defineComponent({
             :medications="medications"
             :empty-message="medicationsEmptyMessage"
             :is-loading="$wait.is('fetching-medications')"
+            :sorting="sorting"
             @edit="editMedication"
             @remove="removeMedication"
+            @sort="sortMedications"
         />
 
         <BasePaginationBar

@@ -13,6 +13,7 @@ import type {
     PaginationDetails,
     Procedure,
     ProcedureFormData,
+    TableSorting,
 } from '@/types'
 
 export default defineComponent({
@@ -33,6 +34,10 @@ export default defineComponent({
         return {
             procedures: [] as Procedure[],
             searchTerm: '',
+            sorting: {
+                column: 'performedShare',
+                direction: 'desc',
+            } as TableSorting,
             paginationDetails: {
                 current_page: 1,
                 per_page: 20,
@@ -89,6 +94,8 @@ export default defineComponent({
                         page: page ?? this.paginationDetails.current_page,
                         per_page: perPage ?? this.paginationDetails.per_page,
                         search: this.searchTerm || undefined,
+                        sort: this.sorting.column,
+                        direction: this.sorting.direction,
                     },
                 })
                 .finally(() => this.$wait.end('fetching-procedures'))
@@ -97,6 +104,11 @@ export default defineComponent({
 
             this.procedures = procedures
             this.paginationDetails = paginationDetails
+        },
+
+        sortProcedures(sorting: TableSorting): void {
+            this.sorting = sorting
+            this.fetchProcedures(1)
         },
 
         toProcedureFormData(procedure: Procedure): ProcedureFormData {
@@ -206,8 +218,10 @@ export default defineComponent({
             :procedures="procedures"
             :empty-message="proceduresEmptyMessage"
             :is-loading="$wait.is('fetching-procedures')"
+            :sorting="sorting"
             @edit="editProcedure"
             @remove="removeProcedure"
+            @sort="sortProcedures"
         />
 
         <BasePaginationBar

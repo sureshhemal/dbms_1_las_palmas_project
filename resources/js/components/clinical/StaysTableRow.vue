@@ -66,11 +66,14 @@ export default defineComponent({
 
 <template>
     <BaseTableRow>
-        <BaseTableCell class="font-mono">{{ stay.stayID }}</BaseTableCell>
+        <BaseTableCell align="center" class="font-mono">
+            {{ stay.stayID }}
+        </BaseTableCell>
         <BaseTableCell>
             <PatientNameLink :patient="stay.patient" />
         </BaseTableCell>
         <BaseTableCell
+            align="center"
             :class="{
                 'text-neutral-500 line-through dark:text-neutral-400':
                     stay.room.deleted_at,
@@ -82,10 +85,11 @@ export default defineComponent({
                 {{ stay.room.roomType }}
             </span>
         </BaseTableCell>
-        <BaseTableCell class="whitespace-nowrap tabular-nums">
+        <BaseTableCell align="center" class="whitespace-nowrap tabular-nums">
             {{ stay.startDate }}
         </BaseTableCell>
         <BaseTableCell
+            align="center"
             class="whitespace-nowrap tabular-nums"
             :class="{
                 'text-neutral-500 dark:text-neutral-400': !stay.endDate,
@@ -93,7 +97,7 @@ export default defineComponent({
         >
             {{ stay.endDate ?? 'Not decided' }}
         </BaseTableCell>
-        <BaseTableCell>
+        <BaseTableCell align="center">
             <span
                 class="rounded-full px-2 py-0.5 text-xs font-medium"
                 :class="statusClasses"
@@ -101,7 +105,7 @@ export default defineComponent({
                 {{ status }}
             </span>
         </BaseTableCell>
-        <BaseTableCell class="w-0 text-right">
+        <BaseTableCell align="right" class="w-0">
             <div v-if="!isOver" class="flex items-center justify-end gap-1">
                 <BaseTableActionButton
                     tone="brand"

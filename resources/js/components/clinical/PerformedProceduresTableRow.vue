@@ -38,10 +38,10 @@ export default defineComponent({
 
 <template>
     <BaseTableRow>
-        <BaseTableCell class="whitespace-nowrap tabular-nums">
+        <BaseTableCell align="center" class="whitespace-nowrap tabular-nums">
             {{ performedProcedure.procDate }}
         </BaseTableCell>
-        <BaseTableCell>
+        <BaseTableCell align="center">
             <span
                 class="rounded-full px-2 py-0.5 text-xs font-medium"
                 :class="
@@ -57,7 +57,7 @@ export default defineComponent({
             <PatientNameLink :patient="performedProcedure.patient" />
         </BaseTableCell>
         <BaseTableCell>{{ performedProcedure.procedure.name }}</BaseTableCell>
-        <BaseTableCell class="whitespace-nowrap">
+        <BaseTableCell align="center" class="whitespace-nowrap">
             Room {{ performedProcedure.stay.room.roomID }}
         </BaseTableCell>
         <BaseTableCell>

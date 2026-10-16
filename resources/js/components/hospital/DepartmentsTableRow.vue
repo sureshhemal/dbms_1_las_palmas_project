@@ -32,7 +32,7 @@ export default defineComponent({
 
 <template>
     <BaseTableRow is-selectable @click="$emit('open', department)">
-        <BaseTableCell class="font-mono">
+        <BaseTableCell align="center" class="font-mono">
             {{ department.deptID }}
         </BaseTableCell>
         <BaseTableCell class="font-medium">
@@ -47,7 +47,7 @@ export default defineComponent({
                 —
             </span>
         </BaseTableCell>
-        <BaseTableCell class="w-0 text-right">
+        <BaseTableCell align="right" class="w-0">
             <BaseTableActionButton
                 tone="brand"
                 @click.stop="$emit('edit', department)"

@@ -28,7 +28,7 @@ export default defineComponent({
 
 <template>
     <BaseTableRow>
-        <BaseTableCell class="whitespace-nowrap tabular-nums">
+        <BaseTableCell align="center" class="whitespace-nowrap tabular-nums">
             {{ prescription.prescribedDate }}
         </BaseTableCell>
         <BaseTableCell>

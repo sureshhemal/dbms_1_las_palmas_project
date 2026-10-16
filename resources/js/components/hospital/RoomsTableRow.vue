@@ -53,11 +53,11 @@ export default defineComponent({
 
 <template>
     <BaseTableRow>
-        <BaseTableCell class="font-mono">
+        <BaseTableCell align="center" class="font-mono">
             {{ room.roomID }}
         </BaseTableCell>
         <BaseTableCell>{{ room.roomType }}</BaseTableCell>
-        <BaseTableCell>
+        <BaseTableCell align="center">
             <span
                 class="rounded-full px-2 py-0.5 text-xs font-medium"
                 :class="
@@ -82,7 +82,7 @@ export default defineComponent({
                 </li>
             </ul>
         </BaseTableCell>
-        <BaseTableCell class="w-0 text-right">
+        <BaseTableCell align="right" class="w-0">
             <div class="flex items-center justify-end gap-1">
                 <BaseTableActionButton
                     tone="brand"

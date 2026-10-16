@@ -3,7 +3,7 @@ import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
 import BaseTable from '@/components/base/BaseTable.vue'
 import PatientPerformedProceduresTableRow from '@/components/patient/PatientPerformedProceduresTableRow.vue'
-import type { PatientPerformedProcedure } from '@/types'
+import type { ColumnAlignment, PatientPerformedProcedure } from '@/types'
 
 export default defineComponent({
     name: 'PatientPerformedProceduresTable',
@@ -31,6 +31,10 @@ export default defineComponent({
     data() {
         return {
             columnHeadings: ['Date', 'Procedure', 'Room', 'Physician', 'Nurse'],
+            columnAlignments: {
+                Date: 'center',
+                Room: 'center',
+            } as Record<string, ColumnAlignment>,
         }
     },
 })
@@ -42,6 +46,7 @@ export default defineComponent({
         :is-loading="isLoading"
         :is-empty="performedProcedures.length === 0"
         :empty-message="emptyMessage"
+        :column-alignments="columnAlignments"
     >
         <PatientPerformedProceduresTableRow
             v-for="performedProcedure in performedProcedures"

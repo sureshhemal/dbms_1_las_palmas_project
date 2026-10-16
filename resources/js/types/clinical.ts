@@ -2,6 +2,8 @@ export type Medication = {
     id: string
     medID: number
     name: string
+    prescriptionsCount?: number
+    prescriptionShare?: number
     created_at: string | null
     updated_at: string | null
     deleted_at: string | null
@@ -18,6 +20,8 @@ export type Procedure = {
     procID: number
     name: string
     cost: number | null
+    performedCount?: number
+    performedShare?: number
     created_at: string | null
     updated_at: string | null
     deleted_at: string | null
