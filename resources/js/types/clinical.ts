@@ -112,3 +112,31 @@ export type ProcedureEntryFormData = ProcedureDetailsFormData & {
     startDate: string
     endDate: string
 }
+
+export type PatientPerformedProcedure = Omit<
+    PerformedProcedure,
+    'patient' | 'stay'
+> & {
+    stay: { id: string; stayID: number; room: { id: string; roomID: number } }
+}
+
+export type PatientPrescription = Omit<Prescription, 'patient'>
+
+export type PatientSummary = {
+    nextProcedure: {
+        id: string
+        procDate: string
+        procedure: { id: string; name: string }
+    } | null
+    performedProceduresCount: number
+    prescriptionsCount: number
+    totalRevenue: number
+}
+
+export type PatientMedication = {
+    medicationId: string
+    name: string
+    isRemoved: boolean
+    prescriptionsCount: number
+    percentage: number
+}
