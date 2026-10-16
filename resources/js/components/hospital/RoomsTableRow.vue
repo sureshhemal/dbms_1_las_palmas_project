@@ -5,7 +5,8 @@ import { defineComponent } from 'vue'
 import BaseTableActionButton from '@/components/base/BaseTableActionButton.vue'
 import BaseTableCell from '@/components/base/BaseTableCell.vue'
 import BaseTableRow from '@/components/base/BaseTableRow.vue'
-import type { Room } from '@/types'
+import PatientNameLink from '@/components/patient/PatientNameLink.vue'
+import type { Room, RoomOccupant } from '@/types'
 
 export default defineComponent({
     name: 'RoomsTableRow',
@@ -15,6 +16,7 @@ export default defineComponent({
         BaseTableCell,
         BaseTableRow,
         DoorClosed,
+        PatientNameLink,
         Pencil,
     },
 
@@ -28,6 +30,10 @@ export default defineComponent({
     emits: ['edit', 'decommission'],
 
     computed: {
+        occupants(): RoomOccupant[] {
+            return this.room.current_stays ?? []
+        },
+
         isFull(): boolean {
             return this.room.bedsFree === 0
         },
@@ -62,6 +68,19 @@ export default defineComponent({
             >
                 {{ availability }}
             </span>
+        </BaseTableCell>
+        <BaseTableCell>
+            <span
+                v-if="occupants.length === 0"
+                class="text-neutral-500 dark:text-neutral-400"
+            >
+                —
+            </span>
+            <ul v-else class="space-y-0.5">
+                <li v-for="occupant in occupants" :key="occupant.id">
+                    <PatientNameLink :patient="occupant.patient" />
+                </li>
+            </ul>
         </BaseTableCell>
         <BaseTableCell class="w-0 text-right">
             <div class="flex items-center justify-end gap-1">

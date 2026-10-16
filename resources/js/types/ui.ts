@@ -18,3 +18,11 @@ export type SelectOption = {
     value: string
     label: string
 }
+
+export type ShareSlice = {
+    key: string
+    name: string
+    isRemoved: boolean
+    count: number
+    percentage: number
+}

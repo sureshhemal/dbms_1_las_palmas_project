@@ -8,6 +8,7 @@ use App\Staff\IO\Http\Requests\PhysicianRequest;
 use App\Staff\UseCases\CreatePhysician;
 use App\Staff\UseCases\ListPhysicians;
 use App\Staff\UseCases\OffboardPhysician;
+use App\Staff\UseCases\ShowPhysician;
 use App\Staff\UseCases\UpdatePhysician;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -30,6 +31,11 @@ class PhysiciansController
                 ->values()
                 ->all(),
         ));
+    }
+
+    public function show(Physician $physician, ShowPhysician $showPhysician): JsonResponse
+    {
+        return response()->json($showPhysician->execute($physician));
     }
 
     public function store(PhysicianRequest $request, CreatePhysician $createPhysician): JsonResponse

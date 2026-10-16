@@ -19,6 +19,10 @@ final class ListRooms
         $today = HospitalCalendar::today();
 
         return Room::query()
+            ->with([
+                'currentStays:id,room_id,patient_id,startDate',
+                'currentStays.patient:id,name,deleted_at',
+            ])
             ->withCount(['stays as bedsTaken' => fn (StaysQueryBuilder $stays) => $stays->whereOccupyingABedOn($today)])
             ->when($filters->search, fn (Builder $query) => $query->where('roomID', 'like', "%{$filters->search}%"))
             ->when($filters->roomTypes, fn (Builder $query) => $query->whereIn('roomType', $filters->roomTypes))

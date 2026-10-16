@@ -149,6 +149,67 @@ it('ignores department ids that are not ulids', function () {
     $response->assertJsonCount(2);
 });
 
+it('returns 401 to guests showing a physician', function () {
+    $response = $this->getJson(route('api.physicians.show', Physician::factory()->create()));
+
+    $response->assertUnauthorized();
+});
+
+it('shows a physician with their personal details and joined date', function () {
+    $physician = Physician::factory()->withPosition(PhysicianPosition::Surgeon)->create([
+        'name' => 'Christopher Turk',
+        'physicianID' => 432,
+        'ssn' => '123-45-6789',
+        'created_at' => '2018-06-04 08:15:00',
+    ]);
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.physicians.show', $physician));
+
+    $response->assertOk()->assertJson([
+        'id' => $physician->id,
+        'physicianID' => 432,
+        'name' => 'Christopher Turk',
+        'position' => 'Surgeon',
+        'ssn' => '123-45-6789',
+    ]);
+    expect($response->json('created_at'))->toStartWith('2018-06-04T08:15:00');
+});
+
+it('shows the departments the physician works in and heads', function () {
+    $physician = Physician::factory()->create();
+    $surgery = $this->predefinedDepartment(DepartmentName::Surgery);
+    $physician->departments()->attach($surgery);
+    $surgery->update(['head_id' => $physician->id]);
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.physicians.show', $physician));
+
+    expect($response->json('departments'))->toHaveCount(1);
+    expect($response->json('departments.0'))->toMatchArray(['id' => $surgery->id, 'name' => 'Surgery']);
+    expect($response->json('headed_departments'))->toBe([
+        ['id' => $surgery->id, 'deptID' => 1002, 'name' => 'Surgery', 'head_id' => $physician->id],
+    ]);
+});
+
+it('counts the active patients who have the physician as their primary physician', function () {
+    $physician = Physician::factory()->create();
+    Patient::factory()->withPrimaryPhysician($physician)->count(3)->create();
+    Patient::factory()->withPrimaryPhysician($physician)->create()->delete();
+    Patient::factory()->withPrimaryPhysician(Physician::factory()->create())->create();
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.physicians.show', $physician));
+
+    expect($response->json('primary_patients_count'))->toBe(3);
+});
+
+it('returns 404 when showing an offboarded physician', function () {
+    $physician = Physician::factory()->create();
+    $physician->delete();
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.physicians.show', $physician));
+
+    $response->assertNotFound();
+});
+
 it('returns 401 to guests adding a physician', function () {
     $response = $this->postJson(route('api.physicians.store'), [
         'name' => 'Perry Cox',

@@ -32,7 +32,13 @@ export default defineComponent({
 
     data() {
         return {
-            columnHeadings: ['Room ID', 'Room Type', 'Availability', ''],
+            columnHeadings: [
+                'Room ID',
+                'Room Type',
+                'Availability',
+                'Patients',
+                '',
+            ],
         }
     },
 })

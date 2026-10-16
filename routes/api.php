@@ -8,6 +8,11 @@ use App\Clinical\IO\Http\Controllers\PatientSummaryController;
 use App\Clinical\IO\Http\Controllers\PatientUpcomingProceduresController;
 use App\Clinical\IO\Http\Controllers\PerformedProceduresController;
 use App\Clinical\IO\Http\Controllers\PerformedProcedureYearsController;
+use App\Clinical\IO\Http\Controllers\PhysicianPerformedProceduresController;
+use App\Clinical\IO\Http\Controllers\PhysicianPrescriptionsController;
+use App\Clinical\IO\Http\Controllers\PhysicianProceduresController;
+use App\Clinical\IO\Http\Controllers\PhysicianSummaryController;
+use App\Clinical\IO\Http\Controllers\PhysicianUpcomingProceduresController;
 use App\Clinical\IO\Http\Controllers\PrescriberCandidatesController;
 use App\Clinical\IO\Http\Controllers\PrescriptionsController;
 use App\Clinical\IO\Http\Controllers\ProceduresController;
@@ -30,6 +35,12 @@ Route::middleware('auth')->group(function () {
     Route::get('staff', [StaffController::class, 'index'])->name('api.staff.index');
 
     Route::get('physicians', [PhysiciansController::class, 'index'])->name('api.physicians.index');
+    Route::get('physicians/{physician}', [PhysiciansController::class, 'show'])->name('api.physicians.show');
+    Route::get('physicians/{physician}/summary', [PhysicianSummaryController::class, 'show'])->name('api.physicians.summary.show');
+    Route::get('physicians/{physician}/procedures', [PhysicianProceduresController::class, 'index'])->name('api.physicians.procedures.index');
+    Route::get('physicians/{physician}/upcoming-procedures', [PhysicianUpcomingProceduresController::class, 'index'])->name('api.physicians.upcoming-procedures.index');
+    Route::get('physicians/{physician}/performed-procedures', [PhysicianPerformedProceduresController::class, 'index'])->name('api.physicians.performed-procedures.index');
+    Route::get('physicians/{physician}/prescriptions', [PhysicianPrescriptionsController::class, 'index'])->name('api.physicians.prescriptions.index');
     Route::post('physicians', [PhysiciansController::class, 'store'])->name('api.physicians.store');
     Route::put('physicians/{physician}', [PhysiciansController::class, 'update'])->name('api.physicians.update');
     Route::delete('physicians/{physician}', [PhysiciansController::class, 'destroy'])->name('api.physicians.destroy');

@@ -28,7 +28,7 @@ export default defineComponent({
         },
     },
 
-    emits: ['edit', 'deactivate', 'open'],
+    emits: ['edit', 'deactivate'],
 
     data() {
         return {
@@ -60,7 +60,6 @@ export default defineComponent({
             :patient="patient"
             @edit="$emit('edit', $event)"
             @deactivate="$emit('deactivate', $event)"
-            @open="$emit('open', $event)"
         />
     </BaseTable>
 </template>
