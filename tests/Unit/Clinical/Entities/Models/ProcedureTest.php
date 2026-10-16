@@ -36,10 +36,10 @@ it('rejects a duplicate procID', function () {
 })->throws(UniqueConstraintViolationException::class);
 
 it('assigns the next procID when none is given', function () {
-    Procedure::create(['procID' => 1000, 'name' => 'Appendectomy']);
+    Procedure::create(['procID' => 900000, 'name' => 'Appendectomy']);
 
     $procedure = Procedure::create(['name' => 'Appendectomy']);
 
-    expect($procedure->procID)->toBe(1001);
-    expect(Procedure::find($procedure->id)->procID)->toBe(1001);
+    expect($procedure->procID)->toBe(900001);
+    expect(Procedure::find($procedure->id)->procID)->toBe(900001);
 });

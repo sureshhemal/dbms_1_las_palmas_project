@@ -30,10 +30,10 @@ it('rejects a duplicate medID', function () {
 })->throws(UniqueConstraintViolationException::class);
 
 it('assigns the next medID when none is given', function () {
-    Medication::create(['medID' => 1000, 'name' => 'Amoxicillin']);
+    Medication::create(['medID' => 900000, 'name' => 'Amoxicillin']);
 
     $medication = Medication::create(['name' => 'Amoxicillin']);
 
-    expect($medication->medID)->toBe(1001);
-    expect(Medication::find($medication->id)->medID)->toBe(1001);
+    expect($medication->medID)->toBe(900001);
+    expect(Medication::find($medication->id)->medID)->toBe(900001);
 });

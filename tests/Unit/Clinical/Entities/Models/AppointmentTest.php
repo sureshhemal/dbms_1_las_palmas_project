@@ -91,10 +91,10 @@ it('rejects a duplicate appID', function () {
 
 it('assigns the next appID when none is given', function () {
     $parties = appointmentParties();
-    Appointment::create(['appID' => 1000, ...$parties, 'startDateTime' => '2026-09-01 09:00:00']);
+    Appointment::create(['appID' => 900000, ...$parties, 'startDateTime' => '2026-09-01 09:00:00']);
 
     $appointment = Appointment::create([...$parties, 'startDateTime' => '2026-09-01 09:00:00']);
 
-    expect($appointment->appID)->toBe(1001);
-    expect(Appointment::find($appointment->id)->appID)->toBe(1001);
+    expect($appointment->appID)->toBe(900001);
+    expect(Appointment::find($appointment->id)->appID)->toBe(900001);
 });

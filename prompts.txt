@@ -1574,3 +1574,37 @@ yes. better artchitecture
 [2026-10-15 16:36]
 open pr to main
 
+[2026-10-15 16:39]
+<task-notification>
+<task-id>bhbi1pm6t</task-id>
+<tool-use-id>toolu_01TvdLcVRWqXb6WLrKPagiGq</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-sureshhemal-MSc-Sem-1-dbms-las-palmas/72f98d11-78da-49ca-a9fb-07041404af8c/tasks/bhbi1pm6t.output</output-file>
+<status>completed</status>
+<summary>Background command "Wait for PR #12 CI checks" completed (exit code 0)</summary>
+</task-notification>
+
+[2026-10-15 16:41]
+merged. Now it is time for prescriptions.
+
+this prescription should varies between years in seeder.
+
+[2026-10-15 20:15]
+can prescription present without dosage? Is it possible?
+
+[2026-10-15 20:16]
+yes. go for it
+
+[2026-10-15 20:17]
+fix the seeder too. Make schema also not nullable.
+
+[2026-10-15 20:19]
+In patient seeder, created_at should varies from several years. In reality, no patient can't have prescription older than his registered period
+
+[2026-10-15 20:22]
+prescribed on input should be disable future dates. Maybe use full calendar for inputs
+
+[2026-10-15 20:27]
+when form button is disabled, it should show cursor-not-allowed
+[2026-10-15 20:29]
+Open pr to main
+

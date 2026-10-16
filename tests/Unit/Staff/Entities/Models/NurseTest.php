@@ -38,12 +38,12 @@ it('rejects a duplicate nurseID', function () {
 })->throws(UniqueConstraintViolationException::class);
 
 it('assigns the next nurseID when none is given', function () {
-    Nurse::create(['nurseID' => 1000, 'name' => 'Carla Espinosa', 'position' => NursePosition::Nurse]);
+    Nurse::create(['nurseID' => 900000, 'name' => 'Carla Espinosa', 'position' => NursePosition::Nurse]);
 
     $nurse = Nurse::create(['name' => 'Carla Espinosa', 'position' => NursePosition::Nurse]);
 
-    expect($nurse->nurseID)->toBe(1001);
-    expect(Nurse::find($nurse->id)->nurseID)->toBe(1001);
+    expect($nurse->nurseID)->toBe(900001);
+    expect(Nurse::find($nurse->id)->nurseID)->toBe(900001);
 });
 
 it('keeps the leading zeros of the ssn', function () {

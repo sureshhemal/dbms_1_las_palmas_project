@@ -29,3 +29,33 @@ export type ProcedureFormData = {
     name: string
     cost: string
 }
+
+export type PrescriptionParty = {
+    id: string
+    name: string
+    deleted_at: string | null
+}
+
+export type Prescription = {
+    id: string
+    prescribedDate: string
+    dose: string
+    patient: PrescriptionParty & { patientID: number }
+    medication: PrescriptionParty & { medID: number }
+    physician: PrescriptionParty & { physicianID: number }
+    created_at: string | null
+}
+
+export type PrescriptionFormData = {
+    patient_id: string
+    medication_id: string
+    physician_id: string
+    prescribedDate: string
+    dose: string
+}
+
+export type Prescriber = {
+    id: string
+    physicianID: number
+    name: string
+}

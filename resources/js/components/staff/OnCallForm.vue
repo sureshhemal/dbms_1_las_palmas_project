@@ -3,16 +3,17 @@ import { Trash2 } from '@lucide/vue'
 import type { PropType } from 'vue'
 import { Form } from 'vee-validate'
 import { defineComponent } from 'vue'
-import BaseInput from '@/components/base/BaseInput.vue'
+import BaseDatePicker from '@/components/base/BaseDatePicker.vue'
 import BaseSearchableSelect from '@/components/base/BaseSearchableSelect.vue'
 import { Button } from '@/components/ui/button'
+import { addDays } from '@/lib/calendarDate'
 import type { OnCallFormData, SelectOption } from '@/types'
 
 export default defineComponent({
     name: 'OnCallForm',
 
     components: {
-        BaseInput,
+        BaseDatePicker,
         BaseSearchableSelect,
         Trash2,
         UiButton: Button,
@@ -39,6 +40,10 @@ export default defineComponent({
     },
 
     computed: {
+        earliestEndDate(): string {
+            return this.form.startDate ? addDays(this.form.startDate, 1) : ''
+        },
+
         isEditingExistingOnCall(): boolean {
             return this.form.id !== null
         },
@@ -69,21 +74,20 @@ export default defineComponent({
             :options="nurseOptions"
         />
 
-        <BaseInput
+        <BaseDatePicker
             v-model="form.startDate"
             label="Start date"
             name="startDate"
-            type="date"
             rules="required"
         />
 
         <div class="space-y-1.5">
-            <BaseInput
+            <BaseDatePicker
                 v-model="form.endDate"
                 label="End date"
                 name="endDate"
-                type="date"
                 rules="required"
+                :min="earliestEndDate"
             />
             <p class="text-xs text-neutral-500 dark:text-neutral-400">
                 The last day the nurse is on call. A period lasts at least two

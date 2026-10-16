@@ -2,6 +2,7 @@
 import { defineComponent } from 'vue'
 import BaseTabs from '@/components/base/BaseTabs.vue'
 import MedicationsTabPanel from '@/components/clinical/MedicationsTabPanel.vue'
+import PrescriptionsTabPanel from '@/components/clinical/PrescriptionsTabPanel.vue'
 import ProceduresTabPanel from '@/components/clinical/ProceduresTabPanel.vue'
 import type { TabDefinition } from '@/types'
 
@@ -11,6 +12,7 @@ export default defineComponent({
     components: {
         BaseTabs,
         MedicationsTabPanel,
+        PrescriptionsTabPanel,
         ProceduresTabPanel,
     },
 
@@ -26,6 +28,10 @@ export default defineComponent({
                     name: 'procedures',
                     label: 'Procedures',
                 },
+                {
+                    name: 'prescriptions',
+                    label: 'Prescriptions',
+                },
             ] as TabDefinition[],
         }
     },
@@ -40,6 +46,10 @@ export default defineComponent({
 
         <template #procedures>
             <ProceduresTabPanel />
+        </template>
+
+        <template #prescriptions>
+            <PrescriptionsTabPanel />
         </template>
     </BaseTabs>
 </template>

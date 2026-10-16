@@ -75,12 +75,12 @@ it('rejects a duplicate patientID', function () {
 })->throws(UniqueConstraintViolationException::class);
 
 it('assigns the next patientID when none is given', function () {
-    Patient::create(['patientID' => 1000, 'name' => 'Harvey Corman']);
+    Patient::create(['patientID' => 900000, 'name' => 'Harvey Corman']);
 
     $patient = Patient::create(['name' => 'Harvey Corman']);
 
-    expect($patient->patientID)->toBe(1001);
-    expect(Patient::find($patient->id)->patientID)->toBe(1001);
+    expect($patient->patientID)->toBe(900001);
+    expect(Patient::find($patient->id)->patientID)->toBe(900001);
 });
 
 it('keeps the leading zeros of the ssn', function () {

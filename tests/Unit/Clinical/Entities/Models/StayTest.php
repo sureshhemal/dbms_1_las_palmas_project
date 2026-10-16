@@ -84,10 +84,10 @@ it('rejects a duplicate stayID', function () {
 
 it('assigns the next stayID when none is given', function () {
     $parties = stayParties();
-    Stay::create(['stayID' => 1000, ...$parties, 'startDate' => '2026-09-01']);
+    Stay::create(['stayID' => 900000, ...$parties, 'startDate' => '2026-09-01']);
 
     $stay = Stay::create([...$parties, 'startDate' => '2026-09-01']);
 
-    expect($stay->stayID)->toBe(1001);
-    expect(Stay::find($stay->id)->stayID)->toBe(1001);
+    expect($stay->stayID)->toBe(900001);
+    expect(Stay::find($stay->id)->stayID)->toBe(900001);
 });

@@ -1,6 +1,8 @@
 <?php
 
 use App\Clinical\IO\Http\Controllers\MedicationsController;
+use App\Clinical\IO\Http\Controllers\PrescriberCandidatesController;
+use App\Clinical\IO\Http\Controllers\PrescriptionsController;
 use App\Clinical\IO\Http\Controllers\ProceduresController;
 use App\Hospital\IO\Http\Controllers\DepartmentHeadCandidatesController;
 use App\Hospital\IO\Http\Controllers\DepartmentPhysiciansController;
@@ -43,6 +45,11 @@ Route::middleware('auth')->group(function () {
     Route::post('procedures', [ProceduresController::class, 'store'])->name('api.procedures.store');
     Route::put('procedures/{procedure}', [ProceduresController::class, 'update'])->name('api.procedures.update');
     Route::delete('procedures/{procedure}', [ProceduresController::class, 'destroy'])->name('api.procedures.destroy');
+
+    Route::get('prescriptions', [PrescriptionsController::class, 'index'])->name('api.prescriptions.index');
+    Route::get('prescriptions/years', [PrescriptionsController::class, 'years'])->name('api.prescriptions.years');
+    Route::post('prescriptions', [PrescriptionsController::class, 'store'])->name('api.prescriptions.store');
+    Route::get('prescriber-candidates', [PrescriberCandidatesController::class, 'index'])->name('api.prescriber-candidates.index');
 
     Route::get('patients', [PatientsController::class, 'index'])->name('api.patients.index');
     Route::post('patients', [PatientsController::class, 'store'])->name('api.patients.store');

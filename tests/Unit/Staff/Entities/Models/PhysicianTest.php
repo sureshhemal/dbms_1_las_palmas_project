@@ -48,12 +48,12 @@ it('rejects a duplicate physicianID', function () {
 })->throws(UniqueConstraintViolationException::class);
 
 it('assigns the next physicianID when none is given', function () {
-    Physician::create(['physicianID' => 1000, 'name' => 'Perry Cox', 'position' => PhysicianPosition::Senior]);
+    Physician::create(['physicianID' => 900000, 'name' => 'Perry Cox', 'position' => PhysicianPosition::Senior]);
 
     $physician = Physician::create(['name' => 'Perry Cox', 'position' => PhysicianPosition::Senior]);
 
-    expect($physician->physicianID)->toBe(1001);
-    expect(Physician::find($physician->id)->physicianID)->toBe(1001);
+    expect($physician->physicianID)->toBe(900001);
+    expect(Physician::find($physician->id)->physicianID)->toBe(900001);
 });
 
 it('keeps the leading zeros of the ssn', function () {
