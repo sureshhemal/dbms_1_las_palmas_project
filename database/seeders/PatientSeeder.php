@@ -20,7 +20,11 @@ class PatientSeeder extends Seeder
 
     private const int PERCENT_OF_PATIENTS_WITHOUT_PRIMARY_PHYSICIAN = 10;
 
-    private const int YEARS_OF_REGISTRATIONS = 5;
+    private const int YEARS_OF_REGISTRATIONS = 15;
+
+    private const float LEAN_TOWARDS_RECENT_REGISTRATIONS = 1.4;
+
+    private const int OLDEST_AGE_AT_REGISTRATION = 95;
 
     public function run(): void
     {
@@ -59,9 +63,12 @@ class PatientSeeder extends Seeder
 
     private function patient(string $surname, string $address, ?int $insuranceNumber, string $phone, array $primaryPhysicianIds, CarbonImmutable $today): array
     {
-        $dob = CarbonImmutable::instance(fake()->dateTimeBetween('-95 years', $today->subDay()))->startOfDay();
+        $registeredAt = $this->registrationMoment();
+        $dob = CarbonImmutable::instance(fake()->dateTimeBetween(
+            $registeredAt->subYears(self::OLDEST_AGE_AT_REGISTRATION),
+            $registeredAt,
+        ))->startOfDay();
         $isBaby = $dob->greaterThan($today->subYear());
-        $registeredAt = CarbonImmutable::instance(fake()->dateTimeBetween('-'.self::YEARS_OF_REGISTRATIONS.' years', 'now'));
 
         return [
             'id' => Str::lower((string) Str::ulid($registeredAt)),
@@ -77,5 +84,13 @@ class PatientSeeder extends Seeder
             'created_at' => $registeredAt,
             'updated_at' => $registeredAt,
         ];
+    }
+
+    private function registrationMoment(): CarbonImmutable
+    {
+        $shareOfHistory = (random_int(0, PHP_INT_MAX - 1) / PHP_INT_MAX) ** self::LEAN_TOWARDS_RECENT_REGISTRATIONS;
+        $minutesAgo = (int) floor($shareOfHistory * self::YEARS_OF_REGISTRATIONS * 365 * 24 * 60);
+
+        return CarbonImmutable::now()->subMinutes($minutesAgo);
     }
 }

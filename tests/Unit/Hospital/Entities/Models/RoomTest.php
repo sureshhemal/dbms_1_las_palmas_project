@@ -38,10 +38,10 @@ it('rejects a duplicate roomID', function () {
 })->throws(UniqueConstraintViolationException::class);
 
 it('assigns the next roomID when none is given', function () {
-    Room::create(['roomID' => 1000, 'roomType' => RoomType::Single]);
+    Room::create(['roomID' => 900000, 'roomType' => RoomType::Single]);
 
     $room = Room::create(['roomType' => RoomType::Single]);
 
-    expect($room->roomID)->toBe(1001);
-    expect(Room::find($room->id)->roomID)->toBe(1001);
+    expect($room->roomID)->toBe(900001);
+    expect(Room::find($room->id)->roomID)->toBe(900001);
 });

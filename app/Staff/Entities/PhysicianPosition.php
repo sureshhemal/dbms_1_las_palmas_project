@@ -28,11 +28,24 @@ enum PhysicianPosition: string
         return $this !== self::Intern;
     }
 
+    public function isCapableOfPrescribing(): bool
+    {
+        return $this !== self::Intern;
+    }
+
     public static function capableOfBeingDepartmentHead(): array
     {
         return array_values(array_filter(
             self::cases(),
             fn (self $position): bool => $position->isCapableOfBeingDepartmentHead(),
+        ));
+    }
+
+    public static function capableOfPrescribing(): array
+    {
+        return array_values(array_filter(
+            self::cases(),
+            fn (self $position): bool => $position->isCapableOfPrescribing(),
         ));
     }
 

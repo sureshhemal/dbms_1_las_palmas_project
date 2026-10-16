@@ -14,6 +14,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import type { SelectOption } from '@/types'
 
+const typingPauseInMilliseconds = 300
+
 export default defineComponent({
     name: 'BaseSearchableSelect',
 
@@ -56,14 +58,24 @@ export default defineComponent({
             type: String,
             default: 'Choose one',
         },
+        searchesRemotely: {
+            type: Boolean,
+            default: false,
+        },
+        isSearching: {
+            type: Boolean,
+            default: false,
+        },
     },
 
-    emits: ['update:modelValue'],
+    emits: ['update:modelValue', 'search'],
 
     data() {
         return {
             isOpen: false,
             optionSearchTerm: '',
+            typingPauseTimer: 0,
+            chosenOption: null as SelectOption | null,
         }
     },
 
@@ -72,26 +84,55 @@ export default defineComponent({
             return this.modelValue !== ''
         },
 
-        selectedLabel(): string {
+        selectedOption(): SelectOption | undefined {
             return (
-                this.options.find((option) => option.value === this.modelValue)
-                    ?.label ?? this.placeholder
+                this.options.find(
+                    (option) => option.value === this.modelValue,
+                ) ??
+                (this.chosenOption?.value === this.modelValue
+                    ? this.chosenOption
+                    : undefined)
             )
+        },
+
+        selectedLabel(): string {
+            return this.selectedOption?.label ?? this.placeholder
         },
 
         hasSelectedOption(): boolean {
-            return this.options.some(
-                (option) => option.value === this.modelValue,
-            )
+            return this.selectedOption !== undefined
         },
 
         visibleOptions(): SelectOption[] {
+            if (this.searchesRemotely) {
+                return this.options
+            }
+
             const optionSearchTerm = this.optionSearchTerm.trim().toLowerCase()
 
             return this.options.filter((option) =>
                 option.label.toLowerCase().includes(optionSearchTerm),
             )
         },
+    },
+
+    watch: {
+        optionSearchTerm(optionSearchTerm: string): void {
+            if (!this.searchesRemotely) {
+                return
+            }
+
+            window.clearTimeout(this.typingPauseTimer)
+
+            this.typingPauseTimer = window.setTimeout(
+                () => this.$emit('search', optionSearchTerm.trim()),
+                typingPauseInMilliseconds,
+            )
+        },
+    },
+
+    beforeUnmount() {
+        window.clearTimeout(this.typingPauseTimer)
     },
 
     methods: {
@@ -123,8 +164,9 @@ export default defineComponent({
             }
         },
 
-        choose(value: string): void {
-            this.$emit('update:modelValue', value)
+        choose(option: SelectOption): void {
+            this.chosenOption = option
+            this.$emit('update:modelValue', option.value)
         },
     },
 })
@@ -189,7 +231,14 @@ export default defineComponent({
 
                 <div class="min-h-0 flex-1 overflow-y-auto">
                     <p
-                        v-if="visibleOptions.length === 0"
+                        v-if="isSearching"
+                        class="px-2 py-1.5 text-sm text-neutral-500 dark:text-neutral-400"
+                    >
+                        Searching…
+                    </p>
+
+                    <p
+                        v-else-if="visibleOptions.length === 0"
                         class="px-2 py-1.5 text-sm text-neutral-500 dark:text-neutral-400"
                     >
                         No matches
@@ -199,7 +248,7 @@ export default defineComponent({
                         v-for="option in visibleOptions"
                         :key="option.value"
                         class="justify-between"
-                        @select="choose(option.value)"
+                        @select="choose(option)"
                     >
                         <span class="truncate">{{ option.label }}</span>
                         <CheckIcon

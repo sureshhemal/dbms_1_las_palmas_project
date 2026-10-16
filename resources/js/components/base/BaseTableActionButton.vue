@@ -32,7 +32,7 @@ export default defineComponent({
 <template>
     <button
         type="button"
-        class="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-3.5"
+        class="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:size-3.5"
         :class="toneClass"
         :disabled="isBusy"
     >

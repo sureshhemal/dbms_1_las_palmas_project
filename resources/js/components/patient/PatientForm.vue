@@ -2,9 +2,11 @@
 import type { PropType } from 'vue'
 import { Form } from 'vee-validate'
 import { defineComponent } from 'vue'
+import BaseDatePicker from '@/components/base/BaseDatePicker.vue'
 import BaseInput from '@/components/base/BaseInput.vue'
 import BaseSearchableSelect from '@/components/base/BaseSearchableSelect.vue'
 import { Button } from '@/components/ui/button'
+import { todayIn } from '@/lib/calendarDate'
 import type { PatientFormData, SelectOption } from '@/types'
 
 const noPrimaryPhysician = 'none'
@@ -13,6 +15,7 @@ export default defineComponent({
     name: 'PatientForm',
 
     components: {
+        BaseDatePicker,
         BaseInput,
         BaseSearchableSelect,
         UiButton: Button,
@@ -39,6 +42,10 @@ export default defineComponent({
     },
 
     computed: {
+        today(): string {
+            return todayIn(this.$page.props.hospitalTimezone)
+        },
+
         isEditingExistingPatient(): boolean {
             return this.form.id !== null
         },
@@ -99,11 +106,11 @@ export default defineComponent({
             rules="required|max:40"
         />
 
-        <BaseInput
+        <BaseDatePicker
             v-model="form.dob"
             label="Date of Birth"
             name="dob"
-            type="date"
+            :max="today"
         />
 
         <BaseInput

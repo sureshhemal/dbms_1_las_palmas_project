@@ -42,3 +42,13 @@ it('finds every physician except interns as possible primary physicians', functi
         PhysicianPosition::Resident,
     ]);
 });
+
+it('finds every physician except interns as possible prescribers', function () {
+    foreach (PhysicianPosition::cases() as $position) {
+        Physician::factory()->withPosition($position)->create();
+    }
+
+    $possiblePrescribers = Physician::query()->whereCapableOfPrescribingBasedOnPosition()->get();
+
+    expect($possiblePrescribers->pluck('position')->all())->not->toContain(PhysicianPosition::Intern)->toHaveCount(5);
+});
