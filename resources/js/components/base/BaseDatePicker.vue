@@ -266,6 +266,7 @@ export default defineComponent({
                         :max-value="latestDate"
                         :week-starts-on="1"
                         fixed-weeks
+                        disable-days-outside-current-view
                         prevent-deselect
                         initial-focus
                         @update:model-value="choose"
@@ -350,7 +351,7 @@ export default defineComponent({
                                         <CalendarCellTrigger
                                             :day="weekDate"
                                             :month="month.value"
-                                            class="inline-flex size-8 items-center justify-center rounded-md text-sm tabular-nums outline-none hover:bg-neutral-100 focus-visible:ring-2 focus-visible:ring-brand-700/40 data-[disabled]:pointer-events-none data-[disabled]:text-neutral-300 data-[outside-view]:text-neutral-400 data-[selected]:bg-brand-700 data-[selected]:text-white data-[today]:font-semibold data-[today]:text-brand-700 data-[selected]:data-[today]:text-white dark:hover:bg-neutral-800 dark:data-[disabled]:text-neutral-700 dark:data-[outside-view]:text-neutral-600 dark:data-[selected]:bg-brand-400 dark:data-[selected]:text-brand-950 dark:data-[today]:text-brand-400 dark:data-[selected]:data-[today]:text-brand-950"
+                                            class="inline-flex size-8 items-center justify-center rounded-md text-sm tabular-nums outline-none hover:bg-neutral-100 focus-visible:ring-2 focus-visible:ring-brand-700/40 data-[disabled]:pointer-events-none data-[disabled]:text-neutral-300 data-[outside-view]:pointer-events-none data-[outside-view]:text-neutral-300 data-[selected]:bg-brand-700 data-[selected]:text-white data-[today]:font-semibold data-[today]:text-brand-700 data-[selected]:data-[today]:text-white dark:hover:bg-neutral-800 dark:data-[disabled]:text-neutral-700 dark:data-[outside-view]:text-neutral-700 dark:data-[selected]:bg-brand-400 dark:data-[selected]:text-brand-950 dark:data-[today]:text-brand-400 dark:data-[selected]:data-[today]:text-brand-950"
                                         />
                                     </CalendarCell>
                                 </CalendarGridRow>

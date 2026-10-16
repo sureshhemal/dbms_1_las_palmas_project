@@ -1,5 +1,5 @@
 <script lang="ts">
-import { LogOut } from '@lucide/vue'
+import { CalendarPlus, LogOut, Stethoscope } from '@lucide/vue'
 import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
 import BaseTableActionButton from '@/components/base/BaseTableActionButton.vue'
@@ -14,7 +14,9 @@ export default defineComponent({
         BaseTableActionButton,
         BaseTableCell,
         BaseTableRow,
+        CalendarPlus,
         LogOut,
+        Stethoscope,
     },
 
     props: {
@@ -22,13 +24,39 @@ export default defineComponent({
             type: Object as PropType<Stay>,
             required: true,
         },
+        today: {
+            type: String,
+            required: true,
+        },
     },
 
-    emits: ['discharge'],
+    emits: ['add-procedure', 'extend', 'discharge'],
 
     computed: {
-        isCurrent(): boolean {
-            return this.stay.endDate === null
+        isOver(): boolean {
+            return this.stay.endDate !== null && this.stay.endDate < this.today
+        },
+
+        isScheduled(): boolean {
+            return this.stay.startDate > this.today
+        },
+
+        status(): string {
+            if (this.isOver) {
+                return 'Discharged'
+            }
+
+            return this.isScheduled ? 'Scheduled' : 'Admitted'
+        },
+
+        statusClasses(): string {
+            if (this.isOver) {
+                return 'bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300'
+            }
+
+            return this.isScheduled
+                ? 'bg-info-100 text-info-800 dark:bg-info-950 dark:text-info-300'
+                : 'bg-success-100 text-success-800 dark:bg-success-950 dark:text-success-300'
         },
     },
 })
@@ -45,9 +73,6 @@ export default defineComponent({
             :title="stay.patient.deleted_at ? 'Inactive' : undefined"
         >
             <span class="font-medium">{{ stay.patient.name }}</span>
-            <span class="ml-1 font-mono text-neutral-500 dark:text-neutral-400">
-                {{ stay.patient.patientID }}
-            </span>
         </BaseTableCell>
         <BaseTableCell
             :class="{
@@ -64,24 +89,47 @@ export default defineComponent({
         <BaseTableCell class="whitespace-nowrap tabular-nums">
             {{ stay.startDate }}
         </BaseTableCell>
-        <BaseTableCell class="whitespace-nowrap tabular-nums">
+        <BaseTableCell
+            class="whitespace-nowrap tabular-nums"
+            :class="{
+                'text-neutral-500 dark:text-neutral-400': !stay.endDate,
+            }"
+        >
+            {{ stay.endDate ?? 'Not decided' }}
+        </BaseTableCell>
+        <BaseTableCell>
             <span
-                v-if="isCurrent"
-                class="rounded-full bg-success-100 px-2 py-0.5 text-xs font-medium text-success-800 dark:bg-success-950 dark:text-success-300"
+                class="rounded-full px-2 py-0.5 text-xs font-medium"
+                :class="statusClasses"
             >
-                Admitted
+                {{ status }}
             </span>
-            <template v-else>{{ stay.endDate }}</template>
         </BaseTableCell>
         <BaseTableCell class="w-0 text-right">
-            <BaseTableActionButton
-                v-if="isCurrent"
-                tone="brand"
-                @click.stop="$emit('discharge', stay)"
-            >
-                <LogOut />
-                Discharge
-            </BaseTableActionButton>
+            <div v-if="!isOver" class="flex items-center justify-end gap-1">
+                <BaseTableActionButton
+                    tone="brand"
+                    @click.stop="$emit('add-procedure', stay)"
+                >
+                    <Stethoscope />
+                    Add Procedure
+                </BaseTableActionButton>
+                <BaseTableActionButton
+                    v-if="stay.endDate"
+                    tone="brand"
+                    @click.stop="$emit('extend', stay)"
+                >
+                    <CalendarPlus />
+                    Extend
+                </BaseTableActionButton>
+                <BaseTableActionButton
+                    tone="brand"
+                    @click.stop="$emit('discharge', stay)"
+                >
+                    <LogOut />
+                    Discharge
+                </BaseTableActionButton>
+            </div>
         </BaseTableCell>
     </BaseTableRow>
 </template>

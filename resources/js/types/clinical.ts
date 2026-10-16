@@ -74,13 +74,6 @@ export type Stay = {
     }
 }
 
-export type AdmissionFormData = {
-    patient_id: string
-    room_id: string
-    startDate: string
-    endDate: string
-}
-
 export type RoomAvailability = {
     id: string
     roomID: number
@@ -88,4 +81,34 @@ export type RoomAvailability = {
     beds: number
     bedsTaken: number
     bedsFree: number
+}
+
+export type PerformedProcedure = {
+    id: string
+    procDate: string
+    patient: { id: string; patientID: number; name: string }
+    procedure: { id: string; procID: number; name: string }
+    stay: {
+        id: string
+        stayID: number
+        startDate: string
+        endDate: string | null
+        room: { id: string; roomID: number }
+    }
+    physician: { id: string; physicianID: number; name: string }
+    nurse: { id: string; nurseID: number; name: string }
+}
+
+export type ProcedureDetailsFormData = {
+    procedure_id: string
+    physician_id: string
+    nurse_id: string
+    procDate: string
+}
+
+export type ProcedureEntryFormData = ProcedureDetailsFormData & {
+    patient_id: string
+    room_id: string
+    startDate: string
+    endDate: string
 }

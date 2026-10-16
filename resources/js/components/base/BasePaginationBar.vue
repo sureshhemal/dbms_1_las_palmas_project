@@ -10,6 +10,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
+import { formatCount } from '@/lib/formatCount'
 import type { PaginationDetails, PaginationLink } from '@/types'
 
 export default defineComponent({
@@ -49,7 +50,7 @@ export default defineComponent({
         resultRangeSummary(): string {
             const { from, to, total } = this.paginationDetails
 
-            return `Showing ${from ?? 0} – ${to ?? 0} of ${total} results`
+            return `Showing ${formatCount(from ?? 0)} – ${formatCount(to ?? 0)} of ${formatCount(total)} results`
         },
 
         hasMoreThanOnePage(): boolean {
@@ -62,6 +63,12 @@ export default defineComponent({
     },
 
     methods: {
+        pageLabel(paginationLink: PaginationLink): string {
+            return /^\d+$/.test(paginationLink.label)
+                ? formatCount(Number(paginationLink.label))
+                : paginationLink.label
+        },
+
         changePerPage(selectedPerPage: unknown): void {
             const perPage = Number(selectedPerPage)
 
@@ -167,7 +174,7 @@ export default defineComponent({
                     class="size-4"
                 />
                 <template v-else>
-                    {{ paginationLink.label }}
+                    {{ pageLabel(paginationLink) }}
                 </template>
             </button>
         </nav>

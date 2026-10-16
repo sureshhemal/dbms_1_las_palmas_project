@@ -2,6 +2,7 @@
 import { defineComponent } from 'vue'
 import BaseTabs from '@/components/base/BaseTabs.vue'
 import MedicationsTabPanel from '@/components/clinical/MedicationsTabPanel.vue'
+import PerformedProceduresTabPanel from '@/components/clinical/PerformedProceduresTabPanel.vue'
 import PrescriptionsTabPanel from '@/components/clinical/PrescriptionsTabPanel.vue'
 import ProceduresTabPanel from '@/components/clinical/ProceduresTabPanel.vue'
 import StaysTabPanel from '@/components/clinical/StaysTabPanel.vue'
@@ -13,6 +14,7 @@ export default defineComponent({
     components: {
         BaseTabs,
         MedicationsTabPanel,
+        PerformedProceduresTabPanel,
         PrescriptionsTabPanel,
         ProceduresTabPanel,
         StaysTabPanel,
@@ -38,6 +40,10 @@ export default defineComponent({
                     name: 'stays',
                     label: 'Stays',
                 },
+                {
+                    name: 'performed-procedures',
+                    label: 'Performed Procedures',
+                },
             ] as TabDefinition[],
         }
     },
@@ -60,6 +66,10 @@ export default defineComponent({
 
         <template #stays>
             <StaysTabPanel />
+        </template>
+
+        <template #performed-procedures>
+            <PerformedProceduresTabPanel />
         </template>
     </BaseTabs>
 </template>
