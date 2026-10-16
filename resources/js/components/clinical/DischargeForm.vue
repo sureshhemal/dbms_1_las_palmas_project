@@ -21,7 +21,7 @@ export default defineComponent({
             type: Object as PropType<Stay>,
             required: true,
         },
-        latestDate: {
+        today: {
             type: String,
             required: true,
         },
@@ -31,7 +31,10 @@ export default defineComponent({
 
     data() {
         return {
-            endDate: this.latestDate,
+            endDate:
+                this.stay.startDate < this.today
+                    ? this.today
+                    : addDays(this.stay.startDate, 1),
         }
     },
 
@@ -46,25 +49,28 @@ export default defineComponent({
 <template>
     <VeeForm v-slot="{ meta }" as="div" class="space-y-4">
         <p class="text-sm text-neutral-600 dark:text-neutral-300">
-            {{ stay.patient.name }} has been in room
-            {{ stay.room.roomID }} since {{ stay.startDate }}.
+            {{ stay.patient.name }} · room {{ stay.room.roomID }} ·
+            {{ stay.startDate }} → {{ stay.endDate ?? 'not decided' }}
         </p>
 
         <BaseDatePicker
             v-model="endDate"
-            label="Discharged On"
+            label="Discharge On"
             name="endDate"
             rules="required"
             :min="earliestDate"
-            :max="latestDate"
         />
+        <p class="-mt-2 text-xs text-neutral-500 dark:text-neutral-400">
+            A future date plans the discharge. It cannot be before the stay's
+            last procedure.
+        </p>
 
         <UiButton
             class="w-full"
             :disabled="$wait.is('discharging-patient') || !meta.valid"
             @click="$emit('save', endDate)"
         >
-            Discharge patient
+            Discharge
         </UiButton>
     </VeeForm>
 </template>

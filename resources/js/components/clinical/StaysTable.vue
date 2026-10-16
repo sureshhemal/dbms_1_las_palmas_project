@@ -18,6 +18,10 @@ export default defineComponent({
             type: Array as PropType<Stay[]>,
             required: true,
         },
+        today: {
+            type: String,
+            required: true,
+        },
         isLoading: {
             type: Boolean,
             default: false,
@@ -28,7 +32,7 @@ export default defineComponent({
         },
     },
 
-    emits: ['discharge'],
+    emits: ['add-procedure', 'extend', 'discharge'],
 
     data() {
         return {
@@ -37,7 +41,8 @@ export default defineComponent({
                 'Patient',
                 'Room',
                 'Admitted',
-                'Discharged',
+                'Discharge',
+                'Status',
                 '',
             ],
         }
@@ -56,6 +61,9 @@ export default defineComponent({
             v-for="stay in stays"
             :key="stay.id"
             :stay="stay"
+            :today="today"
+            @add-procedure="$emit('add-procedure', $event)"
+            @extend="$emit('extend', $event)"
             @discharge="$emit('discharge', $event)"
         />
     </BaseTable>

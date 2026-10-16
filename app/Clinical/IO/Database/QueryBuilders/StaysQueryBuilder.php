@@ -2,19 +2,44 @@
 
 namespace App\Clinical\IO\Database\QueryBuilders;
 
+use App\Clinical\Entities\StayStatus;
+use App\Hospital\Entities\HospitalCalendar;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 
 class StaysQueryBuilder extends Builder
 {
-    public function whereCurrent(): self
+    public function whereAdmitted(): self
     {
-        return $this->whereNull('endDate');
+        $today = HospitalCalendar::today()->toDateString();
+
+        return $this->where('startDate', '<=', $today)
+            ->where(fn (Builder $notOver) => $notOver->whereNull('endDate')->orWhere('endDate', '>=', $today));
+    }
+
+    public function whereScheduled(): self
+    {
+        return $this->where('startDate', '>', HospitalCalendar::today()->toDateString());
     }
 
     public function whereDischarged(): self
     {
-        return $this->whereNotNull('endDate');
+        return $this->where('endDate', '<', HospitalCalendar::today()->toDateString());
+    }
+
+    public function whereStatusIn(array $statuses): self
+    {
+        return $this->where(fn (Builder $query) => collect($statuses)
+            ->each(function (StayStatus $status) use ($query) {
+                return $query->orWhere(function (StaysQueryBuilder $stays) use ($status) {
+                    return match ($status) {
+                        StayStatus::Admitted => $stays->whereAdmitted(),
+                        StayStatus::Scheduled => $stays->whereScheduled(),
+                        StayStatus::Discharged => $stays->whereDischarged(),
+                    };
+                });
+            },
+            ));
     }
 
     public function whereStillAdmittedOnOrAfter(CarbonInterface $day): self

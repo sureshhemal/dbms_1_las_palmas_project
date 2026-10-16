@@ -20,7 +20,6 @@ final class EnsureAdmissionIsAllowed
 
         $problems = array_filter([
             'startDate' => $this->problemWithDate($data->startDate, $patient),
-            'endDate' => $this->problemWithDischargeDate($data->endDate),
             'patient_id' => $this->problemWithPatient($data, $patient),
             'room_id' => $this->problemWithRoom($data, $room),
         ]);
@@ -32,21 +31,10 @@ final class EnsureAdmissionIsAllowed
 
     private function problemWithDate(CarbonImmutable $startDate, Patient $patient): ?string
     {
-        if ($startDate->greaterThan(HospitalCalendar::today())) {
-            return 'An admission cannot be dated in the future.';
-        }
-
         $registeredOn = $patient->created_at->setTimezone(HospitalCalendar::timezone())->toDateString();
 
         return $startDate->toDateString() < $registeredOn
             ? "{$patient->name} registered on {$registeredOn}, so an admission cannot be dated earlier."
-            : null;
-    }
-
-    private function problemWithDischargeDate(?CarbonImmutable $endDate): ?string
-    {
-        return $endDate?->greaterThan(HospitalCalendar::today())
-            ? 'A discharge cannot be dated in the future.'
             : null;
     }
 
@@ -59,7 +47,7 @@ final class EnsureAdmissionIsAllowed
             ->first();
 
         return $ongoingStay instanceof Stay
-            ? "{$patient->name} is already admitted since {$ongoingStay->startDate->toDateString()}."
+            ? "{$patient->name} is already admitted since {$ongoingStay->startDate->toDateString()}. Add procedures from the Stays tab."
             : null;
     }
 

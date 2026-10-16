@@ -1762,3 +1762,88 @@ hide discharge date from form if admitted date is today.
 [2026-10-16 09:17]
 Open pr to main
 
+[2026-10-16 09:21]
+<task-notification>
+<task-id>bxn4kqh0b</task-id>
+<tool-use-id>toolu_01PKLeq1zqbjHXpYxScz7BkW</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-sureshhemal-MSc-Sem-1-dbms-las-palmas/72f98d11-78da-49ca-a9fb-07041404af8c/tasks/bxn4kqh0b.output</output-file>
+<status>completed</status>
+<summary>Background command "Wait for PR #14 CI checks" completed (exit code 0)</summary>
+</task-notification>
+
+[2026-10-16 12:26]
+now merged. Now lets focus on perfomed procedures. I advice to remove that stay seeder and the records from dev database, because stay is not gonna happen without performed procedure in real life. So, both of this records should come together. As a second thought, we can keep stays at it is now and attach performed procedures in matching way. Lets do it that way on seeder. 
+
+For the page, That is fourth tab on clinical page.
+
+[2026-10-16 12:37]
+Now i see the picture, It is performed procedure that comes first, patient should have a reason to stay. That is the 'Undergoes' table record, which is performed procedure. And when recording that, we also make stay record too. So, in stays tab, there is no add stay button anymore. It should be only dismiss or extend the stay period. But stay period can be future too. So, system will show that room will be availble after that day. So, we can always select end date for stay when creating the stay record (now it is on performed precedure). Or we have a freedom to leave it as blank for the scenarios that in unsure the end date. 
+
+So when creating performed procedure, it can be past of upcoming one, which means shedule. And the form should have two sections. One for procedure things, and other part for room selection. 
+
+hows that sounds?
+
+[2026-10-16 12:50]
+There should be three status on stays, Admitted, Discharged and Scheduled. For Scheduled procedures
+
+[2026-10-16 12:53]
+In query builder, I want thress scopeWhere queries for statuses, whereAdmitted(), whereDischarged(), whereScheduled(), And I want same structure for procedures too. With matching names ofc
+
+[2026-10-16 12:59]
+In performed procedure table, Patient's name is enough. no need to show ID, stay room is enough too. no id needed.
+
+[2026-10-16 13:00]
+ListPerformedProcedureYears should go to seperate controller. Not @app/Clinical/IO/Http/Controllers/PerformedProceduresController.php
+
+[2026-10-16 13:00]
+with index method
+
+[2026-10-16 13:02]
+@app/Clinical/UseCases/ListPerformedProcedures.php execute() method has bunch of arguments. move ?string $search = null, array $years = [], array $statuses = [] to PerformedProcedureFilters DTO
+
+[2026-10-16 13:04]
+we don't need to select deleted_at for RELATIONS in performed procedures
+
+[2026-10-16 13:05]
+Yes. Convert other twos to DTO
+
+[2026-10-16 13:13]
+
+
+<pasted_content id="1b77">
+->whereHas('patient', fn (Builder $patient) => $patient->whereAny(['name', 'patientID'], 'like', "%{$search}%"))
+                ->orWhereHas('procedure', fn (Builder $procedure) => $procedure->where('name', 'like', "%{$search}%"))
+                ->orWhereHas('physician', fn (Builder $physician) => $physician->where('name', 'like', "%{$search}%"))
+                ->orWhereHas('nurse', fn (Builder $nurse) => $nurse->where('name', 'like', "%{$search}%"))))
+</pasted_content id="1b77">
+
+
+looking at this,
+
+the only search thing is by patient name/ID
+
+all others are kind of filters. No?
+
+So, we should implement multiselect filters to filter out records for doctors and nurses. User don't want to search on doctor/nurse name, search on patient name or ID, but filter by doctor or patient. Role of filter and search is different
+
+[2026-10-16 13:19]
+Showing 1 – 20 of 91472 results is in pagination bar. make it readable with thousand seperators
+
+[2026-10-16 13:23]
+[Image #8] why the future dates are disabled for this?
+
+[2026-10-16 13:24]
+30561 uI table shows discharge date at 11, but form says 12
+
+[2026-10-16 13:28]
+procedure filter is only loading 1000. but we have more.
+
+[2026-10-16 13:31]
+Ah. i thoght it was procedures. But it is medications. we are good for 1000. leave it as it was
+
+[2026-10-16 13:51]
+In stays table, we don't want to see patient id
+
+[2026-10-16 13:55]
+Open PR to main
+

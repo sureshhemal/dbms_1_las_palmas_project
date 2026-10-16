@@ -22,6 +22,12 @@ class StaySeeder extends Seeder
 
     private const int ROWS_PER_INSERT = 1000;
 
+    private const int DAYS_SCHEDULED_AHEAD = 21;
+
+    private const int PERCENT_OF_CURRENT_STAYS_WITH_A_PLANNED_END = 50;
+
+    private const int MOST_DAYS_BOOKED_IN_ADVANCE = 14;
+
     private const int ATTEMPTS_TO_FIND_A_FREE_PATIENT = 50;
 
     private array $patientIds = [];
@@ -48,6 +54,7 @@ class StaySeeder extends Seeder
         }
 
         $today = HospitalCalendar::today();
+        $lastSchedulingDay = $today->addDays(self::DAYS_SCHEDULED_AHEAD);
         $bedFreeFrom = array_map(
             fn (): CarbonImmutable => CarbonImmutable::create(self::FIRST_YEAR)->addDays(random_int(0, 3)),
             $beds,
@@ -58,7 +65,7 @@ class StaySeeder extends Seeder
             $bed = array_keys($bedFreeFrom, min($bedFreeFrom))[0];
             $startDate = $bedFreeFrom[$bed];
 
-            if ($startDate->greaterThan($today)) {
+            if ($startDate->greaterThan($lastSchedulingDay)) {
                 unset($bedFreeFrom[$bed]);
 
                 continue;
@@ -73,20 +80,25 @@ class StaySeeder extends Seeder
                 continue;
             }
 
-            $isStillAdmitted = $endDate->greaterThan($today);
-            $admittedAt = $startDate->setTime(random_int(7, 20), random_int(0, 59));
+            $isScheduled = $startDate->greaterThan($today);
+            $isOpenEnded = ! $isScheduled
+                && $endDate->greaterThan($today)
+                && random_int(1, 100) > self::PERCENT_OF_CURRENT_STAYS_WITH_A_PLANNED_END;
+            $recordedAt = $isScheduled
+                ? $this->bookingMoment($startDate)
+                : $startDate->setTime(random_int(7, 20), random_int(0, 59));
             $stays[] = [
-                'id' => Str::lower((string) Str::ulid($admittedAt)),
+                'id' => Str::lower((string) Str::ulid($recordedAt)),
                 'patient_id' => $patientId,
                 'room_id' => $beds[$bed],
                 'startDate' => $startDate->toDateString(),
-                'endDate' => $isStillAdmitted ? null : $endDate->toDateString(),
-                'created_at' => $admittedAt,
-                'updated_at' => $isStillAdmitted ? $admittedAt : $endDate->setTime(random_int(9, 17), random_int(0, 59)),
+                'endDate' => $isOpenEnded ? null : $endDate->toDateString(),
+                'created_at' => $recordedAt,
+                'updated_at' => $recordedAt,
             ];
-            $this->patientBusyUntil[$patientId] = $isStillAdmitted ? CarbonImmutable::create(9999) : $endDate;
+            $this->patientBusyUntil[$patientId] = $isOpenEnded ? CarbonImmutable::create(9999) : $endDate;
 
-            if ($isStillAdmitted) {
+            if ($isOpenEnded) {
                 unset($bedFreeFrom[$bed]);
             } else {
                 $bedFreeFrom[$bed] = $endDate->addDays($this->daysBedStaysEmpty($endDate));
@@ -97,6 +109,14 @@ class StaySeeder extends Seeder
             ->sortBy('startDate')
             ->chunk(self::ROWS_PER_INSERT)
             ->each(fn ($rows) => DB::table('Stay')->insert($rows->values()->all()));
+    }
+
+    private function bookingMoment(CarbonImmutable $startDate): CarbonImmutable
+    {
+        $bookedAt = $startDate->subDays(random_int(1, self::MOST_DAYS_BOOKED_IN_ADVANCE))->setTime(random_int(8, 17), random_int(0, 59));
+        $now = CarbonImmutable::now();
+
+        return $bookedAt->greaterThan($now) ? $now->subMinutes(random_int(1, 600)) : $bookedAt;
     }
 
     private function beds(): array

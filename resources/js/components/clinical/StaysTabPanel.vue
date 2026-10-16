@@ -1,41 +1,48 @@
 <script lang="ts">
-import { Plus } from '@lucide/vue'
 import { defineComponent } from 'vue'
 import BaseMultiSelect from '@/components/base/BaseMultiSelect.vue'
 import BasePaginationBar from '@/components/base/BasePaginationBar.vue'
 import BaseSearchInput from '@/components/base/BaseSearchInput.vue'
 import BaseSideDrawer from '@/components/base/BaseSideDrawer.vue'
-import AdmissionForm from '@/components/clinical/AdmissionForm.vue'
 import DischargeForm from '@/components/clinical/DischargeForm.vue'
+import ExtendStayForm from '@/components/clinical/ExtendStayForm.vue'
+import StayProcedureForm from '@/components/clinical/StayProcedureForm.vue'
 import StaysTable from '@/components/clinical/StaysTable.vue'
-import { Button } from '@/components/ui/button'
 import { todayIn } from '@/lib/calendarDate'
 import type {
-    AdmissionFormData,
     PaginatedResponse,
     PaginationDetails,
+    ProcedureDetailsFormData,
     SelectOption,
     Stay,
 } from '@/types'
 
+type StayAction = 'add-procedure' | 'extend' | 'discharge'
+
 const stayStatuses: SelectOption[] = [
-    { value: 'current', label: 'Currently admitted' },
+    { value: 'admitted', label: 'Admitted' },
+    { value: 'scheduled', label: 'Scheduled' },
     { value: 'discharged', label: 'Discharged' },
 ]
+
+const drawerTitles: Record<StayAction, string> = {
+    'add-procedure': 'Add Procedure',
+    extend: 'Extend Stay',
+    discharge: 'Discharge Patient',
+}
 
 export default defineComponent({
     name: 'StaysTabPanel',
 
     components: {
-        AdmissionForm,
         BaseMultiSelect,
         BasePaginationBar,
         BaseSearchInput,
         BaseSideDrawer,
         DischargeForm,
-        Plus,
+        ExtendStayForm,
+        StayProcedureForm,
         StaysTable,
-        UiButton: Button,
     },
 
     data() {
@@ -53,10 +60,9 @@ export default defineComponent({
                 last_page: 1,
                 links: [],
             } as PaginationDetails,
-            newAdmission: null as AdmissionFormData | null,
-            isShowingAdmissionForm: false,
-            stayBeingDischarged: null as Stay | null,
-            isShowingDischargeForm: false,
+            selectedStay: null as Stay | null,
+            currentAction: null as StayAction | null,
+            isShowingDrawer: false,
         }
     },
 
@@ -65,16 +71,18 @@ export default defineComponent({
             return todayIn(this.$page.props.hospitalTimezone)
         },
 
-        statusFilter(): string | undefined {
-            return this.selectedStatuses.length === 1
-                ? this.selectedStatuses[0]
-                : undefined
+        isFilteringByStatus(): boolean {
+            return this.selectedStatuses.length < stayStatuses.length
+        },
+
+        drawerTitle(): string {
+            return this.currentAction ? drawerTitles[this.currentAction] : ''
         },
 
         staysEmptyMessage(): string {
-            return this.searchTerm || this.statusFilter
+            return this.searchTerm || this.isFilteringByStatus
                 ? 'No stays match your search or filter.'
-                : 'No stays yet.'
+                : 'No stays yet. Patients are admitted when a procedure is recorded.'
         },
     },
 
@@ -108,7 +116,9 @@ export default defineComponent({
                         page: page ?? this.paginationDetails.current_page,
                         per_page: perPage ?? this.paginationDetails.per_page,
                         search: this.searchTerm || undefined,
-                        status: this.statusFilter,
+                        statuses: this.isFilteringByStatus
+                            ? this.selectedStatuses
+                            : undefined,
                     },
                 })
                 .finally(() => this.$wait.end('fetching-stays'))
@@ -132,58 +142,61 @@ export default defineComponent({
             }
         },
 
-        admitPatient(): void {
-            this.newAdmission = {
-                patient_id: '',
-                room_id: '',
-                startDate: this.today,
-                endDate: '',
+        openDrawer(action: StayAction, stay: Stay): void {
+            this.selectedStay = stay
+            this.currentAction = action
+            this.isShowingDrawer = true
+        },
+
+        closeDrawer(): void {
+            this.isShowingDrawer = false
+        },
+
+        async addProcedure(procedure: ProcedureDetailsFormData): Promise<void> {
+            if (!this.selectedStay) {
+                return
             }
 
-            this.isShowingAdmissionForm = true
-        },
-
-        closeAdmissionForm(): void {
-            this.isShowingAdmissionForm = false
-        },
-
-        async saveAdmission(admission: AdmissionFormData): Promise<void> {
-            this.$wait.start('admitting-patient')
+            this.$wait.start('recording-stay-procedure')
 
             await this.$http
-                .post('stays', admission)
-                .finally(() => this.$wait.end('admitting-patient'))
+                .post(`stays/${this.selectedStay.id}/procedures`, procedure)
+                .finally(() => this.$wait.end('recording-stay-procedure'))
 
-            this.notifySuccess('Patient admitted')
-            this.closeAdmissionForm()
-
-            await this.fetchStays(1)
+            this.notifySuccess('Procedure added')
+            this.closeDrawer()
         },
 
-        dischargePatient(stay: Stay): void {
-            this.stayBeingDischarged = stay
-            this.isShowingDischargeForm = true
+        async extendStay(endDate: string): Promise<void> {
+            if (!this.selectedStay) {
+                return
+            }
+
+            this.$wait.start('extending-stay')
+
+            await this.$http
+                .patch(`stays/${this.selectedStay.id}/extend`, { endDate })
+                .finally(() => this.$wait.end('extending-stay'))
+
+            this.notifySuccess('Stay extended')
+            this.closeDrawer()
+
+            await this.fetchStays()
         },
 
-        closeDischargeForm(): void {
-            this.isShowingDischargeForm = false
-        },
-
-        async saveDischarge(endDate: string): Promise<void> {
-            if (!this.stayBeingDischarged) {
+        async dischargePatient(endDate: string): Promise<void> {
+            if (!this.selectedStay) {
                 return
             }
 
             this.$wait.start('discharging-patient')
 
             await this.$http
-                .patch(`stays/${this.stayBeingDischarged.id}/discharge`, {
-                    endDate,
-                })
+                .patch(`stays/${this.selectedStay.id}/discharge`, { endDate })
                 .finally(() => this.$wait.end('discharging-patient'))
 
-            this.notifySuccess('Patient discharged')
-            this.closeDischargeForm()
+            this.notifySuccess('Discharge saved')
+            this.closeDrawer()
 
             await this.fetchStays()
         },
@@ -193,25 +206,19 @@ export default defineComponent({
 
 <template>
     <div class="space-y-4">
-        <div class="flex items-center justify-between gap-4">
-            <div class="flex flex-1 items-center gap-2">
-                <BaseSearchInput
-                    v-model="searchTerm"
-                    placeholder="Search by patient or room"
-                />
+        <div class="flex flex-1 items-center gap-2">
+            <BaseSearchInput
+                v-model="searchTerm"
+                placeholder="Search by stay ID, patient or room"
+            />
 
-                <BaseMultiSelect
-                    v-model="selectedStatuses"
-                    :options="stayStatuses"
-                    placeholder="No statuses selected"
-                    all-selected-label="All stays"
-                />
-            </div>
-
-            <UiButton :disabled="$wait.any() > 0" @click="admitPatient">
-                <Plus />
-                Admit Patient
-            </UiButton>
+            <BaseMultiSelect
+                v-model="selectedStatuses"
+                :options="stayStatuses"
+                placeholder="No statuses selected"
+                all-selected-label="All stays"
+                trigger-class="w-48"
+            />
         </div>
 
         <BasePaginationBar
@@ -223,9 +230,12 @@ export default defineComponent({
 
         <StaysTable
             :stays="stays"
+            :today="today"
             :empty-message="staysEmptyMessage"
             :is-loading="$wait.is('fetching-stays')"
-            @discharge="dischargePatient"
+            @add-procedure="openDrawer('add-procedure', $event)"
+            @extend="openDrawer('extend', $event)"
+            @discharge="openDrawer('discharge', $event)"
         />
 
         <BasePaginationBar
@@ -236,29 +246,30 @@ export default defineComponent({
         />
 
         <BaseSideDrawer
-            v-if="newAdmission"
-            :is-open="isShowingAdmissionForm"
-            title="Admit Patient"
-            @close="closeAdmissionForm"
+            v-if="selectedStay && currentAction"
+            :is-open="isShowingDrawer"
+            :title="drawerTitle"
+            @close="closeDrawer"
         >
-            <AdmissionForm
-                :admission="newAdmission"
-                :latest-date="today"
-                @save="saveAdmission"
+            <StayProcedureForm
+                v-if="currentAction === 'add-procedure'"
+                :key="`procedure-${selectedStay.id}`"
+                :stay="selectedStay"
+                :today="today"
+                @save="addProcedure"
             />
-        </BaseSideDrawer>
-
-        <BaseSideDrawer
-            v-if="stayBeingDischarged"
-            :is-open="isShowingDischargeForm"
-            title="Discharge Patient"
-            @close="closeDischargeForm"
-        >
+            <ExtendStayForm
+                v-else-if="currentAction === 'extend'"
+                :key="`extend-${selectedStay.id}`"
+                :stay="selectedStay"
+                @save="extendStay"
+            />
             <DischargeForm
-                :key="stayBeingDischarged.id"
-                :stay="stayBeingDischarged"
-                :latest-date="today"
-                @save="saveDischarge"
+                v-else
+                :key="`discharge-${selectedStay.id}`"
+                :stay="selectedStay"
+                :today="today"
+                @save="dischargePatient"
             />
         </BaseSideDrawer>
     </div>

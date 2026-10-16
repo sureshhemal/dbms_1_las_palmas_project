@@ -1,6 +1,8 @@
 <?php
 
 use App\Clinical\IO\Http\Controllers\MedicationsController;
+use App\Clinical\IO\Http\Controllers\PerformedProceduresController;
+use App\Clinical\IO\Http\Controllers\PerformedProcedureYearsController;
 use App\Clinical\IO\Http\Controllers\PrescriberCandidatesController;
 use App\Clinical\IO\Http\Controllers\PrescriptionsController;
 use App\Clinical\IO\Http\Controllers\ProceduresController;
@@ -53,8 +55,12 @@ Route::middleware('auth')->group(function () {
     Route::post('prescriptions', [PrescriptionsController::class, 'store'])->name('api.prescriptions.store');
 
     Route::get('stays', [StaysController::class, 'index'])->name('api.stays.index');
-    Route::post('stays', [StaysController::class, 'store'])->name('api.stays.store');
     Route::patch('stays/{stay}/discharge', [StaysController::class, 'discharge'])->name('api.stays.discharge');
+    Route::patch('stays/{stay}/extend', [StaysController::class, 'extend'])->name('api.stays.extend');
+    Route::post('stays/{stay}/procedures', [StaysController::class, 'recordProcedure'])->name('api.stays.procedures.store');
+    Route::get('performed-procedures', [PerformedProceduresController::class, 'index'])->name('api.performed-procedures.index');
+    Route::get('performed-procedures/years', [PerformedProcedureYearsController::class, 'index'])->name('api.performed-procedures.years');
+    Route::post('performed-procedures', [PerformedProceduresController::class, 'store'])->name('api.performed-procedures.store');
     Route::get('room-availability', [RoomAvailabilityController::class, 'index'])->name('api.room-availability.index');
 
     Route::get('prescriber-candidates', [PrescriberCandidatesController::class, 'index'])->name('api.prescriber-candidates.index');
