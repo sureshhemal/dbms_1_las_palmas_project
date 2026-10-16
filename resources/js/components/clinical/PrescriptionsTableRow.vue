@@ -3,6 +3,8 @@ import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
 import BaseTableCell from '@/components/base/BaseTableCell.vue'
 import BaseTableRow from '@/components/base/BaseTableRow.vue'
+import PhysicianNameLink from '@/components/staff/PhysicianNameLink.vue'
+import PatientNameLink from '@/components/patient/PatientNameLink.vue'
 import type { Prescription } from '@/types'
 
 export default defineComponent({
@@ -11,6 +13,8 @@ export default defineComponent({
     components: {
         BaseTableCell,
         BaseTableRow,
+        PatientNameLink,
+        PhysicianNameLink,
     },
 
     props: {
@@ -27,17 +31,8 @@ export default defineComponent({
         <BaseTableCell class="whitespace-nowrap tabular-nums">
             {{ prescription.prescribedDate }}
         </BaseTableCell>
-        <BaseTableCell
-            :class="{
-                'text-neutral-500 line-through dark:text-neutral-400':
-                    prescription.patient.deleted_at,
-            }"
-            :title="prescription.patient.deleted_at ? 'Inactive' : undefined"
-        >
-            <span class="font-medium">{{ prescription.patient.name }}</span>
-            <span class="ml-1 font-mono text-neutral-500 dark:text-neutral-400">
-                {{ prescription.patient.patientID }}
-            </span>
+        <BaseTableCell>
+            <PatientNameLink :patient="prescription.patient" />
         </BaseTableCell>
         <BaseTableCell
             :class="{
@@ -49,16 +44,8 @@ export default defineComponent({
             {{ prescription.medication.name }}
         </BaseTableCell>
         <BaseTableCell>{{ prescription.dose }}</BaseTableCell>
-        <BaseTableCell
-            :class="{
-                'text-neutral-500 line-through dark:text-neutral-400':
-                    prescription.physician.deleted_at,
-            }"
-            :title="
-                prescription.physician.deleted_at ? 'Offboarded' : undefined
-            "
-        >
-            {{ prescription.physician.name }}
+        <BaseTableCell>
+            <PhysicianNameLink :physician="prescription.physician" />
         </BaseTableCell>
     </BaseTableRow>
 </template>

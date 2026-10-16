@@ -5,6 +5,8 @@ import { defineComponent } from 'vue'
 import BaseTableActionButton from '@/components/base/BaseTableActionButton.vue'
 import BaseTableCell from '@/components/base/BaseTableCell.vue'
 import BaseTableRow from '@/components/base/BaseTableRow.vue'
+import PatientNameLink from '@/components/patient/PatientNameLink.vue'
+import PhysicianNameLink from '@/components/staff/PhysicianNameLink.vue'
 import { maskSsn } from '@/lib/maskSsn'
 import type { Patient } from '@/types'
 
@@ -17,6 +19,8 @@ export default defineComponent({
         BaseTableRow,
         Pencil,
         UserX,
+        PhysicianNameLink,
+        PatientNameLink,
     },
 
     props: {
@@ -26,7 +30,7 @@ export default defineComponent({
         },
     },
 
-    emits: ['edit', 'deactivate', 'open'],
+    emits: ['edit', 'deactivate'],
 
     computed: {
         dateOfBirth(): string {
@@ -37,14 +41,6 @@ export default defineComponent({
             return `${this.patient.dob} (${this.patient.age})`
         },
 
-        primaryPhysicianName(): string {
-            return this.patient.primary_physician?.name ?? '—'
-        },
-
-        isPrimaryPhysicianOffboarded(): boolean {
-            return Boolean(this.patient.primary_physician?.deleted_at)
-        },
-
         maskedSsn(): string {
             return this.patient.ssn ? maskSsn(this.patient.ssn) : '—'
         },
@@ -53,12 +49,12 @@ export default defineComponent({
 </script>
 
 <template>
-    <BaseTableRow is-selectable @click="$emit('open', patient)">
+    <BaseTableRow>
         <BaseTableCell class="font-mono">
             {{ patient.patientID }}
         </BaseTableCell>
-        <BaseTableCell class="font-medium">
-            {{ patient.name }}
+        <BaseTableCell>
+            <PatientNameLink :patient="patient" />
         </BaseTableCell>
         <BaseTableCell
             class="tabular-nums"
@@ -83,15 +79,14 @@ export default defineComponent({
         >
             {{ patient.insuranceNumber ?? '—' }}
         </BaseTableCell>
-        <BaseTableCell
-            :class="{
-                'text-neutral-500 dark:text-neutral-400':
-                    !patient.primary_physician || isPrimaryPhysicianOffboarded,
-                'line-through': isPrimaryPhysicianOffboarded,
-            }"
-            :title="isPrimaryPhysicianOffboarded ? 'Offboarded' : undefined"
-        >
-            {{ primaryPhysicianName }}
+        <BaseTableCell>
+            <PhysicianNameLink
+                v-if="patient.primary_physician"
+                :physician="patient.primary_physician"
+            />
+            <span v-else class="text-neutral-500 dark:text-neutral-400">
+                —
+            </span>
         </BaseTableCell>
         <BaseTableCell class="font-mono text-neutral-500 dark:text-neutral-400">
             {{ maskedSsn }}

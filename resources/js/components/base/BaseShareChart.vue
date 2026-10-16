@@ -3,7 +3,7 @@ import type { Config, Data, Layout } from 'plotly.js'
 import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
 import { formatCount } from '@/lib/formatCount'
-import type { PatientMedication } from '@/types'
+import type { ShareSlice } from '@/types'
 
 const sliceColors = [
     '#0ea5e9',
@@ -24,12 +24,28 @@ const sliceColors = [
     '#ef4444',
 ]
 
+const otherSliceColor = '#a3a3a3'
+
+const mostSlicesShown = 10
+
 export default defineComponent({
-    name: 'PatientMedicationsChart',
+    name: 'BaseShareChart',
 
     props: {
-        medications: {
-            type: Array as PropType<PatientMedication[]>,
+        slices: {
+            type: Array as PropType<ShareSlice[]>,
+            required: true,
+        },
+        countLabel: {
+            type: String,
+            required: true,
+        },
+        itemLabel: {
+            type: String,
+            required: true,
+        },
+        emptyMessage: {
+            type: String,
             required: true,
         },
         isLoading: {
@@ -45,18 +61,48 @@ export default defineComponent({
     },
 
     computed: {
-        totalPrescriptionsLabel(): string {
-            const totalPrescriptions = this.medications.reduce(
-                (total, medication) => total + medication.prescriptionsCount,
+        chartSlices(): ShareSlice[] {
+            if (this.slices.length <= mostSlicesShown) {
+                return this.slices
+            }
+
+            const shownSlices = this.slices.slice(0, mostSlicesShown - 1)
+            const otherSlices = this.slices.slice(mostSlicesShown - 1)
+
+            return [
+                ...shownSlices,
+                {
+                    key: 'other',
+                    name: `Other (${formatCount(otherSlices.length)} ${this.itemLabel})`,
+                    isRemoved: false,
+                    count: otherSlices.reduce(
+                        (total, slice) => total + slice.count,
+                        0,
+                    ),
+                    percentage: Number(
+                        otherSlices
+                            .reduce(
+                                (total, slice) => total + slice.percentage,
+                                0,
+                            )
+                            .toFixed(1),
+                    ),
+                },
+            ]
+        },
+
+        totalLabel(): string {
+            const totalCount = this.slices.reduce(
+                (total, slice) => total + slice.count,
                 0,
             )
 
-            return `${formatCount(totalPrescriptions)} prescriptions in total`
+            return `${formatCount(totalCount)} ${this.countLabel} in total`
         },
     },
 
     watch: {
-        medications(): void {
+        slices(): void {
             this.$nextTick(() => this.drawChart())
         },
 
@@ -103,25 +149,26 @@ export default defineComponent({
             const data: Data[] = [
                 {
                     type: 'pie',
-                    labels: this.medications.map((medication) =>
-                        medication.isRemoved
-                            ? `${medication.name} (removed)`
-                            : medication.name,
+                    labels: this.chartSlices.map((slice) =>
+                        slice.isRemoved
+                            ? `${slice.name} (removed)`
+                            : slice.name,
                     ),
-                    values: this.medications.map(
-                        (medication) => medication.prescriptionsCount,
-                    ),
-                    text: this.medications.map(
-                        (medication) => `${medication.percentage}%`,
+                    values: this.chartSlices.map((slice) => slice.count),
+                    text: this.chartSlices.map(
+                        (slice) => `${slice.percentage}%`,
                     ),
                     textinfo: 'text',
                     textposition: 'inside',
-                    hovertemplate:
-                        '%{label}<br>%{value} prescriptions · %{text}<extra></extra>',
+                    hovertemplate: `%{label}<br>%{value} ${this.countLabel} · %{text}<extra></extra>`,
                     sort: false,
                     direction: 'clockwise',
                     marker: {
-                        colors: sliceColors,
+                        colors: this.chartSlices.map((slice, index) =>
+                            slice.key === 'other'
+                                ? otherSliceColor
+                                : sliceColors[index],
+                        ),
                         line: {
                             color: isDarkMode ? '#0a0a0a' : '#ffffff',
                             width: 1,
@@ -175,15 +222,15 @@ export default defineComponent({
         </div>
 
         <p
-            v-else-if="medications.length === 0"
+            v-else-if="slices.length === 0"
             class="py-6 text-center text-sm text-neutral-500 dark:text-neutral-400"
         >
-            No medications prescribed yet.
+            {{ emptyMessage }}
         </p>
 
         <div v-else>
             <p class="text-sm text-neutral-500 dark:text-neutral-400">
-                {{ totalPrescriptionsLabel }}
+                {{ totalLabel }}
             </p>
 
             <div ref="chart" class="w-full" />

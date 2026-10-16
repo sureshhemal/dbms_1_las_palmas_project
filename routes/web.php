@@ -2,6 +2,7 @@
 
 use App\Hospital\IO\Http\Controllers\DepartmentPageController;
 use App\Patient\IO\Http\Controllers\PatientPageController;
+use App\Staff\IO\Http\Controllers\PhysicianPageController;
 use Illuminate\Support\Facades\Route;
 
 Route::inertia('/', 'Welcome')->name('home');
@@ -12,6 +13,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::inertia('staff', 'Staff')->name('staff');
+    Route::get('staff/physicians/{physician}', [PhysicianPageController::class, 'show'])->name('staff.physicians.show');
     Route::inertia('hospital', 'Hospital')->name('hospital');
     Route::get('hospital/departments/{department}', [DepartmentPageController::class, 'show'])->name('hospital.departments.show');
     Route::inertia('clinical', 'Clinical')->name('clinical');

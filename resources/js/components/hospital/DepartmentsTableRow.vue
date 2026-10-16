@@ -5,6 +5,7 @@ import { defineComponent } from 'vue'
 import BaseTableActionButton from '@/components/base/BaseTableActionButton.vue'
 import BaseTableCell from '@/components/base/BaseTableCell.vue'
 import BaseTableRow from '@/components/base/BaseTableRow.vue'
+import PhysicianNameLink from '@/components/staff/PhysicianNameLink.vue'
 import type { Department } from '@/types'
 
 export default defineComponent({
@@ -15,6 +16,7 @@ export default defineComponent({
         BaseTableCell,
         BaseTableRow,
         Pencil,
+        PhysicianNameLink,
     },
 
     props: {
@@ -25,12 +27,6 @@ export default defineComponent({
     },
 
     emits: ['edit', 'open'],
-
-    computed: {
-        headName(): string {
-            return this.department.head?.name ?? '—'
-        },
-    },
 })
 </script>
 
@@ -42,12 +38,14 @@ export default defineComponent({
         <BaseTableCell class="font-medium">
             {{ department.name }}
         </BaseTableCell>
-        <BaseTableCell
-            :class="{
-                'text-neutral-500 dark:text-neutral-400': !department.head,
-            }"
-        >
-            {{ headName }}
+        <BaseTableCell>
+            <PhysicianNameLink
+                v-if="department.head"
+                :physician="department.head"
+            />
+            <span v-else class="text-neutral-500 dark:text-neutral-400">
+                —
+            </span>
         </BaseTableCell>
         <BaseTableCell class="w-0 text-right">
             <BaseTableActionButton

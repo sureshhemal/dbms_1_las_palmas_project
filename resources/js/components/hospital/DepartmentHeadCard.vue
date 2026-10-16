@@ -2,12 +2,14 @@
 import { UserRound } from '@lucide/vue'
 import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
+import PhysicianNameLink from '@/components/staff/PhysicianNameLink.vue'
 import type { Physician } from '@/types'
 
 export default defineComponent({
     name: 'DepartmentHeadCard',
 
     components: {
+        PhysicianNameLink,
         UserRound,
     },
 
@@ -55,8 +57,8 @@ export default defineComponent({
                 <UserRound class="size-5" />
             </div>
             <div>
-                <p class="font-medium text-neutral-900 dark:text-neutral-100">
-                    {{ head.name }}
+                <p>
+                    <PhysicianNameLink :physician="head" />
                 </p>
                 <p class="text-sm text-neutral-500 dark:text-neutral-400">
                     {{ head.position }} ·

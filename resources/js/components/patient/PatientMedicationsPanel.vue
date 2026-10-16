@@ -1,13 +1,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import PatientMedicationsChart from '@/components/patient/PatientMedicationsChart.vue'
-import type { PatientMedication } from '@/types'
+import BaseShareChart from '@/components/base/BaseShareChart.vue'
+import type { PatientMedication, ShareSlice } from '@/types'
 
 export default defineComponent({
     name: 'PatientMedicationsPanel',
 
     components: {
-        PatientMedicationsChart,
+        BaseShareChart,
     },
 
     props: {
@@ -21,6 +21,18 @@ export default defineComponent({
         return {
             medications: [] as PatientMedication[],
         }
+    },
+
+    computed: {
+        slices(): ShareSlice[] {
+            return this.medications.map((medication) => ({
+                key: medication.medicationId,
+                name: medication.name,
+                isRemoved: medication.isRemoved,
+                count: medication.prescriptionsCount,
+                percentage: medication.percentage,
+            }))
+        },
     },
 
     created() {
@@ -44,8 +56,11 @@ export default defineComponent({
 </script>
 
 <template>
-    <PatientMedicationsChart
-        :medications="medications"
+    <BaseShareChart
+        :slices="slices"
+        count-label="prescriptions"
+        item-label="medications"
+        empty-message="No medications prescribed yet."
         :is-loading="$wait.is('fetching-patient-medications')"
     />
 </template>

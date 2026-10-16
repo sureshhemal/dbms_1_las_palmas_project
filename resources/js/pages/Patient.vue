@@ -1,12 +1,12 @@
 <script lang="ts">
 import { Head, setLayoutProps } from '@inertiajs/vue3'
 import { defineComponent } from 'vue'
+import ClinicalSummaryCards from '@/components/clinical/ClinicalSummaryCards.vue'
 import Heading from '@/components/Heading.vue'
 import PatientDetailsCard from '@/components/patient/PatientDetailsCard.vue'
 import PatientMedicationsPanel from '@/components/patient/PatientMedicationsPanel.vue'
 import PatientPrescriptionsPanel from '@/components/patient/PatientPrescriptionsPanel.vue'
 import PatientProceduresPanel from '@/components/patient/PatientProceduresPanel.vue'
-import PatientSummaryCards from '@/components/patient/PatientSummaryCards.vue'
 import { todayIn } from '@/lib/calendarDate'
 import { patients } from '@/routes'
 import { show } from '@/routes/patients'
@@ -16,13 +16,13 @@ export default defineComponent({
     name: 'PatientPage',
 
     components: {
+        ClinicalSummaryCards,
         Heading,
         InertiaHead: Head,
         PatientDetailsCard,
         PatientMedicationsPanel,
         PatientPrescriptionsPanel,
         PatientProceduresPanel,
-        PatientSummaryCards,
     },
 
     layout: {
@@ -96,7 +96,9 @@ export default defineComponent({
 
         <div class="space-y-6">
             <div class="grid gap-6 lg:grid-cols-2">
-                <PatientSummaryCards :patient-id="patientId" />
+                <ClinicalSummaryCards
+                    :summary-path="`patients/${patientId}/summary`"
+                />
 
                 <PatientMedicationsPanel :patient-id="patientId" />
             </div>

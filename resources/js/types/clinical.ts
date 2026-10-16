@@ -122,7 +122,7 @@ export type PatientPerformedProcedure = Omit<
 
 export type PatientPrescription = Omit<Prescription, 'patient'>
 
-export type PatientSummary = {
+export type ClinicalSummary = {
     nextProcedure: {
         id: string
         procDate: string
@@ -139,4 +139,28 @@ export type PatientMedication = {
     isRemoved: boolean
     prescriptionsCount: number
     percentage: number
+}
+
+export type ProcedureShare = {
+    procedureId: string
+    name: string
+    isRemoved: boolean
+    performedCount: number
+    percentage: number
+}
+
+export type PhysicianPerformedProcedure = {
+    id: string
+    procDate: string
+    patient: { id: string; name: string }
+    procedure: { id: string; name: string }
+    stay: { id: string; stayID: number; room: { id: string; roomID: number } }
+    nurse: { id: string; nurseID: number; name: string }
+}
+
+export type PhysicianPrescription = Omit<
+    Prescription,
+    'patient' | 'physician'
+> & {
+    patient: PrescriptionParty
 }

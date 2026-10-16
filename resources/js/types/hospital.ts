@@ -32,11 +32,17 @@ export type RoomType = 'Single' | 'Double'
 
 export const roomTypes: RoomType[] = ['Single', 'Double']
 
+export type RoomOccupant = {
+    id: string
+    patient: { id: string; name: string; deleted_at: string | null }
+}
+
 export type Room = {
     id: string
     roomID: number
     roomType: RoomType
     bedsFree: number
+    current_stays?: RoomOccupant[]
     created_at: string | null
     updated_at: string | null
     deleted_at: string | null

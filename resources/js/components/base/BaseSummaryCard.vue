@@ -3,7 +3,7 @@ import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-    name: 'PatientSummaryCard',
+    name: 'BaseSummaryCard',
 
     props: {
         label: {

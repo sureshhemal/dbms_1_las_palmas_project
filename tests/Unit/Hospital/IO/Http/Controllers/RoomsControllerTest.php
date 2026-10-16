@@ -3,6 +3,7 @@
 use App\Clinical\Entities\Models\Stay;
 use App\Hospital\Entities\Models\Room;
 use App\Hospital\Entities\RoomType;
+use App\Patient\Entities\Models\Patient;
 
 it('returns 401 to guests', function () {
     $response = $this->getJson(route('api.rooms.index'));
@@ -68,6 +69,24 @@ it('shows how many beds of each room are free today', function () {
         104 => 1,
     ]);
     expect($response->json('data.0'))->not->toHaveKeys(['beds', 'bedsTaken']);
+});
+
+it('lists the patients occupying each room today, earliest admitted first', function () {
+    $this->travelTo('2026-10-15 12:00:00');
+    $double = Room::factory()->withType(RoomType::Double)->create(['roomID' => 101]);
+    $emptyRoom = Room::factory()->withType(RoomType::Single)->create(['roomID' => 102]);
+    Stay::factory()->for($double)->for(Patient::factory()->state(['name' => 'Jordan Sullivan']))->between('2026-10-14', '2026-10-20')->create();
+    Stay::factory()->for($double)->for(Patient::factory()->state(['name' => 'Ben Sullivan']))->between('2026-10-12')->create();
+    Stay::factory()->for($double)->for(Patient::factory()->state(['name' => 'Discharged Today']))->between('2026-10-10', '2026-10-15')->create();
+    Stay::factory()->for($double)->for(Patient::factory()->state(['name' => 'Arriving Tomorrow']))->between('2026-10-16')->create();
+    Stay::factory()->for($emptyRoom)->between('2026-10-01', '2026-10-05')->create();
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.rooms.index'));
+
+    $rooms = collect($response->json('data'))->keyBy('roomID');
+    expect(collect($rooms[101]['current_stays'])->pluck('patient.name')->all())->toBe(['Ben Sullivan', 'Jordan Sullivan']);
+    expect($rooms[101]['current_stays'][0]['patient'])->toHaveKeys(['id', 'name', 'deleted_at']);
+    expect($rooms[102]['current_stays'])->toBe([]);
 });
 
 it('counts a bed as taken from the admission day in the hospital time zone', function () {

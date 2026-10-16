@@ -4,6 +4,7 @@ namespace App\Staff\Entities\Models;
 
 use App\Foundation\Entities\Concerns\HasAutoIncrementingColumn;
 use App\Hospital\Entities\Models\Department;
+use App\Patient\Entities\Models\Patient;
 use App\Staff\Entities\PhysicianPosition;
 use App\Staff\IO\Database\QueryBuilders\PhysiciansQueryBuilder;
 use Database\Factories\Staff\PhysicianFactory;
@@ -64,5 +65,10 @@ class Physician extends Model
     public function headedDepartments(): HasMany
     {
         return $this->hasMany(Department::class, 'head_id');
+    }
+
+    public function primaryPatients(): HasMany
+    {
+        return $this->hasMany(Patient::class, 'primary_physician_id');
     }
 }

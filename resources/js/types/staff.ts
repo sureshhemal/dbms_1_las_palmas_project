@@ -117,3 +117,7 @@ export type StaffCounts = {
     nurse_count: number
     on_call_nurse_count: number
 }
+
+export type PhysicianProfile = Physician & {
+    primary_patients_count: number
+}

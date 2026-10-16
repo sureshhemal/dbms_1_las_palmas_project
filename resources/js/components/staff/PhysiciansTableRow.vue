@@ -5,6 +5,7 @@ import { defineComponent } from 'vue'
 import BaseTableActionButton from '@/components/base/BaseTableActionButton.vue'
 import BaseTableCell from '@/components/base/BaseTableCell.vue'
 import BaseTableRow from '@/components/base/BaseTableRow.vue'
+import PhysicianNameLink from '@/components/staff/PhysicianNameLink.vue'
 import { maskSsn } from '@/lib/maskSsn'
 import type { Physician } from '@/types'
 
@@ -17,6 +18,7 @@ export default defineComponent({
         UserMinus,
         BaseTableCell,
         BaseTableRow,
+        PhysicianNameLink,
     },
 
     props: {
@@ -73,8 +75,8 @@ export default defineComponent({
         <BaseTableCell class="font-mono">
             {{ physician.physicianID }}
         </BaseTableCell>
-        <BaseTableCell class="font-medium">
-            {{ physician.name }}
+        <BaseTableCell>
+            <PhysicianNameLink :physician="physician" />
         </BaseTableCell>
         <BaseTableCell>{{ physician.position }}</BaseTableCell>
         <BaseTableCell

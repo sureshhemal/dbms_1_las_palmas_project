@@ -5,6 +5,7 @@ import { defineComponent } from 'vue'
 import { calendarDateIn } from '@/lib/calendarDate'
 import { formatAge } from '@/lib/formatAge'
 import { maskSsn } from '@/lib/maskSsn'
+import PhysicianNameLink from '@/components/staff/PhysicianNameLink.vue'
 import type { PatientProfile } from '@/types'
 
 type PatientDetail = {
@@ -18,6 +19,7 @@ export default defineComponent({
 
     components: {
         BedDouble,
+        PhysicianNameLink,
     },
 
     props: {
@@ -78,10 +80,6 @@ export default defineComponent({
                       new Date(this.patient.created_at),
                   )
                 : '—'
-        },
-
-        isPrimaryPhysicianOffboarded(): boolean {
-            return Boolean(this.patient?.primary_physician?.deleted_at)
         },
     },
 })
@@ -173,27 +171,16 @@ export default defineComponent({
                         >
                             Primary Physician
                         </dt>
-                        <dd
-                            class="mt-1 text-sm"
-                            :class="
-                                !patient.primary_physician ||
-                                isPrimaryPhysicianOffboarded
-                                    ? 'text-neutral-500 dark:text-neutral-400'
-                                    : 'text-neutral-900 dark:text-neutral-100'
-                            "
-                        >
+                        <dd class="mt-1 text-sm">
+                            <PhysicianNameLink
+                                v-if="patient.primary_physician"
+                                :physician="patient.primary_physician"
+                            />
                             <span
-                                :class="{
-                                    'line-through':
-                                        isPrimaryPhysicianOffboarded,
-                                }"
-                                :title="
-                                    isPrimaryPhysicianOffboarded
-                                        ? 'Offboarded'
-                                        : undefined
-                                "
+                                v-else
+                                class="text-neutral-500 dark:text-neutral-400"
                             >
-                                {{ patient.primary_physician?.name ?? '—' }}
+                                —
                             </span>
                         </dd>
                     </div>

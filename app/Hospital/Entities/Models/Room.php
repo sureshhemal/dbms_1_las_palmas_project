@@ -4,6 +4,7 @@ namespace App\Hospital\Entities\Models;
 
 use App\Clinical\Entities\Models\Stay;
 use App\Foundation\Entities\Concerns\HasAutoIncrementingColumn;
+use App\Hospital\Entities\HospitalCalendar;
 use App\Hospital\Entities\RoomType;
 use Database\Factories\Hospital\RoomFactory;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -43,5 +44,10 @@ class Room extends Model
     public function stays(): HasMany
     {
         return $this->hasMany(Stay::class);
+    }
+
+    public function currentStays(): HasMany
+    {
+        return $this->hasMany(Stay::class)->whereOccupyingABedOn(HospitalCalendar::today())->oldest('startDate');
     }
 }

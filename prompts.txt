@@ -1931,3 +1931,50 @@ who has the largest Prescriptions list
 [2026-10-16 14:46]
 open pr to main
 
+[2026-10-16 14:50]
+<task-notification>
+<task-id>bo1mg20sp</task-id>
+<tool-use-id>toolu_01HVaQe3eLBSaqNv37DLagA3</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-sureshhemal-MSc-Sem-1-dbms-las-palmas/72f98d11-78da-49ca-a9fb-07041404af8c/tasks/bo1mg20sp.output</output-file>
+<status>completed</status>
+<summary>Background command "Watch CI checks on PR 16" completed (exit code 0)</summary>
+</task-notification>
+
+[2026-10-16 14:52]
+I merged the pR. Now I need to do the same thing on doctors profile. 
+
+There I need following
+
+1. Personal details with Joined date
+2. Number of patients who worked as primary physicians
+3. Performed procedures
+4. Issued prescriptions
+5. Upcomming procedures
+6. The same chart but for performed procedures
+
+7. Cards -> Upcomming procedure, Procedure performed, Presciption issued, Total Revenue based on performed procedures.
+
+[2026-10-16 15:00]
+In reality, no physician is doing procedures in broader areas right? So, we need to fix the seeder to replicate that.
+
+[2026-10-16 15:03]
+In rooms table, if there is a patient there, show his name/s too. so easy to see things
+
+[2026-10-16 15:04]
+similarly, clicking on patient name on performed procedure table should go to patient's page.
+
+[2026-10-16 15:06]
+stays table should do the same
+
+[2026-10-16 15:06]
+and prescriptions table. Also no patientID
+
+[2026-10-16 15:07]
+do the same for doctor's name
+
+[2026-10-16 15:08]
+patients table, lets move the click logit to names, remove click event from the table row. Anywehre we see patient/doctor name on table, it is clickable
+
+[2026-10-16 15:09]
+rebase this with main branch. I merged prev pr. and open new PR to main
+

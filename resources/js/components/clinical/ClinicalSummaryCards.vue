@@ -1,24 +1,24 @@
 <script lang="ts">
 import { Banknote, CalendarClock, Pill, Stethoscope } from '@lucide/vue'
 import { defineComponent } from 'vue'
-import PatientSummaryCard from '@/components/patient/PatientSummaryCard.vue'
+import BaseSummaryCard from '@/components/base/BaseSummaryCard.vue'
 import { formatCost } from '@/lib/formatCost'
 import { formatCount } from '@/lib/formatCount'
-import type { PatientSummary } from '@/types'
+import type { ClinicalSummary } from '@/types'
 
 export default defineComponent({
-    name: 'PatientSummaryCards',
+    name: 'ClinicalSummaryCards',
 
     components: {
         Banknote,
+        BaseSummaryCard,
         CalendarClock,
-        PatientSummaryCard,
         Pill,
         Stethoscope,
     },
 
     props: {
-        patientId: {
+        summaryPath: {
             type: String,
             required: true,
         },
@@ -26,13 +26,13 @@ export default defineComponent({
 
     data() {
         return {
-            summary: null as PatientSummary | null,
+            summary: null as ClinicalSummary | null,
         }
     },
 
     computed: {
         isLoading(): boolean {
-            return this.$wait.is('fetching-patient-summary') || !this.summary
+            return this.$wait.is('fetching-clinical-summary') || !this.summary
         },
 
         nextProcedureName(): string {
@@ -64,11 +64,11 @@ export default defineComponent({
 
     methods: {
         async fetchSummary(): Promise<void> {
-            this.$wait.start('fetching-patient-summary')
+            this.$wait.start('fetching-clinical-summary')
 
             const { data } = await this.$http
-                .get<PatientSummary>(`patients/${this.patientId}/summary`)
-                .finally(() => this.$wait.end('fetching-patient-summary'))
+                .get<ClinicalSummary>(this.summaryPath)
+                .finally(() => this.$wait.end('fetching-clinical-summary'))
 
             this.summary = data
         },
@@ -78,7 +78,7 @@ export default defineComponent({
 
 <template>
     <div class="grid content-start gap-4 sm:grid-cols-2">
-        <PatientSummaryCard
+        <BaseSummaryCard
             label="Upcoming Procedure"
             tone="info"
             :value="nextProcedureName"
@@ -89,9 +89,9 @@ export default defineComponent({
             <template #icon>
                 <CalendarClock />
             </template>
-        </PatientSummaryCard>
+        </BaseSummaryCard>
 
-        <PatientSummaryCard
+        <BaseSummaryCard
             label="Procedures Performed"
             tone="brand"
             :value="performedProceduresCount"
@@ -100,9 +100,9 @@ export default defineComponent({
             <template #icon>
                 <Stethoscope />
             </template>
-        </PatientSummaryCard>
+        </BaseSummaryCard>
 
-        <PatientSummaryCard
+        <BaseSummaryCard
             label="Prescriptions Issued"
             tone="warning"
             :value="prescriptionsCount"
@@ -111,9 +111,9 @@ export default defineComponent({
             <template #icon>
                 <Pill />
             </template>
-        </PatientSummaryCard>
+        </BaseSummaryCard>
 
-        <PatientSummaryCard
+        <BaseSummaryCard
             label="Total Revenue"
             tone="success"
             :value="totalRevenue"
@@ -122,6 +122,6 @@ export default defineComponent({
             <template #icon>
                 <Banknote />
             </template>
-        </PatientSummaryCard>
+        </BaseSummaryCard>
     </div>
 </template>

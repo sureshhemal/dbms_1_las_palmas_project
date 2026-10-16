@@ -3,6 +3,8 @@ import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
 import BaseTableCell from '@/components/base/BaseTableCell.vue'
 import BaseTableRow from '@/components/base/BaseTableRow.vue'
+import PhysicianNameLink from '@/components/staff/PhysicianNameLink.vue'
+import PatientNameLink from '@/components/patient/PatientNameLink.vue'
 import type { PerformedProcedure } from '@/types'
 
 export default defineComponent({
@@ -11,6 +13,8 @@ export default defineComponent({
     components: {
         BaseTableCell,
         BaseTableRow,
+        PatientNameLink,
+        PhysicianNameLink,
     },
 
     props: {
@@ -49,14 +53,16 @@ export default defineComponent({
                 {{ isScheduled ? 'Scheduled' : 'Performed' }}
             </span>
         </BaseTableCell>
-        <BaseTableCell class="font-medium">
-            {{ performedProcedure.patient.name }}
+        <BaseTableCell>
+            <PatientNameLink :patient="performedProcedure.patient" />
         </BaseTableCell>
         <BaseTableCell>{{ performedProcedure.procedure.name }}</BaseTableCell>
         <BaseTableCell class="whitespace-nowrap">
             Room {{ performedProcedure.stay.room.roomID }}
         </BaseTableCell>
-        <BaseTableCell>{{ performedProcedure.physician.name }}</BaseTableCell>
+        <BaseTableCell>
+            <PhysicianNameLink :physician="performedProcedure.physician" />
+        </BaseTableCell>
         <BaseTableCell>{{ performedProcedure.nurse.name }}</BaseTableCell>
     </BaseTableRow>
 </template>

@@ -2,34 +2,35 @@
 
 namespace App\Clinical\UseCases;
 
+use App\Clinical\Entities\ClinicalSummary;
 use App\Clinical\Entities\Models\PerformedProcedure;
 use App\Clinical\Entities\Models\Prescription;
-use App\Clinical\Entities\PatientSummary;
 use App\Patient\Entities\Models\Patient;
+use App\Staff\Entities\Models\Physician;
 
-final class ShowPatientSummary
+final class ShowClinicalSummary
 {
-    public function execute(Patient $patient): PatientSummary
+    public function execute(Patient|Physician $subject): ClinicalSummary
     {
         $nextProcedure = PerformedProcedure::query()
             ->with('procedure:id,name')
-            ->whereBelongsTo($patient)
+            ->whereBelongsTo($subject)
             ->whereScheduled()
             ->orderBy('procDate')
             ->first(['id', 'patient_id', 'procedure_id', 'procDate']);
 
-        return new PatientSummary(
+        return new ClinicalSummary(
             nextProcedure: $nextProcedure instanceof PerformedProcedure ? $nextProcedure : null,
             performedProceduresCount: PerformedProcedure::query()
-                ->whereBelongsTo($patient)
+                ->whereBelongsTo($subject)
                 ->wherePerformed()
                 ->count(),
             prescriptionsCount: Prescription::query()
-                ->whereBelongsTo($patient)
+                ->whereBelongsTo($subject)
                 ->count(),
             totalRevenue: (float) PerformedProcedure::query()
                 ->join('Procedure', 'Procedure.id', '=', 'Undergoes.procedure_id')
-                ->whereBelongsTo($patient)
+                ->whereBelongsTo($subject)
                 ->wherePerformed()
                 ->sum('Procedure.cost'),
         );

@@ -5,6 +5,7 @@ import { defineComponent } from 'vue'
 import BaseTableActionButton from '@/components/base/BaseTableActionButton.vue'
 import BaseTableCell from '@/components/base/BaseTableCell.vue'
 import BaseTableRow from '@/components/base/BaseTableRow.vue'
+import PatientNameLink from '@/components/patient/PatientNameLink.vue'
 import type { Stay } from '@/types'
 
 export default defineComponent({
@@ -14,6 +15,7 @@ export default defineComponent({
         BaseTableActionButton,
         BaseTableCell,
         BaseTableRow,
+        PatientNameLink,
         CalendarPlus,
         LogOut,
         Stethoscope,
@@ -65,14 +67,8 @@ export default defineComponent({
 <template>
     <BaseTableRow>
         <BaseTableCell class="font-mono">{{ stay.stayID }}</BaseTableCell>
-        <BaseTableCell
-            :class="{
-                'text-neutral-500 line-through dark:text-neutral-400':
-                    stay.patient.deleted_at,
-            }"
-            :title="stay.patient.deleted_at ? 'Inactive' : undefined"
-        >
-            <span class="font-medium">{{ stay.patient.name }}</span>
+        <BaseTableCell>
+            <PatientNameLink :patient="stay.patient" />
         </BaseTableCell>
         <BaseTableCell
             :class="{
