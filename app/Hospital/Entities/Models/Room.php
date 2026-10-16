@@ -2,6 +2,7 @@
 
 namespace App\Hospital\Entities\Models;
 
+use App\Clinical\Entities\Models\Stay;
 use App\Foundation\Entities\Concerns\HasAutoIncrementingColumn;
 use App\Hospital\Entities\RoomType;
 use Database\Factories\Hospital\RoomFactory;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
@@ -36,5 +38,10 @@ class Room extends Model
         return [
             'roomType' => RoomType::class,
         ];
+    }
+
+    public function stays(): HasMany
+    {
+        return $this->hasMany(Stay::class);
     }
 }

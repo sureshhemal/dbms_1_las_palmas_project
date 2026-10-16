@@ -51,7 +51,7 @@ export default defineComponent({
             selectedPatient: null as PatientFormData | null,
             offboardedPrimaryPhysicianOption: null as SelectOption | null,
             isShowingPatientForm: false,
-            isConfirmingRemoval: false,
+            isConfirmingDeactivation: false,
         }
     },
 
@@ -79,10 +79,10 @@ export default defineComponent({
             )
         },
 
-        removalConfirmationDescription(): string {
+        deactivationConfirmationDescription(): string {
             const patientName = this.selectedPatient?.name || 'This patient'
 
-            return `${patientName} will be removed from the patient list. Their record is kept.`
+            return `${patientName} will no longer be served. Their record and history are kept.`
         },
 
         patientsEmptyMessage(): string {
@@ -224,10 +224,10 @@ export default defineComponent({
             this.openPatientForm()
         },
 
-        removePatient(patient: Patient): void {
+        deactivatePatient(patient: Patient): void {
             this.selectedPatient = this.toPatientFormData(patient)
 
-            this.isConfirmingRemoval = true
+            this.isConfirmingDeactivation = true
         },
 
         openPatientForm(): void {
@@ -238,8 +238,8 @@ export default defineComponent({
             this.isShowingPatientForm = false
         },
 
-        cancelRemoval(): void {
-            this.isConfirmingRemoval = false
+        cancelDeactivation(): void {
+            this.isConfirmingDeactivation = false
         },
 
         async savePatient(patient: PatientFormData): Promise<void> {
@@ -258,19 +258,19 @@ export default defineComponent({
             await this.fetchPatients()
         },
 
-        async removeSelectedPatient(): Promise<void> {
+        async deactivateSelectedPatient(): Promise<void> {
             if (!this.selectedPatient?.id) {
                 return
             }
 
-            this.$wait.start('removing-patient')
+            this.$wait.start('deactivating-patient')
 
             await this.$http
                 .delete(`patients/${this.selectedPatient.id}`)
-                .finally(() => this.$wait.end('removing-patient'))
+                .finally(() => this.$wait.end('deactivating-patient'))
 
-            this.notifySuccess('Patient removed')
-            this.isConfirmingRemoval = false
+            this.notifySuccess('Patient deactivated')
+            this.isConfirmingDeactivation = false
 
             await this.fetchPatients()
         },
@@ -315,7 +315,7 @@ export default defineComponent({
             :empty-message="patientsEmptyMessage"
             :is-loading="$wait.is('fetching-patients')"
             @edit="editPatient"
-            @remove="removePatient"
+            @deactivate="deactivatePatient"
         />
 
         <BasePaginationBar
@@ -339,12 +339,12 @@ export default defineComponent({
         </BaseSideDrawer>
 
         <BaseConfirmDialog
-            :is-open="isConfirmingRemoval"
-            title="Remove patient?"
-            :description="removalConfirmationDescription"
-            confirm-label="Remove"
-            @confirm="removeSelectedPatient"
-            @cancel="cancelRemoval"
+            :is-open="isConfirmingDeactivation"
+            title="Deactivate patient?"
+            :description="deactivationConfirmationDescription"
+            confirm-label="Deactivate"
+            @confirm="deactivateSelectedPatient"
+            @cancel="cancelDeactivation"
         />
     </div>
 </template>

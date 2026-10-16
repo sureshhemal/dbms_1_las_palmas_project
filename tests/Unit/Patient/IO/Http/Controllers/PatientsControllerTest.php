@@ -71,7 +71,7 @@ it('still shows a primary physician who has been offboarded', function () {
     expect($response->json('data.0.primary_physician.deleted_at'))->not->toBeNull();
 });
 
-it('leaves out removed patients', function () {
+it('leaves out inactive patients', function () {
     $keptPatient = Patient::factory()->create();
     Patient::factory()->create()->delete();
 
@@ -344,7 +344,7 @@ it('shows the MySQL error when updating to a patient id that is already taken', 
     expect($patient->fresh()->patientID)->toBe(54321);
 });
 
-it('returns 401 to guests removing a patient', function () {
+it('returns 401 to guests deactivating a patient', function () {
     $patient = Patient::factory()->create();
 
     $response = $this->deleteJson(route('api.patients.destroy', $patient));
@@ -353,7 +353,7 @@ it('returns 401 to guests removing a patient', function () {
     $this->assertNotSoftDeleted($patient);
 });
 
-it('removes a patient by soft deleting them', function () {
+it('deactivates a patient by soft deleting them, keeping their record', function () {
     $patient = Patient::factory()->create();
 
     $response = $this->actingAsLoggedInUser()->deleteJson(route('api.patients.destroy', $patient));
@@ -362,7 +362,7 @@ it('removes a patient by soft deleting them', function () {
     $this->assertSoftDeleted($patient);
 });
 
-it('returns 404 when removing a patient who is already removed', function () {
+it('returns 404 when deactivating a patient who is already inactive', function () {
     $patient = Patient::factory()->create();
     $patient->delete();
 

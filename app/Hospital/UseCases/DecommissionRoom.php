@@ -4,7 +4,7 @@ namespace App\Hospital\UseCases;
 
 use App\Hospital\Entities\Models\Room;
 
-final class RemoveRoom
+final class DecommissionRoom
 {
     public function execute(Room $room): void
     {

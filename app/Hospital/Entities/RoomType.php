@@ -10,4 +10,12 @@ enum RoomType: string
 
     case Single = 'Single';
     case Double = 'Double';
+
+    public function beds(): int
+    {
+        return match ($this) {
+            self::Single => 1,
+            self::Double => 2,
+        };
+    }
 }

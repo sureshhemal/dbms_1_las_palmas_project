@@ -4,6 +4,7 @@ import BaseTabs from '@/components/base/BaseTabs.vue'
 import MedicationsTabPanel from '@/components/clinical/MedicationsTabPanel.vue'
 import PrescriptionsTabPanel from '@/components/clinical/PrescriptionsTabPanel.vue'
 import ProceduresTabPanel from '@/components/clinical/ProceduresTabPanel.vue'
+import StaysTabPanel from '@/components/clinical/StaysTabPanel.vue'
 import type { TabDefinition } from '@/types'
 
 export default defineComponent({
@@ -14,6 +15,7 @@ export default defineComponent({
         MedicationsTabPanel,
         PrescriptionsTabPanel,
         ProceduresTabPanel,
+        StaysTabPanel,
     },
 
     data() {
@@ -31,6 +33,10 @@ export default defineComponent({
                 {
                     name: 'prescriptions',
                     label: 'Prescriptions',
+                },
+                {
+                    name: 'stays',
+                    label: 'Stays',
                 },
             ] as TabDefinition[],
         }
@@ -50,6 +56,10 @@ export default defineComponent({
 
         <template #prescriptions>
             <PrescriptionsTabPanel />
+        </template>
+
+        <template #stays>
+            <StaysTabPanel />
         </template>
     </BaseTabs>
 </template>

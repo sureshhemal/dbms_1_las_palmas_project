@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Pencil, Trash2 } from '@lucide/vue'
+import { Pencil, UserX } from '@lucide/vue'
 import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
 import BaseTableActionButton from '@/components/base/BaseTableActionButton.vue'
@@ -16,7 +16,7 @@ export default defineComponent({
         BaseTableCell,
         BaseTableRow,
         Pencil,
-        Trash2,
+        UserX,
     },
 
     props: {
@@ -26,7 +26,7 @@ export default defineComponent({
         },
     },
 
-    emits: ['edit', 'remove'],
+    emits: ['edit', 'deactivate'],
 
     computed: {
         dateOfBirth(): string {
@@ -107,10 +107,10 @@ export default defineComponent({
                 </BaseTableActionButton>
                 <BaseTableActionButton
                     tone="danger"
-                    @click.stop="$emit('remove', patient)"
+                    @click.stop="$emit('deactivate', patient)"
                 >
-                    <Trash2 />
-                    Remove
+                    <UserX />
+                    Deactivate
                 </BaseTableActionButton>
             </div>
         </BaseTableCell>

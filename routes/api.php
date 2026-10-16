@@ -4,6 +4,8 @@ use App\Clinical\IO\Http\Controllers\MedicationsController;
 use App\Clinical\IO\Http\Controllers\PrescriberCandidatesController;
 use App\Clinical\IO\Http\Controllers\PrescriptionsController;
 use App\Clinical\IO\Http\Controllers\ProceduresController;
+use App\Clinical\IO\Http\Controllers\RoomAvailabilityController;
+use App\Clinical\IO\Http\Controllers\StaysController;
 use App\Hospital\IO\Http\Controllers\DepartmentHeadCandidatesController;
 use App\Hospital\IO\Http\Controllers\DepartmentPhysiciansController;
 use App\Hospital\IO\Http\Controllers\DepartmentsController;
@@ -49,6 +51,12 @@ Route::middleware('auth')->group(function () {
     Route::get('prescriptions', [PrescriptionsController::class, 'index'])->name('api.prescriptions.index');
     Route::get('prescriptions/years', [PrescriptionsController::class, 'years'])->name('api.prescriptions.years');
     Route::post('prescriptions', [PrescriptionsController::class, 'store'])->name('api.prescriptions.store');
+
+    Route::get('stays', [StaysController::class, 'index'])->name('api.stays.index');
+    Route::post('stays', [StaysController::class, 'store'])->name('api.stays.store');
+    Route::patch('stays/{stay}/discharge', [StaysController::class, 'discharge'])->name('api.stays.discharge');
+    Route::get('room-availability', [RoomAvailabilityController::class, 'index'])->name('api.room-availability.index');
+
     Route::get('prescriber-candidates', [PrescriberCandidatesController::class, 'index'])->name('api.prescriber-candidates.index');
 
     Route::get('patients', [PatientsController::class, 'index'])->name('api.patients.index');

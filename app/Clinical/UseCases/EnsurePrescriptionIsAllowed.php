@@ -38,7 +38,7 @@ final class EnsurePrescriptionIsAllowed
 
         $patient = $data->patientId === null ? null : Patient::query()->find($data->patientId);
 
-        if (! $patient instanceof Patient || $patient->created_at === null) {
+        if (! $patient instanceof Patient) {
             return null;
         }
 
@@ -73,7 +73,7 @@ final class EnsurePrescriptionIsAllowed
         $patient = $data->patientId === null ? null : Patient::onlyTrashed()->find($data->patientId);
 
         return $patient instanceof Patient
-            ? "{$patient->name} has been removed and cannot be prescribed to."
+            ? "{$patient->name} is inactive and cannot be prescribed to."
             : null;
     }
 
