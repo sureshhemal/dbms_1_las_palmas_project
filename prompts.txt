@@ -2363,3 +2363,409 @@ Every column fitted the rules, so none were left left-aligned by default. I ran 
 [2026-10-16 15:37]
 open pr to main. rebase beforehead
 
+[2026-10-16 15:40]
+<task-notification>
+<task-id>bfb6o1cpg</task-id>
+<tool-use-id>toolu_01RfcjWjTYiWqbVFr49EhUne</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-sureshhemal-MSc-Sem-1-dbms-las-palmas/72f98d11-78da-49ca-a9fb-07041404af8c/tasks/bfb6o1cpg.output</output-file>
+<status>completed</status>
+<summary>Background command "Watch CI checks on PR 18" completed (exit code 0)</summary>
+</task-notification>
+
+[2026-10-16 15:54]
+Now merged. Now I need a readme file, than explains how to install this project and run it. For all windows/linux/mac os. I guess Herd is the optimum way to do it. But its upto user. And mention about the database configuration. Assuem the person who clones the repository does not know anything about laravel or anything related to setup. Mention the requried php extensions. And php versions, node versions. All things that need to this project. Since we don't use window functions I guess mysql 5.7 is valid for us, but we are using muysql 8 anyways. Build it for now. I'll review it
+
+[2026-10-16 15:59]
+I just configured clockwork records on database. Add that too. Mention that user can have json files on sqlite(which needs extention) too. And mention he/she wants to see the databse queries when running the application, he should go to <site>/clockwork/app and see the ajax request to see the quries.
+
+[2026-10-16 16:04]
+tell user
+if he want fresh application without data, run migrate command
+if he wants to see fake data run seed command
+
+if he want to clear eveything migrate:fresh
+clear and re seed fresh --seed
+
+because he doesn't know laravel.
+
+[2026-10-16 16:07]
+now we need the same informaiton on txt file too.
+
+[2026-10-16 16:09]
+mention that t is better to see readme.md for read at the top of the txt file
+
+[2026-10-16 16:09]
+what else do we missing on readme.md file
+
+[2026-10-16 16:16]
+For average, can we use aggregate avg() for getting percentages of shares?
+
+[2026-10-16 16:21]
+select m.name,
+       round(100 * (select avg(p.medication_id = m.id)
+                    from Prescribes p where p.deleted_at is null), 2) as share
+from Medication m
+Lets ommit round from this
+
+[2026-10-16 16:23]
+Show me the full query to percentages of medications and procedures using avg? Inwant complete quries
+
+[2026-10-16 16:26]
+show me the current sql queries vs avg queries
+
+[2026-10-16 16:33]
+I don't want to break my app in sake of getting good results. End of the day that is a problem what I need solve. So, use avg for sake of the assignment is not the correct way for that place. When the application grows that query will cause to break the application then. So, my solution is lets report the avg version query and what do we used instead. And clearly mention that query failed on stress testing.
+
+[2026-10-16 16:39]
+<task-notification>
+<task-id>byq5dcb6q</task-id>
+<tool-use-id>toolu_014Gz8rzn5KSVMKgi9rS8b5k</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-sureshhemal-MSc-Sem-1-dbms-las-palmas/72f98d11-78da-49ca-a9fb-07041404af8c/tasks/byq5dcb6q.output</output-file>
+<status>completed</status>
+<summary>Background command "Rerun the stress test with day-based date shifts" completed (exit code 0)</summary>
+</task-notification>
+
+[2026-10-16 16:44]
+but we should use avg for simple tasks. Possible place is avg cost per procedure.
+
+[2026-10-16 16:46]
+<pasted_content id="35ee">
+Procedure::query()
+            ->toBase()
+            ->selectRaw('avg(cost) as averageCost')
+            ->selectRaw('count(cost) as pricedProcedureCount')
+            ->selectRaw('count(*) - count(cost) as unpricedProcedureCount')
+            ->first();
+</pasted_content id="35ee">
+
+ 
+
+instead of this we can use proper query builder methods, ->avg(). no?
+
+[2026-10-16 16:47]
+In the report, you only reported raw sql queries, Mention query builder quries too
+
+[2026-10-16 16:49]
+in this readme. you didn't mention hospital timezone, it should be denver. add that
+
+[2026-10-16 16:58]
+lets add a section about explaning the app.
+
+1. What are the pages, where the table matches with pages and tabs, which tabs shows all data, which tabs shows paginated data, and lets begin all those things with seeded data. and mention how many seeded records we will have roughly.
+
+And also mention how to add/edit/delete data.
+
+best to do this as a table. Like columns of
+page | tab | mathing database table | sees what / how many records per once | how many seeded records | how to add / edit / delete |
+
+2. Database itself doesn't need to explain. Reviewer newer deals with the codebase, So we are using models. but reviewer only deal with .env file. So no need to mention about model to databse table mathcing
+
+3. Add short feature tour.
+
+4. Add what to do with taken port. 8000 might not available on their machine. And this app might needed ssl certificate to run. I'm not sure. But better to have. Herd users can get that by one click. But linux users might need certbot. IDK, thats why I do on my vps anyways. Maybe local setup are different. Add the intruction to get ssl certificate if their needed it to run the applicaion.
+
+5. add instruction to how to remove the project.
+
+6. Add github link. This repo will be public after finishing. So, you can add the link now. It is fine
+
+[2026-10-16 16:59]
+to get details of the app. you may fan out sub agents
+
+[2026-10-16 17:01]
+<task-notification>
+<task-id>aa6ab53bdbbad08e0</task-id>
+<tool-use-id>toolu_018S8nPAw2RfyRMDE3LJgTh3</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-sureshhemal-MSc-Sem-1-dbms-las-palmas/6835bb19-9eea-46ac-ac11-1d17ac31a036/tasks/aa6ab53bdbbad08e0.output</output-file>
+<status>completed</status>
+<summary>Agent "Map Patients, profiles, settings" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>I checked all six areas in the code and config without modifying anything. Paths below are relative to `/Users/sureshhemal/MSc/Sem-1/dbms/las_palmas`.
+
+**1. Patients page** (`resources/js/pages/Patients.vue`, `resources/js/components/patient/PatientsPanel.vue`, `PatientsTable.vue`, `PatientsTableRow.vue`, `PatientForm.vue`)
+- **MySQL table:** `Patient` (`app/Patient/Entities/Models/Patient.php`, which uses SoftDeletes). The page title is "Patients" with the description "Patients registered at Las Palmas Medical Center."
+- **Pagination:** yes, 20 rows per page by default. The page-size menu offers 10, 20, 50 or 100, and the pagination bar appears both above and below the table. Newest patients are listed first.
+- **Search:** the box says "Search by name, ID, phone or insurance number". It does a partial match on name, patientID, phone and insuranceNumber, and the list reloads as you type.
+- **Filter:** a multi-select of primary physicians, labelled "All primary physicians" when every one is ticked (the default). It only lists physicians who can be a primary physician (non-interns, not offboarded). If you narrow it down, patients with no primary physician disappear from the list. If you untick everyone, the list is empty. The empty-state messages are "No patients match your search or filter." and "No patients yet."
+- **Columns:** Patient ID, Name (links to the profile), Date of Birth (Age), Phone, Insurance Number, Primary Physician (links to the physician's profile), SSN (masked), then Edit and Deactivate buttons.
+- **Add:** the "Add Patient" button opens a side drawer. The fields are:
+  - Patient ID: optional whole number; leave blank to have one assigned.
+  - Name: required, at most 40 characters.
+  - Date of Birth: a date picker that won't allow future dates.
+  - Phone: at most 16 characters.
+  - Address: at most 100 characters.
+  - Insurance Number: whole number; the hint says "Family members can share one".
+  - Primary Physician: a searchable list that includes "No primary physician".
+  - SSN: exactly 9 digits.
+
+  The save button stays disabled until the form is valid. Success shows a "Patient saved" toast.
+- **Edit:** the row's Edit button opens the same drawer. Patient ID can be left blank to keep the current one, and the button reads "Save changes". If the current physician has been offboarded, they still appear in the list as "(…, offboarded)".
+- **Deactivate:** opens a confirmation titled "Deactivate patient?" saying "&lt;name&gt; will no longer be served. Their record and history are kept." It sends a DELETE request, which is a soft delete (it sets `deleted_at`). The toast says "Patient deactivated" and the patient leaves the list. Elsewhere in the app, a deactivated patient's name appears struck through, greyed and not clickable, with the tooltip "Inactive". There is no restore option in the interface.
+- **Rules the user sees** (from `app/Patient/UseCases/EnsurePrimaryPhysicianIsEligible.php`):
+  - "&lt;name&gt; is an intern and cannot be a primary physician."
+  - "&lt;name&gt; has been offboarded and cannot become a primary physician."
+  - Both only apply when you change the physician. Keeping the current one is allowed.
+
+**2. Patient profile page** (`resources/js/pages/Patient.vue`, URL `/patients/{id}`)
+- **How to get there:** click a patient's name in the Patients table or in other tables. The breadcrumb reads Patients &gt; &lt;name&gt;.
+- **Summary cards** (`components/clinical/ClinicalSummaryCards.vue`):
+  - Upcoming Procedure: the next scheduled procedure and its date.
+  - Procedures Performed: a count.
+  - Prescriptions Issued: a count.
+  - Total Revenue: the sum of the costs of procedures already performed.
+- **Medications pie chart** (`PatientMedicationsPanel.vue`): the share of this patient's prescriptions for each medication, with count and percentage. Not paginated. Empty state: "No medications prescribed yet."
+- **Details card** (`PatientDetailsCard.vue`):
+  - Admission banner: either "Admitted to Room X (type) since &lt;date&gt; · discharge planned on &lt;date&gt;" or "Not admitted right now."
+  - Personal Details: Patient ID, Date of Birth, Age, Phone, Address, Insurance Number, SSN.
+  - Care: Primary Physician (a link) and Registered On.
+- **Upcoming Procedures** and **Performed Procedures:** two separate tables with the columns Date, Procedure, Room, Physician, Nurse. Each is paginated at 10 per page. Upcoming is sorted soonest first. Empty states: "No procedures scheduled." and "No procedures performed yet."
+- **Prescriptions:** columns Prescribed, Medication, Dose, Prescriber. Paginated at 10 per page. Empty state: "No prescriptions yet."
+
+**3. Physician profile page** (`resources/js/pages/Physician.vue`, reached from the Staff page or physician links; breadcrumb Staff &gt; &lt;name&gt;)
+- The same four summary cards as the patient page.
+- A procedure-share pie chart (`components/staff/PhysicianProcedureSharesPanel.vue`).
+- A details card:
+  - Personal Details: Physician ID, Position, SSN, Joined On.
+  - Work: Departments, Heads, Primary Physician Of.
+- Upcoming and Performed Procedures tables (Date, Patient, Procedure, Room, Nurse), 10 per page.
+- Prescriptions table (Prescribed, Patient, Medication, Dose), 10 per page. Empty state: "No prescriptions issued yet."
+
+**4. Sidebar and Dashboard** (`resources/js/components/AppSidebar.vue`)
+- The logo at the top links to the Dashboard.
+- Main items, in order: Dashboard, Staff, Hospital, Patients, Clinical.
+- Footer: "Repository" and "Documentation". These are leftover starter-kit links to the Laravel GitHub repo and docs, not this app's.
+- Below them is the user menu (`NavUser`).
+- The Dashboard (`resources/js/pages/Dashboard.vue`) is only placeholders: three empty boxes and one large box drawn with `PlaceholderPattern`. It shows no data.
+
+**5. Settings** (`/settings`, which redirects to `/settings/profile`)
+- **Profile:** change your name and email, and delete your account (`DeleteUser`).
+- **Security:**
+  - Update password.
+  - Two-factor authentication with an authenticator (TOTP) app: QR-code setup, a confirmation code, and recovery codes.
+  - Passkeys ("Manage your passkeys for passwordless sign-in"): register and remove them. Browsers that can't use them show "Passkeys are not supported in this browser."
+- **Appearance:** Light, Dark or System theme.
+
+**6. Authentication** (`config/fortify.php`)
+- **Features turned on:**
+  - Registration.
+  - Password reset.
+  - Two-factor authentication, which requires confirming a code and re-entering the password.
+  - Passkeys (WebAuthn), which require re-entering the password. The login page also offers passkey sign-in.
+- **Email verification** is not turned on.
+- **Password reset emails:** `.env.example` has `MAIL_MAILER=log`, so reset emails go to the server log instead of being sent.
+- **Passkeys and HTTPS:** passkeys are enabled, and browsers only allow them on HTTPS or on `localhost`. The relying party and allowed origin come from `APP_URL`, which defaults to `http://localhost:8000`. So passkeys work at `http://localhost:8000` but not over plain HTTP from a LAN IP or another hostname, and they fail if the address in the browser doesn't match `APP_URL`.
+- **Nothing forces HTTPS:**
+  - `config/session.php` has `'secure' =&gt; env('SESSION_SECURE_COOKIE')`, which is unset in `.env.example`, so cookies are not secure-only.
+  - `same_site` defaults to `lax`.
+  - `.env.example` only sets `SESSION_DRIVER=database`, `SESSION_LIFETIME=120`, `SESSION_ENCRYPT=false`, `SESSION_PATH=/` and `SESSION_DOMAIN=null`.
+  - There is no `URL::forceScheme` / force-HTTPS code in `app/` or `bootstrap/`.</result>
+<usage><subagent_tokens>53305</subagent_tokens><tool_uses>13</tool_uses><duration_ms>62014</duration_ms></usage>
+</task-notification>
+
+[2026-10-16 17:01]
+<task-notification>
+<task-id>adf47d6cb1c3b44a6</task-id>
+<tool-use-id>toolu_01HYg3RgW3eKEcaCK62HX6rc</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-sureshhemal-MSc-Sem-1-dbms-las-palmas/6835bb19-9eea-46ac-ac11-1d17ac31a036/tasks/adf47d6cb1c3b44a6.output</output-file>
+<status>completed</status>
+<summary>Agent "Map Staff and Hospital pages" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>I've gone through both pages. A few UI details here differ from what you might assume: there's no Intern rule or room-capacity rule, Physicians isn't paginated, and Departments can't be added or removed.
+
+**STAFF page** (`resources/js/pages/Staff.vue`). Each tab label shows a count from `GET staff`. Add/Edit forms open in a side drawer. All search and filters refresh the list straight away.
+
+**1. Physicians tab.** Reads `Physician`, plus `AffiliatedWith` and `Department` for the department columns.
+- **List:** not paginated. Every physician shows at once. Columns are Physician ID, Name, Position, Departments, Heads and SSN (masked).
+- **Search:** "Search physicians by name or ID".
+- **Filters:** a positions multi-select ("All positions": Intern, Surgeon, Senior, Chief of Medicine, Resident, Psychiatrist) and a departments multi-select ("All departments").
+- **Add:** "Add Physician" opens a drawer with these fields:
+  - Physician ID: optional. "Leave blank to assign one automatically", or when editing, "…keep the current ID".
+  - Name: required, at most 40 characters.
+  - Position: required.
+  - SSN: optional, 9 digits.
+  - Departments: multi-select.
+  - The button is "Add physician"; when editing it reads "Save changes".
+- **Edit:** the "Edit" button on the row opens the same drawer.
+- **Remove:** "Offboard" opens a dialog, "Offboard physician?", saying "…will be removed from the staff list. Their record is kept." This is a soft delete. It also clears the physician as head of any department and removes all their department memberships (`app/Staff/UseCases/OffboardPhysician.php`).
+- **Rules:** no Intern or department-head rule is shown here.
+- **Clicking the name** opens the physician page (section 6). Offboarded physicians show elsewhere with their name struck through and are not clickable.
+
+**2. Nurses tab.** Reads `Nurse`.
+- **List:** paginated, 20 per page by default. Per-page choices are 10, 20, 50 and 100 (`BasePaginationBar.vue`). The pagination bar appears above and below the table. Columns are Nurse ID, Name, Position and SSN.
+- **Search:** "Search nurses by name or ID".
+- **Filter:** a positions multi-select.
+- **Add/Edit:** "Add Nurse" (button "Add nurse") and "Edit". Fields are Nurse ID (optional), Name (required, at most 40), Position (required) and SSN (9 digits).
+- **Remove:** "Offboard" opens "Offboard nurse?" with "…removed from the staff list. Their record is kept." This is a soft delete. It also deletes the nurse's on-call periods that start today or later, and cuts any current period short so it ends today.
+
+**3. On Call tab.** Reads `OnCall` and `Nurse`.
+- **Layout:** a calendar, not a list. It is a month grid with Monday as the first day, with "today", "prev" and "next" buttons. Only the visible month is loaded.
+- **Periods:** each one shows as a bar labelled "Name (nurseID)", with one colour per nurse. A day shows at most 4 bars, then a "+more" link.
+- **Nurse filter:** a multi-select ("All nurses") listing "Name (ID)". Unticking nurses hides their periods.
+- **Help text on the page:** "Drag across days to schedule a nurse. Drag a period to move it, or drag its edges to change the dates. Days follow hospital time (timezone)."
+- **Adding:**
+  - "Add On-Call Period" opens the drawer pre-filled with today to tomorrow.
+  - Dragging across days opens the drawer pre-filled with those days. If you select a single day, the end date is set to the next day.
+  - Form fields: Nurse (searchable, required), Start date, and End date (the calendar won't let you pick an end date before the day after the start).
+  - Hint in the form: "The last day the nurse is on call. A period lasts at least two days."
+- **Clicking a period** opens "Edit On-Call Period". It has "Save changes" and "Remove on-call period". Remove opens "Remove on-call period?" ("…will no longer be on call from X to Y.") and is a hard delete. Cancelling reopens the drawer.
+- **Dragging or resizing a period** saves straight away, with the toast "On-call period moved". If the server rejects the change, the bar snaps back.
+- **Overlap rule:** a nurse can't have overlapping periods. The error reads "&lt;Name&gt; is already on call from A to B." (`app/Staff/UseCases/EnsureOnCallDoesNotOverlap.php`).
+
+**HOSPITAL page** (`Hospital.vue`). The tabs have no counts.
+
+**4. Departments tab.** Reads `Department`, with the head from `Physician`.
+- **List:** not paginated, ordered by Department ID. There is no search or filter. Columns are Department ID, Name and Head.
+- **Adding and removing:** not possible. There is no Add button and no remove action.
+- **Edit:** the row's "Edit" opens "Edit Department".
+  - Name is shown but greyed out and can't be changed.
+  - Department ID: required, whole number.
+  - Head: required, searchable.
+  - Only Senior, Surgeon, Psychiatrist and Chief of Medicine physicians are listed as head choices. Interns and Residents are excluded (`app/Staff/Entities/PhysicianPosition.php`).
+  - The button is "Save changes".
+- **Clicking a row** opens the department page (`pages/Department.vue`):
+  - Title is the department name, with "Department &lt;deptID&gt; of Las Palmas Medical Center."
+  - A "Department Head" card shows the head's name (a link), position and ID, or "No head assigned."
+  - A "Physicians" table lists all members at once, with columns Physician ID, Name, Position and Joined, ordered by join date. It reads `AffiliatedWith` and `Physician`.
+
+**5. Rooms tab.** Reads `Room`, with occupants from `Stay` and `Patient`.
+- **List:** paginated, 20 per page by default, with per-page choices of 10, 20, 50 and 100. Columns:
+  - Room ID
+  - Room Type
+  - Availability: a badge reading "Full", "1 bed free" or "2 beds free". Single rooms have 1 bed and Double rooms have 2.
+  - Patients: the current occupants, as links.
+- **Search:** "Search rooms by ID".
+- **Filters:** room type (Single, Double) and availability ("Any availability": Full, 1 bed free, 2 beds free).
+- **Add/Edit:** "Add Room" (button "Add room") and "Edit". Fields are Room ID (optional, auto-assigned if blank) and Room Type (required).
+- **Remove:** "Decommission" opens "Decommission room?" with "Room N will no longer take patients. Its record and history are kept." This is a soft delete.
+- **Capacity:** capacity is only shown, through the Availability badge. No rule is enforced when you edit a room. You can change a Double to a Single even while two patients are in it (`UpdateRoom.php` doesn't check).
+
+**6. Physician page** (`pages/Physician.vue`, opened by clicking a physician's name). The title is the physician's name. It has these sections:
+- **Summary cards:** "Upcoming Procedure", "Procedures Performed", "Prescriptions Issued" and "Total Revenue".
+- **Procedure-share chart:** how the physician's performed procedures break down by procedure type.
+- **Details card:**
+  - "Personal Details": Physician ID, Position, SSN.
+  - "Work": Joined On, Departments, Heads, Primary Physician Of.
+- **"Upcoming Procedures" and "Performed Procedures":** paginated, 10 per page. Columns are Date, Patient, Procedure, Room and Nurse.
+- **"Prescriptions":** paginated, 10 per page. Columns are Prescribed, Patient, Medication and Dose.
+
+The page is read-only. It has no add, edit or remove buttons.
+
+The model-to-table mapping is in `app/Staff/Entities/Models/*.php` and `app/Hospital/Entities/Models/*.php`.</result>
+<usage><subagent_tokens>66528</subagent_tokens><tool_uses>18</tool_uses><duration_ms>76690</duration_ms></usage>
+</task-notification>
+
+[2026-10-16 17:01]
+<task-notification>
+<task-id>a64645202cb0b2c34</task-id>
+<tool-use-id>toolu_01Agt1MZjUmQgwRHuYcjTuPz</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-sureshhemal-MSc-Sem-1-dbms-las-palmas/6835bb19-9eea-46ac-ac11-1d17ac31a036/tasks/a64645202cb0b2c34.output</output-file>
+<status>completed</status>
+<summary>Agent "Map Clinical tabs" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>Findings for the Clinical page. Everything below comes from reading the code; I changed nothing.
+
+**Common to every tab**
+- Every tab is paginated. The page size starts at 20, and the user can pick 10, 20, 50 or 100 (`perPageOptions` in `resources/js/components/base/BasePaginationBar.vue`).
+- A pagination bar appears above and below the table, showing "Showing X – Y of Z results". It only appears when there are results.
+- Typing in a search box or changing a filter jumps back to page 1.
+- Add, Edit and Record forms open in a side drawer.
+
+**1. Medications** (table `Medication`)
+- **Default sort:** "Share of Prescriptions", highest first. The user can also sort by Name.
+- **Columns:** Med ID, Name, Share of Prescriptions. Share is this medication's percentage of all prescriptions; hovering shows the count, e.g. "12 prescriptions".
+- **Search:** "Search medications by name or ID".
+- **Add:** button "Add Medication" opens the "Add Medication" drawer.
+  - Med ID: optional whole number. If left blank, one is assigned automatically.
+  - Name: required, up to 40 characters.
+- **Edit:** row action "Edit" opens "Edit Medication". Leaving Med ID blank keeps the current ID. The save button reads "Save changes".
+- **Remove:** row action "Remove" asks "Remove medication?" and says "...will be removed from the medication list. Its record is kept." This is a soft delete (only `deleted_at` is set).
+  - A removed medication can no longer be prescribed: "X has been removed and cannot be prescribed."
+
+**2. Procedures** (table `Procedure`; share figures come from `Undergoes`)
+- **Default sort:** "Share of Performed Procedures", highest first. The user can also sort by Name.
+- **Columns:** Procedure ID, Name, Share of Performed Procedures, Cost. The share only counts procedures dated today or earlier, so scheduled ones are left out.
+- **Average cost note** above the table, e.g. "Average cost $X across N procedures with a cost · M without a cost are not counted".
+- **Search:** "Search procedures by name or ID".
+- **Add / Edit:** button "Add Procedure" and row action "Edit".
+  - Fields: Procedure ID (optional, assigned automatically if blank), Name (required, up to 40 characters), Cost (USD) ("Leave blank if the price is not set yet").
+- **Remove:** row action "Remove" says "...Its record is kept." This is a soft delete.
+
+**3. Prescriptions** (table `Prescribes`)
+- **Default sort:** newest prescribed date first. Column sorting is not available.
+- **Columns:** Prescribed, Patient, Medication, Dose, Prescriber.
+- **Search:** "Search by patient, medication or physician".
+- **Filter:** year multi-select ("All years").
+- **Add:** button "Add Prescription", then "Add prescription".
+  - Fields: Patient, Medication, Dose (up to 40 characters, e.g. "500 mg twice daily"), Prescriber, Prescribed On.
+  - The date picker cannot go past today.
+  - Only physicians allowed to prescribe appear in the Prescriber list, so interns are left out.
+- **Cannot be edited or removed:** there is no update or delete route.
+- **Rules** (`app/Clinical/UseCases/EnsurePrescriptionIsAllowed.php`):
+  - "A prescription cannot be dated in the future."
+  - The date cannot be before the patient registered.
+  - "X is an intern and cannot prescribe."
+  - "X has been offboarded and cannot prescribe."
+  - An inactive patient cannot be prescribed to.
+  - A removed medication cannot be prescribed.
+
+**4. Stays** (table `Stay`)
+- **Default sort:** newest admission date first, then by stay ID.
+- **Columns:** Stay ID, Patient, Room (number and type; crossed out with a "Decommissioned" tooltip if the room was retired), Admitted, Discharge ("Not decided" if blank), Status.
+- **Search:** "Search by stay ID, patient or room".
+- **Filter:** status multi-select ("All stays").
+- **Status badges:**
+  - Scheduled: the admission date is in the future.
+  - Admitted: the stay has started and has not ended.
+  - Discharged: the end date is before today.
+- **There is no add button on this tab.** New stays are only created through "Record Procedure" on the Performed Procedures tab.
+- **Row actions** are hidden entirely once a stay is Discharged:
+  - **"Add Procedure"** asks for Procedure, Physician, Nurse and Procedure Date.
+    - The date must fall within the stay: "The procedure must be during the stay (start to end/now)."
+    - "X is an intern and cannot perform procedures."
+  - **"Extend"** only appears when the stay has a discharge date. It opens "Extend Stay" with "New Discharge Date".
+    - The new date must be after the current end date.
+    - It fails if the stay already ended or the patient has another overlapping stay.
+    - It also fails if the room is full on any added day: "Room R is full on D (n of m beds taken)."
+  - **"Discharge"** opens "Discharge Patient" with "Discharge On", which must be at least the day after admission.
+    - "A future date plans the discharge."
+    - "The stay has a procedure on D, so it cannot end earlier."
+    - It also fails if the stay already ended.
+- **Stays can never be deleted,** and the admission date and room cannot be changed. Only the end date changes, through Extend or Discharge.
+
+**5. Performed Procedures** (table `Undergoes`; also shows the room from `Stay`)
+- **Default sort:** newest procedure date first. Column sorting is not available.
+- **Columns:** Date, Status, Patient, Procedure, Room, Physician, Nurse.
+- **Status badges:** Scheduled if the date is after today, otherwise Performed.
+- **Search:** "Search by patient name or ID".
+- **Filters:** multi-selects for years, statuses, procedures, physicians and nurses.
+- **Cannot be changed or removed.** The form itself says "Performed procedures cannot be changed or removed."
+
+**How "Record Procedure" works**
+The button opens the "Record Procedure" drawer. The form has two sections, and saving both creates the stay and records the procedure in one step, so either both are saved or neither is (`RecordProcedureWithAdmission`).
+
+- **PROCEDURE section:**
+  - Fields: Patient, Procedure, Physician, Nurse, Procedure Date.
+  - Hint: "A past date records a procedure, a future date schedules it."
+- **STAY section:**
+  - Admitted On: cannot be after the procedure date.
+  - Discharge On (optional): at least the day after admission and not before the procedure date. "Leave blank if the discharge date is not known yet."
+  - Room: the list shows "Room R · type · n of m beds free". "Only rooms with a free bed for the whole stay."
+- **Button:** "Record procedure and admit".
+- **Footer note:** "Further procedures during this stay are added from the Stays tab."
+- **Rules** (`app/Clinical/UseCases/EnsureAdmissionIsAllowed.php`, then the same procedure checks as above):
+  - The admission cannot be dated before the patient registered.
+  - **One stay per patient at a time:** "X is already admitted since D. Add procedures from the Stays tab."
+  - **Room capacity:** "Room R is full on D (n of m beds taken)."
+  - The procedure must fall within the stay, and the physician cannot be an intern.
+
+**Key files**
+- Tab panels: `/Users/sureshhemal/MSc/Sem-1/dbms/las_palmas/resources/js/components/clinical/*TabPanel.vue`
+- Stay row actions: `StaysTableRow.vue`
+- Record Procedure form: `PerformedProcedureForm.vue`
+- Business rules: `/Users/sureshhemal/MSc/Sem-1/dbms/las_palmas/app/Clinical/UseCases/` (the Ensure* files, `AdmitPatient.php`, `RecordProcedureWithAdmission.php`, `RecordProcedureDuringStay.php`, `DischargePatient.php`, `ExtendStay.php`, `CreatePrescription.php`)
+- Routes: `/Users/sureshhemal/MSc/Sem-1/dbms/las_palmas/routes/api.php`, lines 60–81</result>
+<usage><subagent_tokens>62143</subagent_tokens><tool_uses>23</tool_uses><duration_ms>92379</duration_ms></usage>
+</task-notification>
+
+[2026-10-16 22:50]
+open pr to main
+

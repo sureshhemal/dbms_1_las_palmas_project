@@ -15,6 +15,7 @@ use App\Clinical\IO\Http\Controllers\PhysicianSummaryController;
 use App\Clinical\IO\Http\Controllers\PhysicianUpcomingProceduresController;
 use App\Clinical\IO\Http\Controllers\PrescriberCandidatesController;
 use App\Clinical\IO\Http\Controllers\PrescriptionsController;
+use App\Clinical\IO\Http\Controllers\ProcedureAverageCostController;
 use App\Clinical\IO\Http\Controllers\ProceduresController;
 use App\Clinical\IO\Http\Controllers\RoomAvailabilityController;
 use App\Clinical\IO\Http\Controllers\StaysController;
@@ -62,6 +63,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('medications/{medication}', [MedicationsController::class, 'destroy'])->name('api.medications.destroy');
 
     Route::get('procedures', [ProceduresController::class, 'index'])->name('api.procedures.index');
+    Route::get('procedures/average-cost', [ProcedureAverageCostController::class, 'show'])->name('api.procedures.average-cost.show');
     Route::post('procedures', [ProceduresController::class, 'store'])->name('api.procedures.store');
     Route::put('procedures/{procedure}', [ProceduresController::class, 'update'])->name('api.procedures.update');
     Route::delete('procedures/{procedure}', [ProceduresController::class, 'destroy'])->name('api.procedures.destroy');

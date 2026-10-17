@@ -5,6 +5,7 @@ import BaseConfirmDialog from '@/components/base/BaseConfirmDialog.vue'
 import BasePaginationBar from '@/components/base/BasePaginationBar.vue'
 import BaseSearchInput from '@/components/base/BaseSearchInput.vue'
 import BaseSideDrawer from '@/components/base/BaseSideDrawer.vue'
+import ProcedureAverageCostNote from '@/components/clinical/ProcedureAverageCostNote.vue'
 import ProcedureForm from '@/components/clinical/ProcedureForm.vue'
 import ProceduresTable from '@/components/clinical/ProceduresTable.vue'
 import { Button } from '@/components/ui/button'
@@ -12,6 +13,7 @@ import type {
     PaginatedResponse,
     PaginationDetails,
     Procedure,
+    ProcedureAverageCost,
     ProcedureFormData,
     TableSorting,
 } from '@/types'
@@ -25,6 +27,7 @@ export default defineComponent({
         BaseSearchInput,
         BaseSideDrawer,
         Plus,
+        ProcedureAverageCostNote,
         ProcedureForm,
         ProceduresTable,
         UiButton: Button,
@@ -33,6 +36,7 @@ export default defineComponent({
     data() {
         return {
             procedures: [] as Procedure[],
+            averageCost: null as ProcedureAverageCost | null,
             searchTerm: '',
             sorting: {
                 column: 'performedShare',
@@ -81,10 +85,22 @@ export default defineComponent({
     },
 
     created() {
-        this.fetchProcedures()
+        Promise.all([this.fetchProcedures(), this.fetchAverageCost()])
     },
 
     methods: {
+        async fetchAverageCost(): Promise<void> {
+            this.$wait.start('fetching-procedure-average-cost')
+
+            const { data } = await this.$http
+                .get<ProcedureAverageCost>('procedures/average-cost')
+                .finally(() =>
+                    this.$wait.end('fetching-procedure-average-cost'),
+                )
+
+            this.averageCost = data
+        },
+
         async fetchProcedures(page?: number, perPage?: number): Promise<void> {
             this.$wait.start('fetching-procedures')
 
@@ -170,7 +186,7 @@ export default defineComponent({
             this.notifySuccess('Procedure saved')
             this.closeProcedureForm()
 
-            await this.fetchProcedures()
+            await Promise.all([this.fetchProcedures(), this.fetchAverageCost()])
         },
 
         async removeSelectedProcedure(): Promise<void> {
@@ -187,7 +203,7 @@ export default defineComponent({
             this.notifySuccess('Procedure removed')
             this.isConfirmingRemoval = false
 
-            await this.fetchProcedures()
+            await Promise.all([this.fetchProcedures(), this.fetchAverageCost()])
         },
     },
 })
@@ -206,6 +222,11 @@ export default defineComponent({
                 Add Procedure
             </UiButton>
         </div>
+
+        <ProcedureAverageCostNote
+            :average-cost="averageCost"
+            :is-loading="$wait.is('fetching-procedure-average-cost')"
+        />
 
         <BasePaginationBar
             v-if="paginationDetails.total > 0"

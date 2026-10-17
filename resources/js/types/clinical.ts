@@ -168,3 +168,9 @@ export type PhysicianPrescription = Omit<
 > & {
     patient: PrescriptionParty
 }
+
+export type ProcedureAverageCost = {
+    averageCost: number | null
+    pricedProcedureCount: number
+    unpricedProcedureCount: number
+}
