@@ -2813,3 +2813,72 @@ MySQL 26.7.0, MySQL's newest "Innovation" release. Thats i need. I'll tell you w
 [2026-10-16 23:38]
 update pr. the same pr
 
+[2026-10-16 23:40]
+<task-notification>
+<task-id>b219niuvb</task-id>
+<tool-use-id>toolu_01KntA9Wu5j4ygexV1npbRod</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-sureshhemal-MSc-Sem-1-dbms-las-palmas/6835bb19-9eea-46ac-ac11-1d17ac31a036/tasks/b219niuvb.output</output-file>
+<status>completed</status>
+<summary>Background command "Watch the CI matrix on PR 21" completed (exit code 0)</summary>
+</task-notification>
+
+[2026-10-16 23:40]
+lint analyze failed.
+
+[2026-10-16 23:42]
+set clockwork disable on tests. we don't need clockwork on tests anyways.
+
+[2026-10-16 23:45]
+<task-notification>
+<task-id>bz9mk5gt9</task-id>
+<tool-use-id>toolu_012DJdMsr1sNgQbhRm79cpb4</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-sureshhemal-MSc-Sem-1-dbms-las-palmas/6835bb19-9eea-46ac-ac11-1d17ac31a036/tasks/bz9mk5gt9.output</output-file>
+<status>completed</status>
+<summary>Background command "Watch the CI matrix on PR 21 again" completed (exit code 0)</summary>
+</task-notification>
+
+[2026-10-16 23:45]
+<task-notification>
+<task-id>b174ey8rk</task-id>
+<tool-use-id>toolu_013xTTUmxzjr5mrvUDe5WXhh</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-sureshhemal-MSc-Sem-1-dbms-las-palmas/6835bb19-9eea-46ac-ac11-1d17ac31a036/tasks/b174ey8rk.output</output-file>
+<status>completed</status>
+<summary>Background command "Watch the CI matrix on the amended PR 21" completed (exit code 0)</summary>
+</task-notification>
+
+[2026-10-16 23:47]
+<task-notification>
+<task-id>b1xui0mtx</task-id>
+<tool-use-id>toolu_012D7iU8yu6gxzevBKpcJcyR</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-sureshhemal-MSc-Sem-1-dbms-las-palmas/6835bb19-9eea-46ac-ac11-1d17ac31a036/tasks/b1xui0mtx.output</output-file>
+<status>completed</status>
+<summary>Background command "Watch the CI run for the new commit" completed (exit code 0)</summary>
+</task-notification>
+
+[2026-10-17 00:52]
+I merged the pr. Now I need to do some modifications. I need to see clockwork on production application. so, you need to move clockwork to production depedency, not a dev dependency anymore. And I need database seeder on production too. so, faker should be production too. Then I can run comp install --no-dev while deploying.
+
+[2026-10-17 00:55]
+now set clockwork configuraitons to database on env.example.
+
+[2026-10-17 00:55]
+and it is okay to keep only 1 hour records for clockwork
+
+[2026-10-17 01:05]
+Now I have installed oracle cli on my mac. And authenticated. I have setup las-palmas server to hold this application. The deployment will happen in github action. also storage/app/private/oracle has neccasary keys for deployments. I already save requried keys as repository secrets. you can list and see those using gh. and that server has configured too. Which allows only execute deploy.sh using that key. 
+
+so, i want you to do followings.
+
+make deploy.yml. Which should run tests before deployment. and only tests are passing, then run deployment. which menas execute deploy.sh on server.
+
+that file should do following.
+
+git fehct --prune --prune-tags --force
+checkout github commit sha -> deployemnt is not always on main branch. It is only by workflow dispatch. i'll choose what should be deployed. either branch or tag.
+composer install --no-dev -> see laravel official website to see what are the actuall deployement scripts. I don't remember all. It includes cache too. 
+rm -rf node modules -> since vue is compiled. we run minified files. We don't need vendor files for nodejs
+php artisan migrate --force
+
+[2026-10-17 01:14]
+open pr for now
+
