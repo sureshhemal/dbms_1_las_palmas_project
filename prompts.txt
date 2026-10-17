@@ -2954,3 +2954,30 @@ records. Add that to readme file.
 [2026-10-17 09:48]
 open pr
 
+[2026-10-17 09:50]
+<task-notification>
+<task-id>b6s2r4nro</task-id>
+<tool-use-id>toolu_01Pgww7TaG8FX6J9a8RcvDCe</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-sureshhemal-MSc-Sem-1-dbms-las-palmas/6835bb19-9eea-46ac-ac11-1d17ac31a036/tasks/b6s2r4nro.output</output-file>
+<status>completed</status>
+<summary>Background command "Watch the CI run for the README PR" completed (exit code 0)</summary>
+</task-notification>
+
+[2026-10-17 10:02]
+I merged the pr. Now we need to design the dashbboard. I need followings.
+
+1. Todays Sheduled procedures with physician, patient, nurse names
+2. Todays appointments with names
+3. List of On call nurses
+4. Patients who supposed to discharde today
+5. All names should be present with their phone numbers.
+
+[2026-10-17 10:17]
+Split the top section that has cards, Left side 2x2 grid holds cards. In right side. show a clock.
+
+[2026-10-17 10:19]
+.Make it digital
+
+[2026-10-17 10:21]
+open pr
+
