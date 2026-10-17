@@ -22,7 +22,14 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar'
-import { clinical, dashboard, hospital, patients, staff } from '@/routes'
+import {
+    clinical,
+    dashboard,
+    documentation,
+    hospital,
+    patients,
+    staff,
+} from '@/routes'
 import type { NavItem } from '@/types'
 
 const mainNavItems: NavItem[] = [
@@ -56,12 +63,12 @@ const mainNavItems: NavItem[] = [
 const footerNavItems: NavItem[] = [
     {
         title: 'Repository',
-        href: 'https://github.com/laravel/vue-starter-kit',
+        href: 'https://github.com/sureshhemal/dbms_1_las_palmas_project',
         icon: FolderGit2,
     },
     {
         title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#vue',
+        href: documentation(),
         icon: BookOpen,
     },
 ]

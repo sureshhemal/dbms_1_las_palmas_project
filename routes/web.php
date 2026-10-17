@@ -1,11 +1,13 @@
 <?php
 
+use App\Foundation\IO\Http\Controllers\DocumentationPageController;
 use App\Hospital\IO\Http\Controllers\DepartmentPageController;
 use App\Patient\IO\Http\Controllers\PatientPageController;
 use App\Staff\IO\Http\Controllers\PhysicianPageController;
 use Illuminate\Support\Facades\Route;
 
 Route::inertia('/', 'Welcome')->name('home');
+Route::get('documentation', [DocumentationPageController::class, 'show'])->name('documentation');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'Dashboard')->name('dashboard');

@@ -35,7 +35,7 @@ import UserMenuContent from '@/components/UserMenuContent.vue'
 import { useCurrentUrl } from '@/composables/useCurrentUrl'
 import { getInitials } from '@/composables/useInitials'
 import { toUrl } from '@/lib/utils'
-import { dashboard } from '@/routes'
+import { dashboard, documentation } from '@/routes'
 import type { BreadcrumbItem, NavItem } from '@/types'
 
 type Props = {
@@ -64,12 +64,12 @@ const mainNavItems: NavItem[] = [
 const rightNavItems: NavItem[] = [
     {
         title: 'Repository',
-        href: 'https://github.com/laravel/vue-starter-kit',
+        href: 'https://github.com/sureshhemal/dbms_1_las_palmas_project',
         icon: Folder,
     },
     {
         title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#vue',
+        href: documentation(),
         icon: BookOpen,
     },
 ]
