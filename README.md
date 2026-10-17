@@ -445,14 +445,14 @@ The project includes [Clockwork](https://underground.works/clockwork), a debuggi
 
 ### Where the records are stored
 
-The records are kept for 24 hours. This is set in `.env`:
+The records are kept for 1 hour, then deleted automatically. This is set in `.env`:
 
 ```dotenv
 CLOCKWORK_ENABLE=true
 CLOCKWORK_STORAGE=sql
 CLOCKWORK_STORAGE_SQL_DATABASE=mysql      # the MySQL connection, i.e. the las_palmas database
 CLOCKWORK_STORAGE_SQL_TABLE=clockwork
-CLOCKWORK_STORAGE_EXPIRATION=1440         # minutes
+CLOCKWORK_STORAGE_EXPIRATION=60           # minutes
 ```
 
 With these settings the records go into a `clockwork` table in the `las_palmas` database. Clockwork creates the table itself the first time it records something. You can store the records somewhere else instead:
@@ -465,7 +465,18 @@ With these settings the records go into a `clockwork` table in the `las_palmas` 
 
 To turn Clockwork off, set `CLOCKWORK_ENABLE=false`.
 
-Clockwork only records requests from the browser. Artisan commands and the automated tests are not recorded. It is a development tool and is installed by `composer install` as a development dependency.
+Clockwork only records requests from the browser. Artisan commands and the automated tests are not recorded; the tests turn it off in `phpunit.xml`.
+
+Clockwork and Faker, which the seeders use, are normal (production) dependencies. So `composer install --no-dev` on a server still installs them, and you can use Clockwork and `php artisan db:seed` there.
+
+> **On a public server, protect Clockwork with a password.** Clockwork shows every request's SQL queries and data to anyone who opens `/clockwork/app`. Add these lines to the server's `.env`:
+>
+> ```dotenv
+> CLOCKWORK_AUTHENTICATION=true
+> CLOCKWORK_AUTHENTICATION_PASSWORD=choose-a-long-password
+> ```
+>
+> Clockwork then asks for that password before showing anything. Or set `CLOCKWORK_ENABLE=false` when you don't need it.
 
 ## 11. Run the tests (optional)
 
