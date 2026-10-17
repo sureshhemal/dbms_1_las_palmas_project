@@ -202,3 +202,66 @@ export type AppointmentFormData = {
     startTime: string
     endTime: string
 }
+
+export type PatientWithPhone = {
+    id: string
+    patientID: number
+    name: string
+    phone: string | null
+    deleted_at: string | null
+}
+
+export type StaffMemberName = {
+    id: string
+    name: string
+    deleted_at: string | null
+}
+
+export type TodayProcedure = {
+    id: string
+    procDate: string
+    procedure: { id: string; procID: number; name: string }
+    stay: { id: string; stayID: number; room: { id: string; roomID: number } }
+    patient: PatientWithPhone
+    physician: StaffMemberName & { physicianID: number }
+    nurse: StaffMemberName & { nurseID: number }
+}
+
+export type TodayAppointment = {
+    id: string
+    appID: number
+    startDateTime: string
+    endDateTime: string
+    patient: PatientWithPhone
+    physician: StaffMemberName & { physicianID: number }
+    nurse: StaffMemberName & { nurseID: number }
+}
+
+export type TodayOnCall = {
+    id: string
+    startDate: string
+    endDate: string
+    nurse: { id: string; nurseID: number; name: string; position: string }
+}
+
+export type TodayDischarge = {
+    id: string
+    stayID: number
+    startDate: string
+    endDate: string
+    patient: PatientWithPhone
+    room: {
+        id: string
+        roomID: number
+        roomType: string
+        deleted_at: string | null
+    }
+}
+
+export type TodayAtHospital = {
+    date: string
+    procedures: TodayProcedure[]
+    appointments: TodayAppointment[]
+    onCallNurses: TodayOnCall[]
+    discharges: TodayDischarge[]
+}

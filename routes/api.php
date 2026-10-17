@@ -1,6 +1,7 @@
 <?php
 
 use App\Clinical\IO\Http\Controllers\AppointmentsController;
+use App\Clinical\IO\Http\Controllers\DashboardController;
 use App\Clinical\IO\Http\Controllers\MedicationsController;
 use App\Clinical\IO\Http\Controllers\PatientAppointmentsController;
 use App\Clinical\IO\Http\Controllers\PatientMedicationsController;
@@ -71,6 +72,8 @@ Route::middleware('auth')->group(function () {
     Route::post('procedures', [ProceduresController::class, 'store'])->name('api.procedures.store');
     Route::put('procedures/{procedure}', [ProceduresController::class, 'update'])->name('api.procedures.update');
     Route::delete('procedures/{procedure}', [ProceduresController::class, 'destroy'])->name('api.procedures.destroy');
+
+    Route::get('dashboard', [DashboardController::class, 'show'])->name('api.dashboard.show');
 
     Route::get('appointments', [AppointmentsController::class, 'index'])->name('api.appointments.index');
     Route::get('appointments/years', [AppointmentsController::class, 'years'])->name('api.appointments.years');
