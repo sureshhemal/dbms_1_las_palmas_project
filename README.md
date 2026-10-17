@@ -12,6 +12,33 @@ There are also profile pages for patients and physicians.
 
 It is built with the PHP framework [Laravel](https://laravel.com) on the server, [Vue](https://vuejs.org) with [Inertia](https://inertiajs.com) in the browser, and **MySQL** as the database.
 
+**Live application:** <https://129-153-117-183.sslip.io>. Sign in with:
+
+```text
+Email:    sureshhemal123@gmail.com
+Password: FSA-Md=-q2`-646
+```
+
+You can also register your own account. In production, passwords must be at least 12 characters long, with upper- and lower-case letters, a number and a symbol, and must not appear in a known data breach.
+
+The live application is filled with seeded sample data:
+
+| Table                                        | Records |
+| -------------------------------------------- | ------: |
+| `Undergoes` (performed procedures)           |  92,156 |
+| `Prescribes` (prescriptions)                 |  47,965 |
+| `Stay`                                       |  30,903 |
+| `Appointment`                                |  24,945 |
+| `Patient`                                    |  10,000 |
+| `Medication`                                 |   2,000 |
+| `Procedure`                                  |     300 |
+| `Nurse`                                      |     128 |
+| `AffiliatedWith` (physicians in departments) |      94 |
+| `OnCall`                                     |      79 |
+| `Physician`                                  |      75 |
+| `Room`                                       |      75 |
+| `Department`                                 |       3 |
+
 **Repository:** <https://github.com/sureshhemal/dbms_1_las_palmas_project>
 
 This guide assumes you have never set up a Laravel project before. Follow it from top to bottom.
