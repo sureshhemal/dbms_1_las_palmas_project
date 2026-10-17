@@ -50,8 +50,10 @@ deploy_checked_out_commit() {
     announce "Installing PHP dependencies"
     composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
-    announce "Clearing the cached configuration"
+    announce "Clearing the cached configuration, routes and events"
     php artisan config:clear
+    php artisan route:clear
+    php artisan event:clear
 
     announce "Running migrations"
     php artisan migrate --force
