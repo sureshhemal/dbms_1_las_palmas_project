@@ -135,6 +135,12 @@ export type ClinicalSummary = {
     performedProceduresCount: number
     prescriptionsCount: number
     totalRevenue: number
+    nextAppointment: {
+        id: string
+        startDateTime: string
+        endDateTime: string
+    } | null
+    completedAppointmentsCount: number
 }
 
 export type PatientMedication = {
@@ -173,4 +179,26 @@ export type ProcedureAverageCost = {
     averageCost: number | null
     pricedProcedureCount: number
     unpricedProcedureCount: number
+}
+
+export type AppointmentStatus = 'upcoming' | 'in_progress' | 'completed'
+
+export type Appointment = {
+    id: string
+    appID: number
+    startDateTime: string
+    endDateTime: string
+    patient: PrescriptionParty & { patientID: number }
+    physician: PrescriptionParty & { physicianID: number }
+    nurse: PrescriptionParty & { nurseID: number }
+}
+
+export type AppointmentFormData = {
+    id: string | null
+    patient_id: string
+    physician_id: string
+    nurse_id: string
+    date: string
+    startTime: string
+    endTime: string
 }

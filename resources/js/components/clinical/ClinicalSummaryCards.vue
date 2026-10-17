@@ -1,9 +1,17 @@
 <script lang="ts">
-import { Banknote, CalendarClock, Pill, Stethoscope } from '@lucide/vue'
+import {
+    Banknote,
+    CalendarCheck2,
+    CalendarClock,
+    CalendarDays,
+    Pill,
+    Stethoscope,
+} from '@lucide/vue'
 import { defineComponent } from 'vue'
 import BaseSummaryCard from '@/components/base/BaseSummaryCard.vue'
 import { formatCost } from '@/lib/formatCost'
 import { formatCount } from '@/lib/formatCount'
+import { hospitalDateOf, hospitalTimeOf } from '@/lib/hospitalTime'
 import type { ClinicalSummary } from '@/types'
 
 export default defineComponent({
@@ -11,8 +19,10 @@ export default defineComponent({
 
     components: {
         Banknote,
+        CalendarCheck2,
         BaseSummaryCard,
         CalendarClock,
+        CalendarDays,
         Pill,
         Stethoscope,
     },
@@ -56,6 +66,30 @@ export default defineComponent({
         totalRevenue(): string {
             return formatCost(this.summary?.totalRevenue ?? 0)
         },
+
+        nextAppointmentDate(): string {
+            const nextAppointment = this.summary?.nextAppointment
+
+            return nextAppointment
+                ? hospitalDateOf(
+                      nextAppointment.startDateTime,
+                      this.$page.props.hospitalTimezone,
+                  )
+                : 'None booked'
+        },
+
+        nextAppointmentTime(): string {
+            const nextAppointment = this.summary?.nextAppointment
+            const timeZone = this.$page.props.hospitalTimezone
+
+            return nextAppointment
+                ? `${hospitalTimeOf(nextAppointment.startDateTime, timeZone)} – ${hospitalTimeOf(nextAppointment.endDateTime, timeZone)}`
+                : ''
+        },
+
+        completedAppointmentsCount(): string {
+            return formatCount(this.summary?.completedAppointmentsCount ?? 0)
+        },
     },
 
     created() {
@@ -92,6 +126,19 @@ export default defineComponent({
         </BaseSummaryCard>
 
         <BaseSummaryCard
+            label="Next Appointment"
+            tone="info"
+            :value="nextAppointmentDate"
+            :detail="nextAppointmentTime"
+            :is-muted="!summary?.nextAppointment"
+            :is-loading="isLoading"
+        >
+            <template #icon>
+                <CalendarDays />
+            </template>
+        </BaseSummaryCard>
+
+        <BaseSummaryCard
             label="Procedures Performed"
             tone="brand"
             :value="performedProceduresCount"
@@ -99,6 +146,17 @@ export default defineComponent({
         >
             <template #icon>
                 <Stethoscope />
+            </template>
+        </BaseSummaryCard>
+
+        <BaseSummaryCard
+            label="Appointments Completed"
+            tone="brand"
+            :value="completedAppointmentsCount"
+            :is-loading="isLoading"
+        >
+            <template #icon>
+                <CalendarCheck2 />
             </template>
         </BaseSummaryCard>
 

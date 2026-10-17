@@ -40,6 +40,10 @@ export default defineComponent({
             type: String,
             required: true,
         },
+        dismissLabel: {
+            type: String,
+            default: 'Cancel',
+        },
     },
 
     emits: ['confirm', 'cancel'],
@@ -68,7 +72,7 @@ export default defineComponent({
                     :disabled="$wait.any() > 0"
                     @click="$emit('cancel')"
                 >
-                    Cancel
+                    {{ dismissLabel }}
                 </UiButton>
                 <UiButton
                     variant="destructive"

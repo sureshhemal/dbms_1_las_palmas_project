@@ -3,6 +3,7 @@
 namespace App\Clinical\UseCases;
 
 use App\Clinical\Entities\ClinicalSummary;
+use App\Clinical\Entities\Models\Appointment;
 use App\Clinical\Entities\Models\PerformedProcedure;
 use App\Clinical\Entities\Models\Prescription;
 use App\Patient\Entities\Models\Patient;
@@ -19,6 +20,12 @@ final class ShowClinicalSummary
             ->orderBy('procDate')
             ->first(['id', 'patient_id', 'procedure_id', 'procDate']);
 
+        $nextAppointment = Appointment::query()
+            ->whereBelongsTo($subject)
+            ->whereUpcoming()
+            ->orderBy('startDateTime')
+            ->first(['id', 'startDateTime', 'endDateTime']);
+
         return new ClinicalSummary(
             nextProcedure: $nextProcedure instanceof PerformedProcedure ? $nextProcedure : null,
             performedProceduresCount: PerformedProcedure::query()
@@ -33,6 +40,11 @@ final class ShowClinicalSummary
                 ->whereBelongsTo($subject)
                 ->wherePerformed()
                 ->sum('Procedure.cost'),
+            nextAppointment: $nextAppointment instanceof Appointment ? $nextAppointment : null,
+            completedAppointmentsCount: Appointment::query()
+                ->whereBelongsTo($subject)
+                ->whereCompleted()
+                ->count(),
         );
     }
 }
