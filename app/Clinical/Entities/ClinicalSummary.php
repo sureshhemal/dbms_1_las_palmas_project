@@ -2,6 +2,7 @@
 
 namespace App\Clinical\Entities;
 
+use App\Clinical\Entities\Models\Appointment;
 use App\Clinical\Entities\Models\PerformedProcedure;
 
 final readonly class ClinicalSummary
@@ -11,5 +12,7 @@ final readonly class ClinicalSummary
         public int $performedProceduresCount,
         public int $prescriptionsCount,
         public float $totalRevenue,
+        public ?Appointment $nextAppointment,
+        public int $completedAppointmentsCount,
     ) {}
 }

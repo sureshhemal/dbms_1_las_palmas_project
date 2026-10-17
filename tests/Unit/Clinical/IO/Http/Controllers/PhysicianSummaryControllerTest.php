@@ -1,5 +1,6 @@
 <?php
 
+use App\Clinical\Entities\Models\Appointment;
 use App\Clinical\Entities\Models\PerformedProcedure;
 use App\Clinical\Entities\Models\Prescription;
 use App\Clinical\Entities\Models\Procedure;
@@ -75,6 +76,8 @@ it('shows zeros for a physician with no procedures or prescriptions', function (
         'performedProceduresCount' => 0,
         'prescriptionsCount' => 0,
         'totalRevenue' => 0,
+        'nextAppointment' => null,
+        'completedAppointmentsCount' => 0,
     ]);
 });
 
@@ -85,4 +88,34 @@ it('returns 404 for an offboarded physician', function () {
     $response = $this->actingAsLoggedInUser()->getJson(route('api.physicians.summary.show', $physician));
 
     $response->assertNotFound();
+});
+
+it('shows the next appointment of the physician', function () {
+    $physician = Physician::factory()->create();
+    Appointment::factory()->for($physician)->startingAt('2026-10-14 15:00:00')->create();
+    Appointment::factory()->for($physician)->startingAt('2026-10-15 11:45:00', minutes: 30)->create();
+    Appointment::factory()->for($physician)->startingAt('2026-10-20 15:00:00')->create();
+    $next = Appointment::factory()->for($physician)->startingAt('2026-10-16 15:00:00', minutes: 45)->create();
+    Appointment::factory()->for($physician)->startingAt('2026-10-15 13:00:00')->create()->delete();
+    Appointment::factory()->startingAt('2026-10-15 14:00:00')->create();
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.physicians.summary.show', $physician));
+
+    expect($response->json('nextAppointment.id'))->toBe($next->id);
+    expect($response->json('nextAppointment.startDateTime'))->toStartWith('2026-10-16T15:00:00');
+    expect($response->json('nextAppointment.endDateTime'))->toStartWith('2026-10-16T15:45:00');
+});
+
+it('counts the completed appointments of the physician, leaving out upcoming, in-progress and cancelled ones', function () {
+    $physician = Physician::factory()->create();
+    Appointment::factory()->for($physician)->startingAt('2026-09-01 15:00:00')->create();
+    Appointment::factory()->for($physician)->startingAt('2026-10-15 11:00:00', minutes: 30)->create();
+    Appointment::factory()->for($physician)->startingAt('2026-10-15 11:45:00', minutes: 30)->create();
+    Appointment::factory()->for($physician)->startingAt('2026-10-20 15:00:00')->create();
+    Appointment::factory()->for($physician)->startingAt('2026-08-01 15:00:00')->create()->delete();
+    Appointment::factory()->startingAt('2026-09-02 15:00:00')->create();
+
+    $response = $this->actingAsLoggedInUser()->getJson(route('api.physicians.summary.show', $physician));
+
+    expect($response->json('completedAppointmentsCount'))->toBe(2);
 });

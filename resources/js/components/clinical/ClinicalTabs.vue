@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import BaseTabs from '@/components/base/BaseTabs.vue'
+import AppointmentsTabPanel from '@/components/clinical/AppointmentsTabPanel.vue'
 import MedicationsTabPanel from '@/components/clinical/MedicationsTabPanel.vue'
 import PerformedProceduresTabPanel from '@/components/clinical/PerformedProceduresTabPanel.vue'
 import PrescriptionsTabPanel from '@/components/clinical/PrescriptionsTabPanel.vue'
@@ -12,6 +13,7 @@ export default defineComponent({
     name: 'ClinicalTabs',
 
     components: {
+        AppointmentsTabPanel,
         BaseTabs,
         MedicationsTabPanel,
         PerformedProceduresTabPanel,
@@ -22,8 +24,12 @@ export default defineComponent({
 
     data() {
         return {
-            selectedTabName: 'medications',
+            selectedTabName: 'appointments',
             clinicalTabs: [
+                {
+                    name: 'appointments',
+                    label: 'Appointments',
+                },
                 {
                     name: 'medications',
                     label: 'Medications',
@@ -52,6 +58,10 @@ export default defineComponent({
 
 <template>
     <BaseTabs v-model="selectedTabName" :tabs="clinicalTabs">
+        <template #appointments>
+            <AppointmentsTabPanel />
+        </template>
+
         <template #medications>
             <MedicationsTabPanel />
         </template>

@@ -2,6 +2,7 @@
 import { Head, setLayoutProps } from '@inertiajs/vue3'
 import { defineComponent } from 'vue'
 import ClinicalSummaryCards from '@/components/clinical/ClinicalSummaryCards.vue'
+import ProfileAppointmentsPanel from '@/components/clinical/ProfileAppointmentsPanel.vue'
 import Heading from '@/components/Heading.vue'
 import PhysicianDetailsCard from '@/components/staff/PhysicianDetailsCard.vue'
 import PhysicianPrescriptionsPanel from '@/components/staff/PhysicianPrescriptionsPanel.vue'
@@ -22,6 +23,7 @@ export default defineComponent({
         PhysicianPrescriptionsPanel,
         PhysicianProcedureSharesPanel,
         PhysicianProceduresPanel,
+        ProfileAppointmentsPanel,
     },
 
     layout: {
@@ -101,6 +103,11 @@ export default defineComponent({
             <PhysicianDetailsCard
                 :physician="physician"
                 :is-loading="$wait.is('fetching-physician')"
+            />
+
+            <ProfileAppointmentsPanel
+                :appointments-path="`physicians/${physicianId}/appointments`"
+                counterpart="patient"
             />
 
             <PhysicianProceduresPanel

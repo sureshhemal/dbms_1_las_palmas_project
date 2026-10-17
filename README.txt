@@ -479,26 +479,30 @@ Clinical. The numbers below assume you filled the database with sample data
 
 1.  Patients: 10,000 patients, 20 per page. Search by name, ID, phone or insurance number, or filter
     by primary physician. Click a patient's name to open their profile. It shows:
-    - summary cards: next scheduled procedure, procedures performed, prescriptions issued and total
-      revenue;
+    - summary cards: next scheduled procedure, next appointment, procedures performed, appointments
+      completed, prescriptions issued and total revenue;
     - a pie chart of the medications they have been prescribed;
     - their personal details and current room;
-    - their upcoming procedures, performed procedures and prescriptions.
-2.  Clinical → Performed Procedures: click Record Procedure to record (past date) or schedule
+    - their appointments, upcoming procedures, performed procedures and prescriptions.
+2.  Clinical → Appointments (the first tab): every appointment from 2011 to three weeks ahead,
+    newest first, with its status (Upcoming, In progress or Completed). Click Add Appointment to
+    book one. The end time fills in 30 minutes after the start, and you can change it. To make an
+    appointment longer, Edit it; you can Cancel it until it starts.
+3.  Clinical → Performed Procedures: click Record Procedure to record (past date) or schedule
     (future date) a procedure. The same form admits the patient into a room. Only rooms with a free
     bed for the whole stay are offered.
-3.  Clinical → Stays: every hospital stay with its status (Scheduled, Admitted or Discharged). For a
+4.  Clinical → Stays: every hospital stay with its status (Scheduled, Admitted or Discharged). For a
     stay that hasn't ended, you can Add Procedure, Extend the stay or Discharge the patient.
-4.  Hospital → Rooms: each room's free beds and the patients in it today. Click a patient's name to
+5.  Hospital → Rooms: each room's free beds and the patients in it today. Click a patient's name to
     open their profile.
-5.  Staff → On Call: a month calendar of the nurses' on-call periods. Drag across days to add a
+6.  Staff → On Call: a month calendar of the nurses' on-call periods. Drag across days to add a
     period, drag a period to move it, and click it to edit or remove it.
-6.  Staff → Physicians: click a physician's name to open their profile: summary cards, a pie chart
+7.  Staff → Physicians: click a physician's name to open their profile: summary cards, a pie chart
     of the procedures they perform, their departments and their patient lists.
-7.  Clinical → Medications and Procedures: each item's share of all prescriptions or performed
+8.  Clinical → Medications and Procedures: each item's share of all prescriptions or performed
     procedures. Click the column headings to sort. The Procedures tab also shows the average
     procedure cost, calculated with `AVG()`.
-8.  Clockwork (`/clockwork/app`): the exact SQL every page ran. See step 10.
+9.  Clockwork (`/clockwork/app`): the exact SQL every page ran. See step 10.
 
 Patient and physician names are links to their profiles in every table. Inactive patients and
 offboarded physicians are shown struck through.
@@ -570,19 +574,27 @@ Patients
 
 Patients → Patient profile (click a name)
 
-- Database table: `Patient`, `Stay`, `Undergoes`, `Prescribes`
-- What you see, and how many at once: Summary, charts and details; procedure and prescription lists
-  10 per page
+- Database table: `Patient`, `Stay`, `Undergoes`, `Prescribes`, `Appointment`
+- What you see, and how many at once: Summary, charts and details; appointment, procedure and
+  prescription lists 10 per page
 - Seeded records: –
 - Add / edit / delete: Read-only
 
 Staff → Physician profile (click a name)
 
-- Database table: `Physician`, `Undergoes`, `Prescribes`
-- What you see, and how many at once: Summary, charts and details; procedure and prescription lists
-  10 per page
+- Database table: `Physician`, `Undergoes`, `Prescribes`, `Appointment`
+- What you see, and how many at once: Summary, charts and details; appointment, procedure and
+  prescription lists 10 per page
 - Seeded records: –
 - Add / edit / delete: Read-only
+
+Clinical → Appointments (first tab)
+
+- Database table: `Appointment`
+- What you see, and how many at once: Paginated, 20 per page, newest first; search by patient; year,
+  physician and status filters
+- Seeded records: ~23,000 (about 225 upcoming)
+- Add / edit / delete: Add Appointment; Edit (also to extend it); Cancel while it is still upcoming
 
 Clinical → Medications
 
@@ -642,8 +654,9 @@ How adding, editing and removing work
   prescription still shows the medication it was for, struck through. The only true deletion is
   removing an on-call period.
 - Medical history is never changed or deleted. Prescriptions, stays and performed procedures can
-  only be added; a stay can only be extended or discharged. Correcting history by deleting it would
-  hide what really happened.
+  only be added; a stay can only be extended or discharged. Appointments are bookings, so they can
+  be edited at any time and cancelled until they start. A cancelled appointment is hidden but kept,
+  like other removed records. Correcting history by deleting it would hide what really happened.
 - The app enforces the hospital's rules and shows a message when something isn't allowed. For
   example:
   - interns can't prescribe, perform procedures or be a primary physician;
@@ -651,7 +664,8 @@ How adding, editing and removing work
   - a patient can only have one stay at a time;
   - a room can't take more patients than it has beds;
   - a procedure must fall within its stay;
-  - a nurse's on-call periods can't overlap.
+  - a nurse's on-call periods can't overlap;
+  - an appointment must end after it starts, and every appointment needs an end time.
 - Database errors are shown as MySQL reports them. For example, saving a duplicate ID or leaving a
   required name blank shows MySQL's own error message. This needs `APP_DEBUG=true` in `.env`, which
   is the default in `.env.example`. With `APP_DEBUG=false`, Laravel hides the details and shows only

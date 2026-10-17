@@ -21,7 +21,7 @@ function appointmentParties(): array
 it('returns the patient, nurse and physician', function () {
     $parties = appointmentParties();
 
-    $appointment = Appointment::create(['appID' => 1, ...$parties, 'startDateTime' => '2026-09-01 09:00:00']);
+    $appointment = Appointment::create(['appID' => 1, ...$parties, 'startDateTime' => '2026-09-01 09:00:00', 'endDateTime' => '2026-09-01 09:30:00']);
 
     expect($appointment->patient->id)->toBe($parties['patient_id']);
     expect($appointment->nurse->id)->toBe($parties['nurse_id']);
@@ -29,16 +29,14 @@ it('returns the patient, nurse and physician', function () {
 });
 
 it('generates a ulid primary key', function () {
-    $appointment = Appointment::create(['appID' => 2, ...appointmentParties(), 'startDateTime' => '2026-09-01 09:00:00']);
+    $appointment = Appointment::create(['appID' => 2, ...appointmentParties(), 'startDateTime' => '2026-09-01 09:00:00', 'endDateTime' => '2026-09-01 09:30:00']);
 
     expect($appointment->getKey())->toBeString()->toHaveLength(26);
 });
 
-it('allows an appointment without an end time', function () {
-    $appointment = Appointment::create(['appID' => 3, ...appointmentParties(), 'startDateTime' => '2026-09-01 09:00:00']);
-
-    expect(Appointment::find($appointment->id)->endDateTime)->toBeNull();
-});
+it('requires an end time', function () {
+    Appointment::create(['appID' => 3, ...appointmentParties(), 'startDateTime' => '2026-09-01 09:00:00']);
+})->throws(QueryException::class, "Field 'endDateTime' doesn't have a default value");
 
 it('reads the start and end back as date times', function () {
     $appointment = Appointment::create(['appID' => 4, ...appointmentParties(), 'startDateTime' => '2026-09-01 09:00:00', 'endDateTime' => '2026-09-01 09:30:00']);
@@ -57,7 +55,7 @@ it('rejects an end time that is not after the start time', function (string $end
 
 it('removes the appointments when the patient is permanently deleted', function () {
     $parties = appointmentParties();
-    Appointment::create(['appID' => 6, ...$parties, 'startDateTime' => '2026-09-01 09:00:00']);
+    Appointment::create(['appID' => 6, ...$parties, 'startDateTime' => '2026-09-01 09:00:00', 'endDateTime' => '2026-09-01 09:30:00']);
 
     Patient::find($parties['patient_id'])->forceDelete();
 
@@ -66,7 +64,7 @@ it('removes the appointments when the patient is permanently deleted', function 
 
 it('blocks permanently deleting staff who have appointments', function (string $column, string $model) {
     $parties = appointmentParties();
-    Appointment::create(['appID' => 7, ...$parties, 'startDateTime' => '2026-09-01 09:00:00']);
+    Appointment::create(['appID' => 7, ...$parties, 'startDateTime' => '2026-09-01 09:00:00', 'endDateTime' => '2026-09-01 09:30:00']);
 
     $model::find($parties[$column])->forceDelete();
 })->with([
@@ -75,7 +73,7 @@ it('blocks permanently deleting staff who have appointments', function (string $
 ])->throws(QueryException::class);
 
 it('keeps the row when an appointment is deleted', function () {
-    $appointment = Appointment::create(['appID' => 8, ...appointmentParties(), 'startDateTime' => '2026-09-01 09:00:00']);
+    $appointment = Appointment::create(['appID' => 8, ...appointmentParties(), 'startDateTime' => '2026-09-01 09:00:00', 'endDateTime' => '2026-09-01 09:30:00']);
 
     $appointment->delete();
 
@@ -84,16 +82,16 @@ it('keeps the row when an appointment is deleted', function () {
 
 it('rejects a duplicate appID', function () {
     $parties = appointmentParties();
-    Appointment::create(['appID' => 1, ...$parties, 'startDateTime' => '2026-09-01 09:00:00']);
+    Appointment::create(['appID' => 1, ...$parties, 'startDateTime' => '2026-09-01 09:00:00', 'endDateTime' => '2026-09-01 09:30:00']);
 
-    Appointment::create(['appID' => 1, ...$parties, 'startDateTime' => '2026-09-01 09:00:00']);
+    Appointment::create(['appID' => 1, ...$parties, 'startDateTime' => '2026-09-01 09:00:00', 'endDateTime' => '2026-09-01 09:30:00']);
 })->throws(UniqueConstraintViolationException::class);
 
 it('assigns the next appID when none is given', function () {
     $parties = appointmentParties();
-    Appointment::create(['appID' => 900000, ...$parties, 'startDateTime' => '2026-09-01 09:00:00']);
+    Appointment::create(['appID' => 900000, ...$parties, 'startDateTime' => '2026-09-01 09:00:00', 'endDateTime' => '2026-09-01 09:30:00']);
 
-    $appointment = Appointment::create([...$parties, 'startDateTime' => '2026-09-01 09:00:00']);
+    $appointment = Appointment::create([...$parties, 'startDateTime' => '2026-09-01 09:00:00', 'endDateTime' => '2026-09-01 09:30:00']);
 
     expect($appointment->appID)->toBe(900001);
     expect(Appointment::find($appointment->id)->appID)->toBe(900001);

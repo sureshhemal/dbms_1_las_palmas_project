@@ -2769,3 +2769,26 @@ The button opens the "Record Procedure" drawer. The form has two sections, and s
 [2026-10-16 22:50]
 open pr to main
 
+[2026-10-16 22:53]
+<task-notification>
+<task-id>b0hkpqorz</task-id>
+<tool-use-id>toolu_01CK2QLb3Csb3c6uei93h4oY</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-sureshhemal-MSc-Sem-1-dbms-las-palmas/6835bb19-9eea-46ac-ac11-1d17ac31a036/tasks/b0hkpqorz.output</output-file>
+<status>completed</status>
+<summary>Background command "Watch CI checks on PR 19" completed (exit code 0)</summary>
+</task-notification>
+
+[2026-10-16 22:56]
+I merged the pr. Now new branch from main to work on Appoinments. Seeded appointments should be spread over years. Be mind that. nothing hard on that one. And end time is normally fixed. So we can make it not null in database. Usually appointments have a defined period of time. If it is not enough there is always room to extend by editing appointment. So, make it that way. Page is clinial -> appointments tab. Preffered to be the first tab of clinical page
+
+[2026-10-16 23:06]
+we need physician filter in there
+
+[2026-10-16 23:12]
+Now in patients profile we need card and table for appointments.
+
+and for physician profile, we need those too
+
+[2026-10-16 23:16]
+Open pr to main
+
