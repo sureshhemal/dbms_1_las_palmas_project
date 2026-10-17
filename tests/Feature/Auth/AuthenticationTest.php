@@ -2,12 +2,22 @@
 
 use App\IAM\Entities\User;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Route;
+use Inertia\Testing\AssertableInertia as Assert;
 use Laravel\Fortify\Features;
 
 test('login screen can be rendered', function () {
     $response = $this->get(route('login'));
 
     $response->assertOk();
+});
+
+test('password reset is disabled because the application sends no mail', function () {
+    expect(Route::has('password.request'))->toBeFalse();
+
+    $this->get('/forgot-password')->assertNotFound();
+    $this->post('/forgot-password', ['email' => 'someone@example.com'])->assertNotFound();
+    $this->get(route('login'))->assertInertia(fn (Assert $page) => $page->missing('canResetPassword'));
 });
 
 test('users can authenticate using the login screen', function () {

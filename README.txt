@@ -49,7 +49,7 @@ The live application is filled with seeded sample data:
 
 Repository: https://github.com/sureshhemal/dbms_1_las_palmas_project
 
-This guide assumes you have never set up a Laravel project before. Follow it from top to bottom.
+This guide assumes you have never set up a PHP web application before. Follow it from top to bottom.
 
 ----------------------------------------------------------------------------------------------------
 
@@ -58,7 +58,7 @@ CONTENTS
 
 1.  What you need
 2.  Install the tools
-    - Option A: Laravel Herd (macOS and Windows, recommended)
+    - Option A: Herd (macOS and Windows, recommended)
     - Option B: Install everything yourself (macOS, Windows, Linux)
 3.  Get the code
 4.  Create the databases
@@ -147,12 +147,11 @@ add them. To see which extensions are loaded, run:
 
 Choose one option.
 
-Option A: Laravel Herd (macOS and Windows, recommended)
--------------------------------------------------------
+Option A: Herd (macOS and Windows, recommended)
+-----------------------------------------------
 
-Laravel Herd (https://herd.laravel.com) is a free app that installs PHP, Composer and Node.js in one
-go. It also serves the website at a nice address such as `http://las_palmas.test`, with no extra
-setup.
+Herd (https://herd.laravel.com) is a free app that installs PHP, Composer and Node.js in one go. It
+also serves the website at a nice address such as `http://las_palmas.test`, with no extra setup.
 
 1.  Download Herd from https://herd.laravel.com and install it. Open it once so it finishes the
     setup.
@@ -348,8 +347,9 @@ File storage: local or Cloudflare R2 (optional)
 
 Out of the box, files are stored on the local disk (`FILESYSTEM_DISK=local`), which needs no setup.
 On a server you can store them in Cloudflare
-R2 (https://www.cloudflare.com/developer-platform/products/r2/) instead. R2 works with Laravel's
-built-in `s3` disk; the required package, `league/flysystem-aws-s3-v3`, is already installed.
+R2 (https://www.cloudflare.com/developer-platform/products/r2/) instead. R2 works with the
+application's built-in `s3` storage disk; the required package, `league/flysystem-aws-s3-v3`, is
+already installed.
 
 1.  In the Cloudflare dashboard, create an R2 bucket, then an R2 API token with read and write
     access to it. Note the Access Key ID, the Secret Access Key and your Account ID.
@@ -390,8 +390,9 @@ Run these commands one by one:
 Create the tables, and optionally fill them with sample data
 ------------------------------------------------------------
 
-Laravel creates and fills the database with `php artisan` commands. A migration creates the tables.
-A seeder fills them with made-up but realistic sample data. Pick what you want:
+The project creates its database tables and fills them for you, using `php artisan` commands. A
+migration creates the tables. A seeder fills them with made-up but realistic sample data. Pick what
+you want:
 
 An empty application (all tables, no data), to enter data yourself
 
@@ -522,12 +523,54 @@ The application has no ready-made user, so register one:
 9. USING THE APPLICATION
 ========================
 
+The sidebar
+-----------
+
+After you log in, every page has a sidebar on the left.
+
+Dashboard
+
+- What it opens: Today at the hospital: today's appointments, procedures, nurses on call and
+  discharges, with a live hospital-time clock
+
+Staff
+
+- What it opens: Physicians, nurses and the on-call calendar
+
+Hospital
+
+- What it opens: Departments and rooms
+
+Patients
+
+- What it opens: The patient list; click a name to open the patient's profile
+
+Clinical
+
+- What it opens: Appointments, medications, procedures, prescriptions, stays and performed
+  procedures
+
+Repository (bottom)
+
+- What it opens: This project's source code on GitHub, in a new browser tab
+
+Documentation (bottom)
+
+- What it opens: This guide (the README), shown inside the app; its contents links jump to each
+  section
+
+Your name (bottom)
+
+- What it opens: A menu with Settings (your profile, password, two-factor sign-in, passkeys and
+  light/dark theme) and Log out
+
+To make more room, collapse the sidebar to icons with the button next to the page title (or press
+Ctrl + B, ⌘ + B on a Mac). Click it again to expand. The app remembers your choice.
+
 A short tour
 ------------
 
-After you log in, the sidebar on the left has five pages: Dashboard, Staff, Hospital, Patients and
-Clinical. The numbers below assume you filled the database with sample data
-(`php artisan migrate --seed`).
+The numbers below assume you filled the database with sample data (`php artisan migrate --seed`).
 
 1.  Patients: 10,000 patients, 20 per page. Search by name, ID, phone or insurance number, or filter
     by primary physician. Click a patient's name to open their profile. It shows:
@@ -720,8 +763,8 @@ How adding, editing and removing work
   - an appointment must end after it starts, and every appointment needs an end time.
 - Database errors are shown as MySQL reports them. For example, saving a duplicate ID or leaving a
   required name blank shows MySQL's own error message. This needs `APP_DEBUG=true` in `.env`, which
-  is the default in `.env.example`. With `APP_DEBUG=false`, Laravel hides the details and shows only
-  "Server Error".
+  is the default in `.env.example`. With `APP_DEBUG=false`, the application hides the details and
+  shows only "Server Error".
 
 10. SEE THE SQL QUERIES WITH CLOCKWORK
 ======================================
@@ -938,7 +981,7 @@ Medications, using `AVG()`
     ORDER BY prescriptionShare DESC, m.name, m.medID
     LIMIT 20;
 
-The same query in Laravel's query builder:
+The same query in the project's query builder:
 
     Medication::query()
         ->select(['medID', 'name'])
@@ -968,7 +1011,7 @@ Procedures, using `AVG()`
     ORDER BY performedShare DESC, pr.name, pr.procID
     LIMIT 20;
 
-The same query in Laravel's query builder:
+The same query in the project's query builder:
 
     $today = HospitalCalendar::today()->toDateString();
 
@@ -1127,8 +1170,8 @@ Where the app does use `AVG()`
 
 `AVG()` is the right tool for a single aggregate over one numeric column, which is exactly what the
 assignment's "Average" functionality asks for. The Clinical → Procedures tab shows the average
-procedure cost above the table. The app asks Laravel for it with the query builder's aggregate
-methods: `avg('cost')`, `count('cost')` and `whereNull('cost')->count()`. In the query builder
+procedure cost above the table. The app gets it from the query builder's aggregate methods:
+`avg('cost')`, `count('cost')` and `whereNull('cost')->count()`. In the query builder
 (`app/Clinical/UseCases/ShowProcedureAverageCost.php`):
 
     $averageCost = Procedure::query()->avg('cost');
@@ -1140,7 +1183,7 @@ methods: `avg('cost')`, `count('cost')` and `whereNull('cost')->count()`. In the
     );
 
 `Procedure::query()` adds the `deleted_at IS NULL` filter automatically, because procedures are
-soft-deleted. Laravel turns the three calls into these queries:
+soft-deleted. The query builder turns the three calls into these queries:
 
     SELECT AVG(cost)   FROM `Procedure` WHERE deleted_at IS NULL;                  -- the average
     SELECT COUNT(cost) FROM `Procedure` WHERE deleted_at IS NULL;                  -- procedures averaged
