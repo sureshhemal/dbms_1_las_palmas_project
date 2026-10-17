@@ -2891,3 +2891,66 @@ add
 [2026-10-17 01:44]
 open pr
 
+[2026-10-17 01:47]
+<task-notification>
+<task-id>b9v5u9vid</task-id>
+<tool-use-id>toolu_0183swyPGs1wswvDnHzTHHGU</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-sureshhemal-MSc-Sem-1-dbms-las-palmas/6835bb19-9eea-46ac-ac11-1d17ac31a036/tasks/b9v5u9vid.output</output-file>
+<status>completed</status>
+<summary>Background command "Watch the CI run for the R2 PR" completed (exit code 0)</summary>
+</task-notification>
+
+[2026-10-17 09:39]
+now our application is live on https://129-153-117-183.sslip.io. add that to readme.
+
+[2026-10-17 09:44]
+or add my login credentials. 
+email = sureshhemal123@gmail.com
+password = FSA-Md=-q2`-646
+
+because in production application password validation rules are bit hard
+
+[2026-10-17 09:44]
+yeah. that is fine.
+
+[2026-10-17 09:47]
+Now the seeded application has 
+
+
+
+<pasted_content id="35ee">
+             Table               │                  Records                  │
+├──────────────────────────────────┼───────────────────────────────────────────┤
+│ Undergoes (performed procedures) │ 92,156                                    │
+├──────────────────────────────────┼───────────────────────────────────────────┤
+│ Prescribes                       │ 47,965                                    │
+├──────────────────────────────────┼───────────────────────────────────────────┤
+│ Stay                             │ 30,903                                    │
+├──────────────────────────────────┼───────────────────────────────────────────┤
+│ Appointment                      │ 24,945                                    │
+├──────────────────────────────────┼───────────────────────────────────────────┤
+│ Patient                          │ 10,000                                    │
+├──────────────────────────────────┼───────────────────────────────────────────┤
+│ Medication                       │ 2,000                                     │
+├──────────────────────────────────┼───────────────────────────────────────────┤
+│ Procedure                        │ 300                                       │
+├──────────────────────────────────┼───────────────────────────────────────────┤
+│ Nurse                            │ 128                                       │
+├──────────────────────────────────┼───────────────────────────────────────────┤
+│ AffiliatedWith                   │ 94                                        │
+├──────────────────────────────────┼───────────────────────────────────────────┤
+│ OnCall                           │ 79                                        │
+├──────────────────────────────────┼───────────────────────────────────────────┤
+│ Physician                        │ 75                                        │
+├──────────────────────────────────┼───────────────────────────────────────────┤
+│ Room                             │ 75                                        │
+├──────────────────────────────────┼───────────────────────────────────────────┤
+│ Department                       │ 3
+</pasted_content id="35ee">
+
+
+records. Add that to readme file.
+
+[2026-10-17 09:48]
+open pr
+
