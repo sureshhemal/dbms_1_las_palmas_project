@@ -2882,3 +2882,12 @@ php artisan migrate --force
 [2026-10-17 01:14]
 open pr for now
 
+[2026-10-17 01:39]
+I'm gonna use cloudflare r2 as storage for applicaiton. so install league/flysystem-aws-s3-v3
+
+[2026-10-17 01:43]
+add
+
+[2026-10-17 01:44]
+open pr
+

@@ -316,6 +316,31 @@ Open `.env` in a text editor and check these lines:
 - `DB_*` tells the application how to reach MySQL. The defaults match a local MySQL with user `root`
   and no password.
 
+File storage: local or Cloudflare R2 (optional)
+-----------------------------------------------
+
+Out of the box, files are stored on the local disk (`FILESYSTEM_DISK=local`), which needs no setup.
+On a server you can store them in Cloudflare
+R2 (https://www.cloudflare.com/developer-platform/products/r2/) instead. R2 works with Laravel's
+built-in `s3` disk; the required package, `league/flysystem-aws-s3-v3`, is already installed.
+
+1.  In the Cloudflare dashboard, create an R2 bucket, then an R2 API token with read and write
+    access to it. Note the Access Key ID, the Secret Access Key and your Account ID.
+
+2.  Set these in `.env`:
+
+        FILESYSTEM_DISK=s3
+        AWS_ACCESS_KEY_ID=<R2 access key ID>
+        AWS_SECRET_ACCESS_KEY=<R2 secret access key>
+        AWS_DEFAULT_REGION=auto
+        AWS_BUCKET=<bucket name>
+        AWS_ENDPOINT=https://<account-id>.r2.cloudflarestorage.com
+        AWS_USE_PATH_STYLE_ENDPOINT=true
+        AWS_URL=<the bucket's public URL, only if files should be publicly linkable>
+
+R2 always uses the region `auto`. `AWS_URL` is only needed when the app should hand out public links
+to files, through the bucket's `r2.dev` address or a custom domain connected to it.
+
 Now generate the application's secret key. It is written into `.env` for you:
 
     composer install
