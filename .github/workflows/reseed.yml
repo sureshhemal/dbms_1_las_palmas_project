@@ -18,12 +18,12 @@ jobs:
     steps:
       - name: Prepare SSH key and known hosts
         env:
-          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          RESEED_SSH_KEY: ${{ secrets.RESEED_SSH_KEY }}
           DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
         run: |
           install -m 700 -d ~/.ssh
-          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$RESEED_SSH_KEY" > ~/.ssh/reseed_key
+          chmod 600 ~/.ssh/reseed_key
           printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
 
@@ -31,13 +31,19 @@ jobs:
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
         run: |
-          ssh -i ~/.ssh/deploy_key \
+          ssh -i ~/.ssh/reseed_key \
             -o IdentitiesOnly=yes \
             -o BatchMode=yes \
             -o StrictHostKeyChecking=yes \
             -o ServerAliveInterval=30 \
-            "$DEPLOY_HOST" reseed
+            "$DEPLOY_HOST" 'bash -s' <<'REMOTE'
+          set -Eeuo pipefail
+          cd /var/www/las_palmas
+          php artisan down --retry=60 --refresh=15
+          trap 'php artisan up' EXIT
+          php artisan migrate:fresh --seed --force
+          REMOTE
 
       - name: Remove SSH key
         if: always()
-        run: rm -f ~/.ssh/deploy_key
+        run: rm -f ~/.ssh/reseed_key

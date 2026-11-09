@@ -38,7 +38,7 @@ class AppServiceProvider extends ServiceProvider
         Passkeys::usePasskeyModel(Passkey::class);
 
         DB::prohibitDestructiveCommands(
-            app()->isProduction(),
+            app()->isProduction() && ! $this->isForcedOnTheCommandLine(),
         );
 
         Password::defaults(fn (): ?Password => app()->isProduction()
@@ -50,5 +50,10 @@ class AppServiceProvider extends ServiceProvider
                 ->uncompromised()
             : null,
         );
+    }
+
+    private function isForcedOnTheCommandLine(): bool
+    {
+        return app()->runningInConsole() && in_array('--force', $_SERVER['argv'] ?? [], true);
     }
 }

@@ -1571,3 +1571,29 @@ now I need a seperate github workflow to run migrate:fresh --seed. So the review
 [2026-11-09 10:06]
 commit it and open a PR
 
+[2026-11-09 10:11]
+I merged it
+
+[2026-11-09 10:12]
+https://github.com/sureshhemal/dbms_1_las_palmas_project/actions/runs/42662257863/job/129316596399
+
+see this. it is failed
+
+[2026-11-09 10:14]
+now remember our plan for the video. Could you give me that thing as a .md file.
+
+[2026-11-09 10:16]
+https://github.com/sureshhemal/dbms_1_las_palmas_project/actions/runs/42663008632/job/129319208210
+
+[2026-11-09 10:17]
+pass --force flag
+
+[2026-11-09 10:22]
+it is still down
+
+[2026-11-09 10:24]
+deploy script works just fine. seed has the issue. Don't change deploy.sh for the sake of database seeder. that is  fragile. make reseed.yml to run the artisan commands itself. we can do that.
+
+[2026-11-09 10:29]
+commit it and open a PR
+

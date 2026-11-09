@@ -12,31 +12,11 @@ stay_in_maintenance_on_failure() {
     printf '\n!! Deployment failed. The application stays in maintenance mode until a deployment succeeds or you run "php artisan up" in %s.\n' "$APP_DIRECTORY" >&2
 }
 
-stay_in_maintenance_on_failed_reseed() {
-    printf '\n!! Reseeding failed. The application stays in maintenance mode until a reseed or deployment succeeds or you run "php artisan up" in %s.\n' "$APP_DIRECTORY" >&2
-}
-
-reseed_database() {
-    announce "Entering maintenance mode"
-    php artisan down --retry=60 --refresh=15
-
-    trap stay_in_maintenance_on_failed_reseed ERR
-
-    announce "Dropping all tables, migrating and seeding the sample data"
-    php artisan migrate:fresh --seed --force
-
-    announce "Leaving maintenance mode"
-    php artisan up
-
-    trap - ERR
-    announce "Reseeded the database"
-}
-
 check_out_requested_commit() {
-    local requested_sha="$1"
+    local requested_sha="${SSH_ORIGINAL_COMMAND:-${1:-}}"
 
     if [[ ! "$requested_sha" =~ ^[0-9a-f]{40}$ ]]; then
-        printf 'Usage: deploy.sh <full 40-character commit SHA> | reseed\n' >&2
+        printf 'Usage: deploy.sh <full 40-character commit SHA>\n' >&2
         exit 64
     fi
 
@@ -107,15 +87,7 @@ main() {
         return
     fi
 
-    local requested_command="${SSH_ORIGINAL_COMMAND:-${1:-}}"
-
-    if [[ "$requested_command" == "reseed" ]]; then
-        reseed_database
-
-        return
-    fi
-
-    check_out_requested_commit "$requested_command"
+    check_out_requested_commit "${1:-}"
 }
 
 main "$@"
