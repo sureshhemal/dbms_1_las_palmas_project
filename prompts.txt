@@ -1550,3 +1550,24 @@ I merged the pr. rebase with main. and fix dependbot alerts too
 [2026-10-17 15:58]
 open pr
 
+[2026-10-22 16:45]
+what is sql injection in simple terms
+
+[2026-11-09 09:57]
+I want to make user seeder. using credentials on readme file. do it
+
+[2026-11-09 09:58]
+so when I re run migrate:fresh --seed, I'll ended up with same user. that is what i need for the demo
+
+[2026-11-09 09:59]
+no need to change anything else. just add the seeder. thats all we need.
+
+[2026-11-09 10:00]
+numbers in readme is invalid after each --fresh. so we need to tell them a acurate range of records.
+
+[2026-11-09 10:04]
+now I need a seperate github workflow to run migrate:fresh --seed. So the reviewer can re-seed the data whenever he needs.
+
+[2026-11-09 10:06]
+commit it and open a PR
+

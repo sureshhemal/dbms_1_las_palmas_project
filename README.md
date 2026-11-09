@@ -21,23 +21,25 @@ Password: FSA-Md=-q2`-646
 
 You can also register your own account. In production, passwords must be at least 12 characters long, with upper- and lower-case letters, a number and a symbol, and must not appear in a known data breach.
 
-The live application is filled with seeded sample data:
+The live application is filled with seeded sample data. Many values are picked at random, so the exact counts change each time you run `migrate:fresh --seed`. These are the ranges for a seed run in November 2026:
 
-| Table                                        | Records |
-| -------------------------------------------- | ------: |
-| `Undergoes` (performed procedures)           |  92,156 |
-| `Prescribes` (prescriptions)                 |  47,965 |
-| `Stay`                                       |  30,903 |
-| `Appointment`                                |  24,945 |
-| `Patient`                                    |  10,000 |
-| `Medication`                                 |   2,000 |
-| `Procedure`                                  |     300 |
-| `Nurse`                                      |     128 |
-| `AffiliatedWith` (physicians in departments) |      94 |
-| `OnCall`                                     |      79 |
-| `Physician`                                  |      75 |
-| `Room`                                       |      75 |
-| `Department`                                 |       3 |
+| Table                                        |         Records |
+| -------------------------------------------- | --------------: |
+| `Undergoes` (performed procedures)           | 92,500 – 93,500 |
+| `Prescribes` (prescriptions)                 | 48,700 – 48,900 |
+| `Stay`                                       | 30,950 – 31,250 |
+| `Appointment`                                | 24,700 – 25,100 |
+| `Patient`                                    |          10,000 |
+| `Medication`                                 |           2,000 |
+| `Procedure`                                  |             300 |
+| `Nurse`                                      |             128 |
+| `AffiliatedWith` (physicians in departments) |        75 – 111 |
+| `OnCall`                                     |         65 – 80 |
+| `Physician`                                  |              75 |
+| `Room`                                       |              75 |
+| `Department`                                 |               3 |
+
+The sample history runs up to the day you seed, so a later seed run gives a little more: about 1,100 more performed procedures, 1,100 more prescriptions and 270 more stays for each month that passes.
 
 **Repository:** <https://github.com/sureshhemal/dbms_1_las_palmas_project>
 
@@ -341,7 +343,7 @@ The project creates its database tables and fills them for you, using `php artis
 - **`db:seed`** (or `--seed`) fills the tables with sample data, which takes about 10 seconds. You get:
     - 75 physicians, 128 nurses and 75 rooms;
     - a catalogue of 2,000 medications and 300 procedures;
-    - 10,000 patients, about 30,000 stays, about 92,000 performed procedures and about 48,000 prescriptions.
+    - 10,000 patients, about 31,000 stays, about 93,000 performed procedures, about 49,000 prescriptions and about 25,000 appointments. Many values are random, so the exact counts differ a little each time you seed.
 
     Seed **only once**. Running `db:seed` again adds a second set of physicians and nurses. If you want fresh sample data, use `migrate:fresh --seed` instead.
 
@@ -463,19 +465,19 @@ Patient and physician names are links to their profiles in every table. Inactive
 | Dashboard            | –                                    | –                                                           | An empty starter page with no data                                                                       | –                             | –                                                                                                                                         |
 | Staff                | Physicians                           | `Physician` (departments from `AffiliatedWith`)             | **All physicians at once**, with search and filters by position and department                           | 75                            | **Add Physician**; **Edit** on the row; **Offboard** on the row                                                                           |
 | Staff                | Nurses                               | `Nurse`                                                     | Paginated, 20 per page; search and position filter                                                       | 128                           | **Add Nurse**; **Edit**; **Offboard**                                                                                                     |
-| Staff                | On Call                              | `OnCall`                                                    | A **month calendar**; filter by nurse                                                                    | 75 periods                    | **Add On-Call Period**, or drag across days; click a period to edit it, or drag it to move it; **Remove on-call period** in the edit form |
+| Staff                | On Call                              | `OnCall`                                                    | A **month calendar**; filter by nurse                                                                    | 65 – 80 periods               | **Add On-Call Period**, or drag across days; click a period to edit it, or drag it to move it; **Remove on-call period** in the edit form |
 | Hospital             | Departments                          | `Department`                                                | **All 3 departments at once**                                                                            | 3 (created by `migrate`)      | Can't be added or deleted; **Edit** changes the department ID and head                                                                    |
-| Hospital             | Department page (click a department) | `Department`, `AffiliatedWith`, `Physician`                 | The head and **all** the department's physicians                                                         | 91 memberships                | Read-only; departments are assigned in the physician's **Edit** form                                                                      |
+| Hospital             | Department page (click a department) | `Department`, `AffiliatedWith`, `Physician`                 | The head and **all** the department's physicians                                                         | 75 – 111 memberships          | Read-only; departments are assigned in the physician's **Edit** form                                                                      |
 | Hospital             | Rooms                                | `Room` (occupants from `Stay`)                              | Paginated, 20 per page; free beds and today's patients; search, room-type and availability filters       | 75                            | **Add Room**; **Edit**; **Decommission**                                                                                                  |
 | Patients             | –                                    | `Patient`                                                   | Paginated, 20 per page; search and primary-physician filter                                              | 10,000                        | **Add Patient**; **Edit**; **Deactivate**                                                                                                 |
 | Patients             | Patient profile (click a name)       | `Patient`, `Stay`, `Undergoes`, `Prescribes`, `Appointment` | Summary, charts and details; appointment, procedure and prescription lists 10 per page                   | –                             | Read-only                                                                                                                                 |
 | Staff                | Physician profile (click a name)     | `Physician`, `Undergoes`, `Prescribes`, `Appointment`       | Summary, charts and details; appointment, procedure and prescription lists 10 per page                   | –                             | Read-only                                                                                                                                 |
-| Clinical             | Appointments (first tab)             | `Appointment`                                               | Paginated, 20 per page, newest first; search by patient; year, physician and status filters              | ~23,000 (about 225 upcoming)  | **Add Appointment**; **Edit** (also to extend it); **Cancel** while it is still upcoming                                                  |
+| Clinical             | Appointments (first tab)             | `Appointment`                                               | Paginated, 20 per page, newest first; search by patient; year, physician and status filters              | ~25,000 (about 230 upcoming)  | **Add Appointment**; **Edit** (also to extend it); **Cancel** while it is still upcoming                                                  |
 | Clinical             | Medications                          | `Medication` (shares from `Prescribes`)                     | Paginated, 20 per page; sorted by share of prescriptions                                                 | 2,000                         | **Add Medication**; **Edit**; **Remove**                                                                                                  |
 | Clinical             | Procedures                           | `Procedure` (shares from `Undergoes`)                       | Paginated, 20 per page; sorted by share of performed procedures; average cost                            | 300                           | **Add Procedure**; **Edit**; **Remove**                                                                                                   |
-| Clinical             | Prescriptions                        | `Prescribes`                                                | Paginated, 20 per page, newest first; search and year filter                                             | ~48,000                       | **Add Prescription** only; prescriptions can't be edited or deleted                                                                       |
-| Clinical             | Stays                                | `Stay`                                                      | Paginated, 20 per page, newest first; search and status filter                                           | ~30,800                       | Created by **Record Procedure**; **Add Procedure**, **Extend** and **Discharge** on the row; never deleted                                |
-| Clinical             | Performed Procedures                 | `Undergoes` (rooms from `Stay`)                             | Paginated, 20 per page, newest first; search and filters by year, status, procedure, physician and nurse | ~92,000 (about 760 scheduled) | **Record Procedure** (also admits the patient); can't be edited or deleted                                                                |
+| Clinical             | Prescriptions                        | `Prescribes`                                                | Paginated, 20 per page, newest first; search and year filter                                             | ~49,000                       | **Add Prescription** only; prescriptions can't be edited or deleted                                                                       |
+| Clinical             | Stays                                | `Stay`                                                      | Paginated, 20 per page, newest first; search and status filter                                           | ~31,000                       | Created by **Record Procedure**; **Add Procedure**, **Extend** and **Discharge** on the row; never deleted                                |
+| Clinical             | Performed Procedures                 | `Undergoes` (rooms from `Stay`)                             | Paginated, 20 per page, newest first; search and filters by year, status, procedure, physician and nurse | ~93,000 (about 700 scheduled) | **Record Procedure** (also admits the patient); can't be edited or deleted                                                                |
 | Settings (user menu) | Profile, Security, Appearance        | `users`                                                     | Your name, email, password, two-factor sign-in, passkeys and light/dark theme                            | Your own login                | Change your details; delete your account                                                                                                  |
 
 ### How adding, editing and removing work

@@ -29,23 +29,29 @@ You can also register your own account. In production, passwords must be at leas
 long, with upper- and lower-case letters, a number and a symbol, and must not appear in a known data
 breach.
 
-The live application is filled with seeded sample data:
+The live application is filled with seeded sample data. Many values are picked at random, so the
+exact counts change each time you run `migrate:fresh --seed`. These are the ranges for a seed run
+in November 2026:
 
-  Table                                            Records
-  ---------------------------------------------- ---------
-  `Undergoes` (performed procedures)                92,156
-  `Prescribes` (prescriptions)                      47,965
-  `Stay`                                            30,903
-  `Appointment`                                     24,945
-  `Patient`                                         10,000
-  `Medication`                                       2,000
-  `Procedure`                                          300
-  `Nurse`                                              128
-  `AffiliatedWith` (physicians in departments)          94
-  `OnCall`                                              79
-  `Physician`                                           75
-  `Room`                                                75
-  `Department`                                           3
+  Table                                                    Records
+  ---------------------------------------------- -----------------
+  `Undergoes` (performed procedures)               92,500 – 93,500
+  `Prescribes` (prescriptions)                     48,700 – 48,900
+  `Stay`                                           30,950 – 31,250
+  `Appointment`                                    24,700 – 25,100
+  `Patient`                                                 10,000
+  `Medication`                                               2,000
+  `Procedure`                                                  300
+  `Nurse`                                                      128
+  `AffiliatedWith` (physicians in departments)            75 – 111
+  `OnCall`                                                 65 – 80
+  `Physician`                                                   75
+  `Room`                                                        75
+  `Department`                                                   3
+
+The sample history runs up to the day you seed, so a later seed run gives a little more: about
+1,100 more performed procedures, 1,100 more prescriptions and 270 more stays for each month that
+passes.
 
 Repository: https://github.com/sureshhemal/dbms_1_las_palmas_project
 
@@ -422,8 +428,9 @@ To clear everything and start again with fresh sample data
 
   - 75 physicians, 128 nurses and 75 rooms;
   - a catalogue of 2,000 medications and 300 procedures;
-  - 10,000 patients, about 30,000 stays, about 92,000 performed procedures and about 48,000
-    prescriptions.
+  - 10,000 patients, about 31,000 stays, about 93,000 performed procedures, about 49,000
+    prescriptions and about 25,000 appointments. Many values are random, so the exact counts
+    differ a little each time you seed.
 
   Seed only once. Running `db:seed` again adds a second set of physicians and nurses. If you want
   fresh sample data, use `migrate:fresh --seed` instead.
@@ -634,7 +641,7 @@ Staff → On Call
 
 - Database table: `OnCall`
 - What you see, and how many at once: A month calendar; filter by nurse
-- Seeded records: 75 periods
+- Seeded records: 65 – 80 periods
 - Add / edit / delete: Add On-Call Period, or drag across days; click a period to edit it, or drag
   it to move it; Remove on-call period in the edit form
 
@@ -649,7 +656,7 @@ Hospital → Department page (click a department)
 
 - Database table: `Department`, `AffiliatedWith`, `Physician`
 - What you see, and how many at once: The head and all the department's physicians
-- Seeded records: 91 memberships
+- Seeded records: 75 – 111 memberships
 - Add / edit / delete: Read-only; departments are assigned in the physician's Edit form
 
 Hospital → Rooms
@@ -688,7 +695,7 @@ Clinical → Appointments (first tab)
 - Database table: `Appointment`
 - What you see, and how many at once: Paginated, 20 per page, newest first; search by patient; year,
   physician and status filters
-- Seeded records: ~23,000 (about 225 upcoming)
+- Seeded records: ~25,000 (about 230 upcoming)
 - Add / edit / delete: Add Appointment; Edit (also to extend it); Cancel while it is still upcoming
 
 Clinical → Medications
@@ -710,14 +717,14 @@ Clinical → Prescriptions
 
 - Database table: `Prescribes`
 - What you see, and how many at once: Paginated, 20 per page, newest first; search and year filter
-- Seeded records: ~48,000
+- Seeded records: ~49,000
 - Add / edit / delete: Add Prescription only; prescriptions can't be edited or deleted
 
 Clinical → Stays
 
 - Database table: `Stay`
 - What you see, and how many at once: Paginated, 20 per page, newest first; search and status filter
-- Seeded records: ~30,800
+- Seeded records: ~31,000
 - Add / edit / delete: Created by Record Procedure; Add Procedure, Extend and Discharge on the row;
   never deleted
 
@@ -726,7 +733,7 @@ Clinical → Performed Procedures
 - Database table: `Undergoes` (rooms from `Stay`)
 - What you see, and how many at once: Paginated, 20 per page, newest first; search and filters by
   year, status, procedure, physician and nurse
-- Seeded records: ~92,000 (about 760 scheduled)
+- Seeded records: ~93,000 (about 700 scheduled)
 - Add / edit / delete: Record Procedure (also admits the patient); can't be edited or deleted
 
 Settings (user menu) → Profile, Security, Appearance
